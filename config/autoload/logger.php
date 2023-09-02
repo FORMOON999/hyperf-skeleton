@@ -9,22 +9,50 @@ declare(strict_types=1);
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
-return [
-    'default' => [
-        'handler' => [
-            'class' => Monolog\Handler\StreamHandler::class,
-            'constructor' => [
-                'stream' => BASE_PATH . '/runtime/logs/hyperf.log',
-                'level' => Monolog\Logger::DEBUG,
-            ],
-        ],
-        'formatter' => [
-            'class' => Monolog\Formatter\LineFormatter::class,
-            'constructor' => [
-                'format' => null,
-                'dateFormat' => 'Y-m-d H:i:s',
-                'allowInlineLineBreaks' => true,
-            ],
-        ],
-    ],
-];
+use Lengbin\Hyperf\Common\Logs\AppendRequestIdProcessor;
+
+return value(function () {
+    $data = [
+        'default',
+        'error',
+    ];
+    $result = [];
+    foreach ($data as $item) {
+        $result[$item] = \Hyperf\Support\value(function () use ($item) {
+            return [
+                'handler' => \Hyperf\Support\value(function () use ($item) {
+                    if (\Hyperf\Support\env('APP_ENV') == 'local') {
+                        return [
+                            'class' => Monolog\Handler\StreamHandler::class, 'constructor' => [
+                                'stream' => 'php://stdout',
+                                'level' => intval(\Hyperf\Support\env('LOG_LEVEL', Monolog\Logger::DEBUG)),
+                            ],
+                        ];
+                    }
+                    return [
+                        'class' => Monolog\Handler\RotatingFileHandler::class,
+                        'constructor' => [
+                            'filename' => BASE_PATH . "/runtime/logs/{$item}.log",
+                            'level' => intval(\Hyperf\Support\env('LOG_LEVEL', Monolog\Logger::DEBUG)),
+                            'maxFiles' => 3,
+                        ],
+                    ];
+                }),
+                'formatter' => [
+                    'class' => Monolog\Formatter\LineFormatter::class,
+                    'constructor' => [
+                        'format' => null,
+                        'dateFormat' => 'Y-m-d H:i:s',
+                        'allowInlineLineBreaks' => true,
+                    ],
+                ],
+                'processors' => [
+                    [
+                        'class' => AppendRequestIdProcessor::class,
+                    ],
+                ],
+            ];
+        });
+    }
+    return $result;
+});

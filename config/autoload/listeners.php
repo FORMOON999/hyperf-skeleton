@@ -12,4 +12,6 @@ declare(strict_types=1);
 return [
     Hyperf\ExceptionHandler\Listener\ErrorExceptionHandler::class,
     Hyperf\Command\Listener\FailToHandleListener::class,
+    Hyperf\AsyncQueue\Listener\QueueLengthListener::class,
+    Hyperf\AsyncQueue\Listener\ReloadChannelListener::class,
 ];

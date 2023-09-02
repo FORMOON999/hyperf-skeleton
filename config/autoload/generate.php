@@ -9,12 +9,14 @@ declare(strict_types=1);
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
-use Lengbin\Hyperf\Common\Middlewares\CorsMiddleware;
-use Lengbin\Hyperf\Common\Middlewares\DebugLogMiddleware;
-
 return [
-    'http' => [
-        CorsMiddleware::class,
-        DebugLogMiddleware::class,
+    // 应用端
+    'applications' => [
+        'app',
+        'platform',
     ],
+    // 是否基于 表区分  ddd
+    'for_table_ddd' => false,
+    // 模块
+    'modules' => [],
 ];

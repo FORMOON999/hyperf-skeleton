@@ -9,12 +9,9 @@ declare(strict_types=1);
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
-use Lengbin\Hyperf\Common\Middlewares\CorsMiddleware;
-use Lengbin\Hyperf\Common\Middlewares\DebugLogMiddleware;
-
 return [
-    'http' => [
-        CorsMiddleware::class,
-        DebugLogMiddleware::class,
+    'handlers' => [
+        Hyperf\Signal\Handler\CoroutineServerStopHandler::class => PHP_INT_MIN,
     ],
+    'timeout' => 5.0,
 ];
