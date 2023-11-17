@@ -1,7 +1,6 @@
 <?php
 
 declare(strict_types=1);
-
 /**
  * This file is part of Hyperf.
  *
@@ -10,16 +9,14 @@ declare(strict_types=1);
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
-
 use Hyperf\Di\ReflectionManager;
 
 $daoInterface = \Hyperf\Support\value(function () {
-    return [];
-    $paths = [
-        BASE_PATH . '/app/Service',
-        BASE_PATH . '/app/Repository/Dao/MySQL',
-    ];
-    $result = ReflectionManager::getAllClasses($paths);
+    $path = BASE_PATH . '/app/Service';
+    if (! is_dir($path)) {
+        return [];
+    }
+    $result = ReflectionManager::getAllClasses([$path]);
     $output = [];
     foreach ($result as $class) {
         /** @var ReflectionClass $class */
@@ -33,5 +30,6 @@ $daoInterface = \Hyperf\Support\value(function () {
 });
 
 return array_merge($daoInterface, [
-    Hyperf\Database\Commands\ModelCommand::class => Lengbin\Hyperf\Common\Commands\Model\ModelCommand::class,
+    //    Hyperf\Database\Commands\ModelCommand::class => Lengbin\Hyperf\Common\Commands\Model\ModelCommand::class,
+    Hyperf\Contract\StdoutLoggerInterface::class => App\Common\Log\StdoutLoggerFactory::class,
 ]);

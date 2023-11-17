@@ -9,8 +9,7 @@ declare(strict_types=1);
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
-use function Hyperf\Support\env;
-use Lengbin\Hyperf\Common\BaseModel;
+use Hyperf\Database\Commands\ModelOption;
 
 return [
     'default' => [
@@ -39,13 +38,13 @@ return [
         ],
         'commands' => [
             'gen:model' => [
-                'path' => 'app/Repository/Model',
-                'for_table_ddd' => true,
+                'path' => 'app/Model',
                 'force_casts' => true,
-                'inheritance' => 'BaseModel',
-                'uses' => BaseModel::class,
+                'inheritance' => 'Model',
+                'uses' => \App\Model\Model::class,
                 'refresh_fillable' => true,
                 'with_comments' => true,
+                'property_case' => ModelOption::PROPERTY_SNAKE_CASE,
             ],
         ],
     ],

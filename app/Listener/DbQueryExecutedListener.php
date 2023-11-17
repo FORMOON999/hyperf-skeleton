@@ -44,7 +44,7 @@ class DbQueryExecutedListener implements ListenerInterface
      */
     public function process(object $event): void
     {
-        if ($event instanceof QueryExecuted) {
+        if (\Hyperf\Config\config('app_env') == 'local' && $event instanceof QueryExecuted) {
             $sql = $event->sql;
             if (! Arr::isAssoc($event->bindings)) {
                 $position = 0;

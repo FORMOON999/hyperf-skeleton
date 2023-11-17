@@ -9,9 +9,9 @@ declare(strict_types=1);
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
-use Lengbin\Hyperf\Common\Logs\AppendRequestIdProcessor;
+use App\Common\Log\AppendRequestIdProcessor;
 
-return value(function () {
+return \Hyperf\Support\value(function () {
     $data = [
         'default',
         'error',
@@ -23,7 +23,9 @@ return value(function () {
                 'handler' => \Hyperf\Support\value(function () use ($item) {
                     if (\Hyperf\Support\env('APP_ENV') == 'local') {
                         return [
-                            'class' => Monolog\Handler\StreamHandler::class, 'constructor' => [
+                            'class' => App\Common\Log\Handler\StreamHandler::class,
+                            'constructor' => [
+                                'group' => $item,
                                 'stream' => 'php://stdout',
                                 'level' => intval(\Hyperf\Support\env('LOG_LEVEL', Monolog\Logger::DEBUG)),
                             ],
