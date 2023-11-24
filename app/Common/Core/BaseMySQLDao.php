@@ -15,7 +15,7 @@ declare(strict_types=1);
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
 
-namespace App\Common;
+namespace App\Common\Core;
 
 use Hyperf\Database\Model\Builder;
 use Hyperf\DbConnection\Db;

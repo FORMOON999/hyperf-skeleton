@@ -66,11 +66,11 @@ class Response extends \Hyperf\HttpServer\Response
         return $this;
     }
 
-    public function raw($data): PsrResponseInterface
-    {
-        return $this->getResponse()
-            ->withBody(new SwooleStream($data));
-    }
+//    public function raw($data): PsrResponseInterface
+//    {
+//        return $this->getResponse()
+//            ->withBody(new SwooleStream($data));
+//    }
 
     public function fileFlow(string $file)
     {

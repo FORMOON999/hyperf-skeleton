@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace App\Common;
+namespace App\Common\Core;
 
 use App\Common\Http\Response;
 use Hyperf\HttpServer\Contract\RequestInterface;

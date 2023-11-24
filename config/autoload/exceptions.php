@@ -11,15 +11,15 @@ declare(strict_types=1);
  */
 // use App\Common\Exception\Handler\TokenExceptionHandler;
 // use App\Common\Exception\Handler\ValidateExceptionHandler;
-// use Lengbin\Hyperf\Common\Exceptions\Handler\AppExceptionHandler;
+
+use App\Common\Exceptions\Handler\AppExceptionHandler;
 
 return [
     'handler' => [
         'http' => [
-            //            TokenExceptionHandler::class,
-            //            ValidateExceptionHandler::class,
-            //            AppExceptionHandler::class,
-            \App\Exception\Handler\AppExceptionHandler::class,
+            // TokenExceptionHandler::class,
+            // ValidateExceptionHandler::class,
+            AppExceptionHandler::class,
         ],
     ],
 ];
