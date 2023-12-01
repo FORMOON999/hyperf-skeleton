@@ -3,6 +3,7 @@
 namespace App\Controller\Web\V1;
 
 use App\Common\Core\BaseController;
+use App\Model\Admin;
 use Hyperf\ApiDocs\Annotation\Api;
 use Hyperf\ApiDocs\Annotation\ApiOperation;
 use Hyperf\HttpServer\Annotation\Controller;
@@ -16,6 +17,22 @@ class AdminController extends BaseController
     #[GetMapping(path: '')]
     public function getList()
     {
-        return [];
+//        $admin = new Admin();
+//        $admin->fill([
+//            "username" => "1",
+//            "password" => "1",
+//            "nickname" => "1"
+//        ]);
+//        $status = $admin->save();
+
+//        $admin = Admin::query()->find(1);
+//        $admin->fill([
+//            "username" => "2",
+//            "password" => "1",
+//            "nickname" => "1"
+//        ]);
+//        $status = $admin->save();
+//        $status = $admin->forceDelete();
+//        return [$status];
     }
 }

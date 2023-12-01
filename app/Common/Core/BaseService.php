@@ -17,9 +17,15 @@ declare(strict_types=1);
 
 namespace App\Common\Core;
 
+use App\Common\Core\Entity\OutputEntity;
+use Hyperf\Codec\Json;
+use Hyperf\HttpServer\Exception\Http\EncodingException;
+use Lengbin\Common\Entity\Page;
+use Throwable;
+
 class BaseService
 {
-    public function toArray($data, callable $handler)
+    public function toArray(mixed $data, callable $handler)
     {
         if (is_object($data)) {
             return call_user_func($handler, $data);
@@ -29,5 +35,37 @@ class BaseService
             $data[$key] = call_user_func($handler, $item);
         }
         return $data;
+    }
+
+    public function outputForArray(array $data, Page $page): OutputEntity
+    {
+        $output = new OutputEntity();
+        if ($page->total) {
+            $output->total = count($data);
+        }
+
+        $list = $data;
+        if (! $page->all) {
+            $pageSize = $page->pageSize;
+            $offset = ($page->page - 1) * $pageSize;
+            $data = array_values($data);
+            $output->page = $page->page;
+            $output->pageSize = $pageSize;
+            $list = array_slice($data, $offset, $pageSize);
+        }
+
+        $output->list = $list;
+        return $output;
+    }
+
+    public function toJson(mixed $data): string
+    {
+        try {
+            $result = Json::encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        } catch (Throwable $exception) {
+            throw new EncodingException($exception->getMessage(), $exception->getCode());
+        }
+
+        return $result;
     }
 }
