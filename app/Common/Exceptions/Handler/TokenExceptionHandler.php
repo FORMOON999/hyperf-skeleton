@@ -14,11 +14,12 @@ declare(strict_types=1);
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
+
 namespace App\Common\Exceptions\Handler;
 
-use App\Common\Constants\CommonError;
+use App\Common\Core\Enum\CommonError;
+use App\Common\Core\Response;
 use App\Common\Exceptions\BusinessException;
-use App\Common\Http\Response;
 use Hyperf\ExceptionHandler\ExceptionHandler;
 use Psr\Http\Message\ResponseInterface;
 use Throwable;

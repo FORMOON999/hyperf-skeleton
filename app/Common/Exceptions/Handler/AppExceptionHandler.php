@@ -12,9 +12,9 @@ declare(strict_types=1);
 
 namespace App\Common\Exceptions\Handler;
 
-use App\Common\Constants\CommonError;
+use App\Common\Core\Enum\CommonError;
+use App\Common\Core\Response;
 use App\Common\Exceptions\BusinessException;
-use App\Common\Http\Response;
 use App\Common\Traits\ExceptionFormatTrait;
 use Hyperf\ExceptionHandler\ExceptionHandler;
 use Hyperf\HttpMessage\Exception\NotFoundHttpException;

@@ -14,9 +14,10 @@ declare(strict_types=1);
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
+
 namespace App\Common\Exceptions\Handler;
 
-use App\Common\Http\Response;
+use App\Common\Core\Response;
 use Hyperf\ExceptionHandler\ExceptionHandler;
 use Hyperf\Validation\ValidationException;
 use Psr\Http\Message\ResponseInterface;

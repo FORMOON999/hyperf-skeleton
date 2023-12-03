@@ -17,7 +17,7 @@ declare(strict_types=1);
 
 namespace App\Common\Core;
 
-use App\Common\Core\Entity\OutputEntity;
+use App\Common\Core\Entity\OutputResult;
 use Hyperf\Codec\Json;
 use Hyperf\HttpServer\Exception\Http\EncodingException;
 use Lengbin\Common\Entity\Page;
@@ -37,9 +37,9 @@ class BaseService
         return $data;
     }
 
-    public function outputForArray(array $data, Page $page): OutputEntity
+    public function outputForArray(array $data, Page $page): OutputResult
     {
-        $output = new OutputEntity();
+        $output = new OutputResult();
         if ($page->total) {
             $output->total = count($data);
         }

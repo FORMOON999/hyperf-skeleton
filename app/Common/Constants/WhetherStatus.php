@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace App\Common\Constants;
 
-
 use App\Common\Core\Enum\Annotation\EnumMessage;
 use App\Common\Core\Enum\BaseEnum;
 

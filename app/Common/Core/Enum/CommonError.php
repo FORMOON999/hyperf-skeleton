@@ -10,10 +10,9 @@ declare(strict_types=1);
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
 
-namespace App\Common\Constants;
+namespace App\Common\Core\Enum;
 
 use App\Common\Core\Enum\Annotation\EnumMessage;
-use App\Common\Core\Enum\BaseEnum;
 
 /**
  * @method static CommonError SUCCESS()

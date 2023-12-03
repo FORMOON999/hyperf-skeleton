@@ -15,18 +15,17 @@ declare(strict_types=1);
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
 
-namespace App\Common\Http;
+namespace App\Common\Core;
 
+use App\Common\Core\Enum\CommonError;
 use Hyperf\Codec\Json;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Context\Context;
 use Hyperf\HttpMessage\Cookie\Cookie;
 use Hyperf\HttpMessage\Stream\SwooleFileStream;
-use Hyperf\HttpMessage\Stream\SwooleStream;
 use Hyperf\HttpServer\Exception\Http\EncodingException;
 use Hyperf\HttpServer\Exception\Http\FileException;
 use Hyperf\Support\MimeTypeExtensionGuesser;
-use Lengbin\Hyperf\Common\Constants\Errors\CommonError;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
 use SplFileInfo;
 use stdClass;
@@ -66,11 +65,11 @@ class Response extends \Hyperf\HttpServer\Response
         return $this;
     }
 
-//    public function raw($data): PsrResponseInterface
-//    {
-//        return $this->getResponse()
-//            ->withBody(new SwooleStream($data));
-//    }
+    //    public function raw($data): PsrResponseInterface
+    //    {
+    //        return $this->getResponse()
+    //            ->withBody(new SwooleStream($data));
+    //    }
 
     public function fileFlow(string $file)
     {

@@ -10,6 +10,17 @@ declare(strict_types=1);
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
 
-namespace App\Common\Core;
+namespace App\Common\Core\Entity;
 
-class BaseLogic extends BaseService {}
+use Lengbin\Common\BaseObject;
+
+class OutputResult extends BaseObject
+{
+    public ?int $page;
+
+    public ?int $pageSize;
+
+    public ?int $total;
+
+    public array $list = [];
+}
