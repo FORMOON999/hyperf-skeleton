@@ -20,6 +20,7 @@ use Hyperf\ApiDocs\Annotation\Api;
 use Hyperf\ApiDocs\Annotation\ApiOperation;
 use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\GetMapping;
+use Lengbin\Common\Entity\Page;
 
 #[Controller(prefix: 'api/v1/web/admin')]
 #[Api(tags: 'Web/管理台/管理用户管理')]
@@ -47,16 +48,19 @@ class AdminController extends BaseController
         //        $status = $admin->forceDelete();
         //        return [$status];
 
+
         $condition = new BaseCondition();
 
-        $adminEntity = new AdminEntity([
-            "username" => "222ddd22",
-            "password" => "1",
-        ]);
-        $change = $admin->createByCondition($condition, $adminEntity);
+//        $adminEntity = new AdminEntity([
+//            "username" => "222ddd22",
+//            "password" => "1",
+//        ]);
+//        $change = $admin->createByCondition($condition, $adminEntity);
 
+        $query = $admin->buildQuery($condition, []);
+        $data = $admin->output($query, Page::all());
         return [
-            $change
+            $data
         ];
     }
 }

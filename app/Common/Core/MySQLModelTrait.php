@@ -13,23 +13,17 @@ declare(strict_types=1);
 namespace App\Common\Core;
 
 use App\Common\Core\Entity\BaseModelEntity;
+use App\Common\Core\Entity\OutputResult;
 use Hyperf\Collection\Arr;
+use Hyperf\Database\Model\Builder;
 use Hyperf\Database\Query\Expression;
 use Hyperf\Database\Query\Grammars\Grammar;
 use Hyperf\DbConnection\Db;
+use Lengbin\Common\Entity\Page;
 use Lengbin\Helper\YiiSoft\Arrays\ArrayHelper;
 
 trait MySQLModelTrait
 {
-    public function getTable(bool $isTablePrefix = false): string
-    {
-        $tableName = parent::getTable();
-        if ($isTablePrefix) {
-            $tableName = $this->getConnection()->getTablePrefix() . $tableName;
-        }
-        return $tableName;
-    }
-
     /**
      * insert or update a record.
      */
@@ -59,6 +53,15 @@ trait MySQLModelTrait
         $bindings = $this->prepareBindingsForInsertOrUpdate($values, $value);
         // 执行数据库查询
         return $connection->insert($query, $bindings);
+    }
+
+    public function getTable(bool $isTablePrefix = false): string
+    {
+        $tableName = parent::getTable();
+        if ($isTablePrefix) {
+            $tableName = $this->getConnection()->getTablePrefix() . $tableName;
+        }
+        return $tableName;
     }
 
     /**
@@ -112,8 +115,6 @@ trait MySQLModelTrait
 
     /**
      * @param array|BaseModelEntity[] $data
-     * @param array $columns
-     * @return array
      */
     private function appendTime(array $data, array $columns = []): array
     {
