@@ -28,7 +28,20 @@ abstract class Model extends BaseModel
     use SoftDeletes;
     use MySQLModelTrait;
 
-    abstract public function getEntity(): BaseModelEntity;
+    abstract public function newEntity(): BaseModelEntity;
+
+    public function newCollection(array $models = [])
+    {
+        $result = [];
+        foreach ($models as $model) {
+            if ($model instanceof BaseModelEntity) {
+                $result = $models;
+                break;
+            }
+            $result[] = $model->newEntity();
+        }
+        return parent::newCollection($result);
+    }
 
     public function getModelByCondition(BaseCondition $condition): static
     {
@@ -51,9 +64,9 @@ abstract class Model extends BaseModel
         return $this;
     }
 
-    public function buildQuery(BaseCondition $condition, array|BaseModelEntity $search): Builder
+    public function buildQuery(BaseCondition $condition, array|BaseModelEntity $search = []): Builder
     {
-        $attributes = $search instanceof BaseModelEntity ? $search->toArray() : $search;
+        $attributes = $search instanceof BaseModelEntity ? $search->setUnderlineName()->toArray() : $search;
         $query = $this->getModelByCondition($condition)->newQuery();
         if ($condition->_forUpdate) {
             $query = $query->lockForUpdate();
@@ -92,28 +105,20 @@ abstract class Model extends BaseModel
             return $model->batchUpdate($data);
         }
 
-        $isEntity = $data instanceof BaseModelEntity;
-        $attributes = $isEntity ? $data->toArray() : $data;
+        $attributes = $data instanceof BaseModelEntity ? $data->setUnderlineName()->toArray() : $data;
         $model->fill($attributes);
         $ret = $model->save();
 
-        if (! $ret) {
+        if (!$ret) {
             return [];
         }
-
-        $result = $model->toArray();
-        if ($isEntity) {
-            $data->configure($data, $result);
-            return $data;
-        }
-
-        return $result;
+        return $model->newEntity();
     }
 
     public function modifyByCondition(BaseCondition $condition, array|BaseModelEntity $search, array|BaseModelEntity $data): int
     {
         $query = $this->buildQuery($condition, $search);
-        $attributes = $data instanceof BaseModelEntity ? $data->toArray() : $data;
+        $attributes = $data instanceof BaseModelEntity ? $data->setUnderlineName()->toArray() : $data;
         return $query->update($attributes);
     }
 
@@ -134,7 +139,7 @@ abstract class Model extends BaseModel
             $output['total'] = Db::selectOne($sql, $query->getBindings())->count;
         }
 
-        if (! $page->all) {
+        if (!$page->all) {
             $query->forPage($page->page, $page->pageSize);
             $output->page = $page->page;
             $output->pageSize = $page->pageSize;
@@ -142,5 +147,23 @@ abstract class Model extends BaseModel
 
         $output->list = $query->get()->toArray();
         return $output;
+    }
+
+
+    /**
+     * @param array $data [start, end]
+     */
+    public function betweenTime(Builder $query, string $field, array $data): Builder
+    {
+        $query->where(function (Builder $builder) use ($field, $data) {
+            if ($data['start'] > 0) {
+                $builder->where($field, '>=', $data['start']);
+            }
+            if ($data['end'] > 0) {
+                $builder->where($field, '<', $data['end']);
+            }
+        });
+
+        return $query;
     }
 }

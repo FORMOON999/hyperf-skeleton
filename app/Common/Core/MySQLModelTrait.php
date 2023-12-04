@@ -127,7 +127,7 @@ trait MySQLModelTrait
         $now = $this->timestamps ? $this->fromDateTime($time) : $time->timestamp;
         foreach ($data as $item) {
             if ($item instanceof BaseModelEntity) {
-                $item = $time->toArray();
+                $item = $item->setUnderlineName()->toArray();
             }
             foreach ($columns as $column) {
                 if (! ArrayHelper::keyExists($item, $column)) {

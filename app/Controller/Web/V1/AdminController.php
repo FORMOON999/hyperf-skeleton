@@ -52,13 +52,15 @@ class AdminController extends BaseController
         $condition = new BaseCondition();
 
 //        $adminEntity = new AdminEntity([
-//            "username" => "222ddd22",
+//            "username" => "2",
 //            "password" => "1",
 //        ]);
-//        $change = $admin->createByCondition($condition, $adminEntity);
+//        $data = $admin->createByCondition($condition, $adminEntity);
 
-        $query = $admin->buildQuery($condition, []);
-        $data = $admin->output($query, Page::all());
+        $query = $admin->buildQuery($condition);
+//        $data = $admin->output($query, Page::all());
+        $data = $query->where('id', 1)->first();
+        var_dump($data);
         return [
             $data
         ];
