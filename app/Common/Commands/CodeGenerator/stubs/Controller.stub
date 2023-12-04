@@ -1,0 +1,61 @@
+<?php
+declare(strict_types=1);
+
+namespace %NAMESPACE%;
+
+use Hyperf\ApiDocs\Annotation\Api;
+use Hyperf\ApiDocs\Annotation\ApiHeader;
+use Hyperf\ApiDocs\Annotation\ApiOperation;
+use Hyperf\Di\Annotation\Inject;
+use Hyperf\DTO\Annotation\Contracts\RequestBody;
+use Hyperf\DTO\Annotation\Contracts\Valid;
+use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\PostMapping;
+use App\Common\BaseController;
+use App\Common\Entity\Response\BaseSuccessResponse;
+%USES%
+#[Controller(prefix: "%URI%")]
+#[Api(tags: "%TITLE%管理")]
+#[Middleware(%Middleware%Middleware::class)]
+#[ApiHeader(name: 'Authorization')]
+class %CLASS% extends BaseController
+{
+    #[Inject]
+    protected %LOGIC% $%LOGIC_NAME%;
+
+    #[PostMapping(path: "list")]
+    #[ApiOperation("获取%MESSAGE%列表")]
+    public function getList(#[Valid] #[RequestBody] %LIST_REQUEST% $request): %LIST_RESPONSE%
+    {
+        return $this->%LOGIC_NAME%->getList($request);
+    }
+
+    #[PostMapping(path: "create")]
+    #[ApiOperation("创建%MESSAGE%")]
+    public function create(#[Valid] #[RequestBody] %CREAT_REQUEST% $request): BaseSuccessResponse
+    {
+        return $this->%LOGIC_NAME%->create($request);
+    }
+
+    #[PostMapping(path: "modify")]
+    #[ApiOperation("更新%MESSAGE%")]
+    public function modify(#[Valid] #[RequestBody] %MODIFY_REQUEST% $request): BaseSuccessResponse
+    {
+        return $this->%LOGIC_NAME%->modify($request);
+    }
+
+    #[PostMapping(path: "remove")]
+    #[ApiOperation("删除%MESSAGE%")]
+    public function remove(#[Valid] #[RequestBody] %REMOVE_REQUEST% $request): BaseSuccessResponse
+    {
+        return $this->%LOGIC_NAME%->remove($request);
+    }
+
+    #[PostMapping(path: "detail")]
+    #[ApiOperation("获取%MESSAGE%详情")]
+    public function detail(#[Valid] #[RequestBody] %DETAIL_REQUEST% $request): %DETAIL_RESPONSE%
+    {
+        return $this->%LOGIC_NAME%->detail($request);
+    }
+}

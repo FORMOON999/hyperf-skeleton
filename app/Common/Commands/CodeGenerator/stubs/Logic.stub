@@ -1,0 +1,61 @@
+<?php
+
+declare(strict_types=1);
+
+namespace %NAMESPACE%;
+
+use Hyperf\Di\Annotation\Inject;
+use App\Common\BaseLogic;
+use App\Common\Entity\Response\BaseSuccessResponse;
+%USES%
+class %CLASS% extends BaseLogic
+{
+    #[Inject()]
+    protected %SERVICE% $%SERVICE_NAME%;
+
+    protected array $field = %FILED%;
+
+    public function getList(%LIST_REQUEST% $request): %LIST_RESPONSE%
+    {
+        $result = $this->%SERVICE_NAME%->getList(
+            $request->condition->setHumpName()->toArray(),
+            $request->search->setUnderlineName()->toArray(),
+            $request->sort->setUnderlineName()->toArray(),
+            $request->page,
+            $this->field
+        );
+        return new %LIST_RESPONSE%($result);
+    }
+
+    public function create(%CREAT_REQUEST% $request): BaseSuccessResponse
+    {
+        $this->%SERVICE_NAME%->create($request->condition->setHumpName()->toArray(), $request->data->setUnderlineName()->toArray());
+        return new BaseSuccessResponse();
+    }
+
+    public function modify(%MODIFY_REQUEST% $request): BaseSuccessResponse
+    {
+        $this->%SERVICE_NAME%->modify(
+            $request->condition->setHumpName()->toArray(),
+            $request->search->setUnderlineName()->toArray(),
+            $request->data->setUnderlineName()->toArray()
+        );
+        return new BaseSuccessResponse();
+    }
+
+    public function remove(%REMOVE_REQUEST% $request): BaseSuccessResponse
+    {
+        $this->%SERVICE_NAME%->remove($request->condition->setHumpName()->toArray(), $request->search->setUnderlineName()->toArray());
+        return new BaseSuccessResponse();
+    }
+
+    public function detail(%DETAIL_REQUEST% $request): %DETAIL_RESPONSE%
+    {
+        $result = $this->%SERVICE_NAME%->detail(
+            $request->condition->setHumpName()->toArray(),
+            $request->search->setUnderlineName()->toArray(),
+            $this->field
+        );
+        return new %DETAIL_RESPONSE%($result);
+    }
+}

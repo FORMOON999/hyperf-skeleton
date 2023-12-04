@@ -1,0 +1,125 @@
+<?php
+
+declare(strict_types=1);
+
+namespace %NAMESPACE%;
+
+use Lengbin\Common\Entity\Page;
+use Lengbin\Helper\YiiSoft\Arrays\ArrayHelper;
+use App\Common\BaseService;
+use App\Common\Exceptions\BusinessException;
+%USES%
+class %CLASS% extends BaseService implements %INHERITANCE%
+{
+
+    public function __construct(protected %DAO_INTERFACE% $%DAO_NAME%)
+    {
+
+    }
+
+    /**
+     * @param array $condition 控制参数
+     * @param array $search 搜索参数
+     * @param array $sort 排序参数
+     * @param Page $page 分页参数
+     * @param array $field 字段
+     * @return array
+     */
+    public function getList(array $condition, array $search, array $sort, Page $page, array $field = ['*']): array
+    {
+        $result = $this->%DAO_NAME%->getList($condition, $search, $sort, $page, $field);
+        if (ArrayHelper::isValidValue($condition, '_format')) {
+            $result['list'] = $this->toArray($result['list'], function ($data) use ($condition) {
+                return $this->format($data, $condition);
+            });
+        }
+        return $result;
+    }
+
+    /**
+     * @param array $condition 控制参数
+     * @param array $data 数据
+     * @return array
+     */
+    public function validate(array $condition, array $data, array $search = []): array
+    {
+        return $data;
+    }
+
+    /**
+     * @param array $data 添加数据
+     * @param array $condition 控制参数
+     * @return array
+     */
+    public function create(array $condition, array $data): array
+    {
+        $data = $this->validate($condition, $data);
+        $result = $this->%DAO_NAME%->create($condition, $data);
+        if (!$result && ArrayHelper::isValidValue($condition, '_throw')) {
+            throw new BusinessException(%ERROR%::CREATE_ERROR());
+        }
+        if (ArrayHelper::isValidValue($condition, '_format')) {
+            return $this->format($result, $condition);
+        }
+        return $result;
+    }
+
+    /**
+     * @param array $condition 控制参数
+     * @param array $search 搜索参数
+     * @param array $data 数据
+     * @return int
+     */
+    public function modify(array $condition, array $search, array $data): int
+    {
+        $data = $this->validate($condition, $data, $search);
+        $result = $this->%DAO_NAME%->modify($condition, $search, $data);
+
+        if (!$result && ArrayHelper::isValidValue($condition, '_throw')) {
+            throw new BusinessException(%ERROR%::UPDATE_ERROR());
+        }
+        return $result;
+    }
+
+    /**
+     * @param array $condition 控制参数
+     * @param array $search 搜索参数
+     * @return int
+     */
+    public function remove(array $condition, array $search): int
+    {
+        $result = $this->%DAO_NAME%->remove($condition, $search);
+        if (!$result && ArrayHelper::isValidValue($condition, '_throw')) {
+            throw new BusinessException(%ERROR%::DELETE_ERROR());
+        }
+        return $result;
+    }
+
+    /**
+     * @param array $condition 控制参数
+     * @param array $search 搜索参数
+     * @param array $field 字段
+     * @return array
+     */
+    public function detail(array $condition, array $search, array $field = ['*']): array
+    {
+        $result = $this->%DAO_NAME%->detail($condition, $search, $field);
+        if (!$result && ArrayHelper::isValidValue($condition, '_throw')) {
+            throw new BusinessException(%ERROR%::NOT_FOUND());
+        }
+        if (ArrayHelper::isValidValue($condition, '_format')) {
+            return $this->format($result, $condition);
+        }
+        return $result;
+    }
+
+    /**
+     * @param array $result 数据
+     * @param array $condition 控制参数
+     * @return array
+     */
+    public function format(array $result, array $condition): array
+    {
+        return $result;
+    }
+}

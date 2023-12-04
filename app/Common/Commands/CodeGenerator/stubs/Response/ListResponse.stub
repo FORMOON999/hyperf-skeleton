@@ -1,0 +1,16 @@
+<?php
+
+declare(strict_types=1);
+
+namespace %NAMESPACE%;
+
+use App\Common\Entity\Response\BaseListResponse;
+use Hyperf\ApiDocs\Annotation\ApiModelProperty;
+use Lengbin\Common\Annotation\ArrayType;
+
+class %CLASS% extends BaseListResponse
+{
+    #[ApiModelProperty('列表')]
+    #[ArrayType(className: %ITEM%::class)]
+    public array $list;
+}

@@ -1,0 +1,13 @@
+<?php
+
+declare(strict_types=1);
+
+namespace %NAMESPACE%;
+
+use Lengbin\Common\BaseObject;
+use App\Common\Entity\Traits\EnableIdentifier;
+
+class %CLASS% extends BaseObject
+{
+    use EnableIdentifier;
+}
