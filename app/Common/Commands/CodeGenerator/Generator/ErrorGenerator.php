@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Common\Commands\CodeGenerator\Generator;
 
-use App\Common\Commands\CodeGenerator\ClassInfo;
+use App\Common\Commands\Model\ClassInfo;
 use Symfony\Component\Finder\Finder;
 
 class ErrorGenerator extends AbstractGenerator

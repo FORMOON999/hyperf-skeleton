@@ -10,20 +10,19 @@ declare(strict_types=1);
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
 
-namespace App\Model;
+namespace App\Common\Core;
 
 use App\Common\Core\Entity\BaseCondition;
 use App\Common\Core\Entity\BaseModelEntity;
 use App\Common\Core\Entity\OutputResult;
-use App\Common\Core\MySQLModelTrait;
 use Hyperf\Database\Model\Builder;
 use Hyperf\Database\Model\SoftDeletes;
 use Hyperf\DbConnection\Db;
-use Hyperf\DbConnection\Model\Model as BaseModel;
+use Hyperf\DbConnection\Model\Model;
 use Lengbin\Common\Entity\Page;
 use Lengbin\Helper\YiiSoft\Arrays\ArrayHelper;
 
-abstract class Model extends BaseModel
+abstract class BaseModel extends Model
 {
     use SoftDeletes;
     use MySQLModelTrait;

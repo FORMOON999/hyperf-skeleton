@@ -1,8 +1,16 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * This file is part of Hyperf.
+ *
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 
-namespace App\Common\Commands\CodeGenerator;
+namespace App\Common\Commands\Model;
 
 use Hyperf\ApiDocs\Annotation\ApiModelProperty;
 use Hyperf\DTO\Annotation\Validation\Required;
@@ -18,33 +26,27 @@ class FileGenerate
     protected GenerateClass $generate;
 
     protected array $exceptColumn = [
-        'create_at',
-        'update_at',
+        'id',
+        'created_at',
+        'updated_at',
+        'deleted_at',
     ];
 
     public function __construct(
         public ModelInfo $modelInfo,
         public ClassInfo $classInfo,
-        public bool      $required = false,
-        public bool      $all = false,
-        public bool      $enable = false
-    )
-    {
+        public bool $required = false,
+        public bool $all = false,
+    ) {
         $generate = new GenerateClass();
         $generate->setVersion(PrinterFactory::VERSION_PHP80);
         $generate->setStrictTypes();
         $generate->setClassname($this->classInfo->name);
         $generate->setNamespace(StringHelper::dirname($this->classInfo->namespace));
-        $generate->setInheritance('BaseObject');
+        $generate->setInheritance('\\' . BaseObject::class);
         $generate->setUses([
-            BaseObject::class,
             ApiModelProperty::class,
         ]);
-
-        if ($this->enable) {
-            $generate->addUse(EnableIdentifier::class);
-            $generate->addTrait('EnableIdentifier');
-        }
 
         if ($this->required) {
             $generate->addUse(Required::class);
@@ -52,13 +54,15 @@ class FileGenerate
         $this->generate = $generate;
     }
 
+    public function getGenerateClass(): GenerateClass
+    {
+        return $this->generate;
+    }
+
     public function handle(): string
     {
         foreach ($this->modelInfo->columns as $column) {
-            if (!$this->all && (in_array($column['column_name'], [$this->modelInfo->pk, 'enable']) || in_array($column['column_name'], $this->exceptColumn))) {
-                continue;
-            }
-            if ($this->all && $column['column_name'] == 'enable') {
+            if (! $this->all && (in_array($column['column_name'], [$this->modelInfo->pk]) || in_array($column['column_name'], $this->exceptColumn))) {
                 continue;
             }
             [$name, $type, $comment] = $this->getProperty($column);
@@ -68,8 +72,8 @@ class FileGenerate
                 'type' => $type,
                 'annotation' => true,
                 'comments' => [
-                    '#[ApiModelProperty("' . $comment . '")' . $required . ']'
-                ]
+                    '#[ApiModelProperty("' . $comment . '")' . $required . ']',
+                ],
             ]));
         }
         return $this->generate->__toString();
@@ -88,8 +92,8 @@ class FileGenerate
                     'type' => $type,
                     'annotation' => true,
                     'comments' => [
-                        '#[ApiModelProperty("' . $comment . '"), Required]'
-                    ]
+                        '#[ApiModelProperty("' . $comment . '"), Required]',
+                    ],
                 ]));
                 break;
             }
@@ -132,7 +136,7 @@ class FileGenerate
 
     protected function formatPropertyType(string $type, ?string $cast): ?string
     {
-        if (!isset($cast)) {
+        if (! isset($cast)) {
             $cast = $this->formatDatabaseType($type) ?? 'string';
         }
 
@@ -149,6 +153,4 @@ class FileGenerate
 
         return $cast;
     }
-
-
 }

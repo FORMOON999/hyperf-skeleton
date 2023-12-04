@@ -16,24 +16,6 @@ use PhpParser\Node\Stmt\PropertyProperty;
 
 class ModelUpdateVisitor extends \Hyperf\Database\Commands\Ast\ModelUpdateVisitor
 {
-    protected function rewriteFillable(PropertyProperty $node): PropertyProperty
-    {
-        $items = [];
-        $exceptColumn = [
-            'create_at',
-            'update_at',
-        ];
-        foreach ($this->columns as $column) {
-            if (in_array($column['column_name'], $exceptColumn)) {
-                continue;
-            }
-            $items[] = new Node\Expr\ArrayItem(new String_($column['column_name']));
-        }
-        $node->default = new Array_($items, [
-            'kind' => Array_::KIND_SHORT,
-        ]);
-        return $node;
-    }
 
     protected function formatDatabaseType(string $type): ?string
     {
@@ -55,26 +37,6 @@ class ModelUpdateVisitor extends \Hyperf\Database\Commands\Ast\ModelUpdateVisito
             default:
                 return null;
         }
-    }
-
-    protected function formatPropertyType(string $type, ?string $cast): ?string
-    {
-        if (! isset($cast)) {
-            $cast = $this->formatDatabaseType($type) ?? 'string';
-        }
-
-        switch ($cast) {
-            case 'integer':
-            case 'version':
-                return 'int';
-            case 'date':
-            case 'datetime':
-                return $type;
-            case 'json':
-                return 'array';
-        }
-
-        return $cast;
     }
 
     protected function rewriteCasts(Node\Stmt\PropertyProperty $node): Node\Stmt\PropertyProperty

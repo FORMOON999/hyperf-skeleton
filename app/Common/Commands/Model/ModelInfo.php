@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Common\Commands\CodeGenerator;
+namespace App\Common\Commands\Model;
 
 class ModelInfo extends ClassInfo
 {

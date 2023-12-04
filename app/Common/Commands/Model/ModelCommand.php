@@ -1,23 +1,30 @@
 <?php
+
+declare(strict_types=1);
 /**
- * Created by PhpStorm.
- * Date:  2021/8/5
- * Time:  7:02 下午
+ * This file is part of Hyperf.
+ *
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
 
 namespace App\Common\Commands\Model;
 
+use App\Common\Core\Entity\BaseModelEntity;
+use Hyperf\CodeParser\Project;
 use Hyperf\Database\Commands\Ast\ModelRewriteConnectionVisitor;
 use Hyperf\Database\Commands\ModelCommand as BaseModelCommand;
 use Hyperf\Database\Commands\ModelData;
 use Hyperf\Database\Commands\ModelOption;
-use Hyperf\Utils\CodeGen\Project;
-use Hyperf\Utils\Str;
+use Hyperf\Database\Schema\Builder;
+use Hyperf\Stringable\Str;
+use Lengbin\Helper\YiiSoft\StringHelper;
 use PhpParser\NodeTraverser;
 
 class ModelCommand extends BaseModelCommand
 {
-
     protected function getPrimaryKey(array $columns): string
     {
         $primaryKey = 'id';
@@ -33,13 +40,45 @@ class ModelCommand extends BaseModelCommand
     protected function getOptionPath(string $table, ModelOption $option): string
     {
         $isOpenDdd = $this->getOption('path', 'commands.gen:model.for_table_ddd', $option->getPool(), false);
-        if (!$isOpenDdd) {
+        if (! $isOpenDdd) {
             return $option->getPath();
         }
         $module = ucwords(Str::before($table, '_'));
         $paths = explode('/', $option->getPath());
-        array_splice($paths, 1, 0,  [$module]);
+        array_splice($paths, 1, 0, [$module]);
         return implode('/', $paths);
+    }
+
+    protected function getModelInfo(Project $project, Builder $builder, string $table, ModelOption $option, bool $force = false, bool $ddd = false): ModelInfo
+    {
+        $classInfo = new ModelInfo();
+
+        $sql = "select TABLE_COMMENT from information_schema.tables where table_name = '%s' and table_schema = '%s';";
+        $comment = $builder->getConnection()->selectOne(sprintf($sql, $option->getPrefix() . $table, $builder->getConnection()->getDatabaseName()));
+        $classInfo->comment = $comment->TABLE_COMMENT;
+
+        $table = Str::replaceFirst($option->getPrefix(), '', $table);
+        $optionPath = $this->getOptionPath($table, $option);
+        $classInfo->module = $ddd ? ucwords(Str::before($table, '_')) : '';
+
+        $columns = $this->formatColumns($builder->getColumnTypeListing($table));
+        $classInfo->columns = $columns;
+        $classInfo->pk = $this->getPrimaryKey($columns);
+
+        $class = $option->getTableMapping()[$table] ?? Str::studly(Str::singular($table));
+        $classInfo->name = $class;
+
+        $class = $project->namespace($optionPath) . $class;
+        $classInfo->namespace = $class;
+
+        if ($force) {
+            $classInfo->exist = false;
+        } else {
+            $file = BASE_PATH . '/' . $project->path($class);
+            $classInfo->exist = file_exists($file);
+        }
+
+        return $classInfo;
     }
 
     protected function createModel(string $table, ModelOption $option)
@@ -66,6 +105,22 @@ class ModelCommand extends BaseModelCommand
                 $value['cast'] = 'version';
                 $columns[$key] = $value;
             }
+        }
+
+        $entityClass = $class . 'Entity';
+        $entityPath = BASE_PATH . '/' . $project->path($entityClass);
+        if (! file_exists($entityPath)) {
+            $this->mkdir($entityPath);
+            $modelInfo = $this->getModelInfo($project, $builder, $table, $option);
+            $classInfo = new ClassInfo([
+                'name' => StringHelper::basename($entityClass),
+                'namespace' => $entityClass,
+            ]);
+            $fileGenerate = new FileGenerate($modelInfo, $classInfo);
+            $generate = $fileGenerate->getGenerateClass();
+            $generate->setInheritance('\\' . BaseModelEntity::class);
+            file_put_contents($entityPath, $fileGenerate->handle());
+            $this->output->writeln(sprintf('<info>Model %s was created.</info>', $entityClass));
         }
 
         $stms = $this->astParser->parse(file_get_contents($path));

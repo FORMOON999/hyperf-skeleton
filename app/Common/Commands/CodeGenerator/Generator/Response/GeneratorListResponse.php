@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Common\Commands\CodeGenerator\Generator\Response;
 
-use App\Common\Commands\CodeGenerator\ClassInfo;
+use App\Common\Commands\Model\ClassInfo;
 
 class GeneratorListResponse extends BaseGeneratorResponse
 {

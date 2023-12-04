@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace %NAMESPACE%;
 
 %USES%
+use App\Common\Core\Entity\BaseModelEntity;
 
 class %CLASS% extends %INHERITANCE%
 {
@@ -42,4 +43,9 @@ class %CLASS% extends %INHERITANCE%
      * @var array
      */
     protected array $casts = [];
+
+    public function newEntity(): BaseModelEntity
+    {
+        return new %CLASS%Entity($this->getAttributes());
+    }
 }

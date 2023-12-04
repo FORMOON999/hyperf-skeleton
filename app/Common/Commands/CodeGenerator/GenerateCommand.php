@@ -208,8 +208,9 @@ class GenerateCommand extends HyperfCommand
 
     public function process(GeneratorConfig $config, string $pool = 'default', ?string $table = null, bool $ddd = false): void
     {
+        $force = $this->input->getOption('force');
         // model 生成
-        $models = (new ModelGenerator($this->container, $ddd))->generate($pool, $table, $this->input->getOption('force'));
+        $models = (new ModelGenerator($this->container, $ddd))->generate($pool, $table, $force ?? false);
         $modules = \Hyperf\Config\config('generate.modules', []);
         if (empty($modules)) {
             foreach ($models as $model) {

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Common\Commands\CodeGenerator\Generator;
 
+use App\Common\Commands\Model\ClassInfo;
 use Lengbin\Helper\YiiSoft\Arrays\ArrayHelper;
 use Lengbin\Helper\YiiSoft\VarDumper;
-use App\Common\Commands\CodeGenerator\ClassInfo;
 
 class LogicGenerator extends ApplicationGenerator
 {

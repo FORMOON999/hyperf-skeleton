@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Common\Commands\CodeGenerator\Generator;
 
-use App\Common\Commands\CodeGenerator\ClassInfo;
 use App\Common\Commands\CodeGenerator\GeneratorConfig;
-use App\Common\Commands\CodeGenerator\ModelInfo;
+use App\Common\Commands\Model\ClassInfo;
+use App\Common\Commands\Model\ModelInfo;
 use Hyperf\Dag\Runner;
 use Hyperf\Utils\CodeGen\Project;
 use Lengbin\Common\BaseObject;

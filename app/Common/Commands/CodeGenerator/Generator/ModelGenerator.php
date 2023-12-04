@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace App\Common\Commands\CodeGenerator\Generator;
 
-use App\Common\Commands\CodeGenerator\ModelInfo;
+use App\Common\Commands\Model\ModelCommand;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Database\Commands\ModelOption;
 use Hyperf\Database\ConnectionResolverInterface;
-use Hyperf\Utils\CodeGen\Project;
+use Hyperf\CodeParser\Project;
 use Hyperf\Utils\Str;
-use App\Common\Commands\Model\ModelCommand;
 use PhpParser\ParserFactory;
 use PhpParser\PrettyPrinter\Standard;
 use Psr\Container\ContainerInterface;
@@ -106,32 +105,7 @@ class ModelGenerator extends ModelCommand
         $builder = $this->getSchemaBuilder($option->getPool());
 
         foreach ($tables as $table) {
-            $classInfo = new ModelInfo();
-
-            $sql = "select TABLE_COMMENT from information_schema.tables where table_name = '%s' and table_schema = '%s';";
-            $comment = $builder->getConnection()->selectOne(sprintf($sql, $table, $builder->getConnection()->getDatabaseName()));
-            $classInfo->comment = $comment->TABLE_COMMENT;
-
-            $table = Str::replaceFirst($option->getPrefix(), '', $table);
-            $optionPath = $this->getOptionPath($table, $option);
-            $classInfo->module = $this->ddd ? ucwords(Str::before($table, '_')) : '';
-
-            $columns = $this->formatColumns($builder->getColumnTypeListing($table));
-            $classInfo->columns = $columns;
-            $classInfo->pk = $this->getPrimaryKey($columns);
-
-            $class = $option->getTableMapping()[$table] ?? Str::studly(Str::singular($table));
-            $classInfo->name = $class;
-
-            $class = $project->namespace($optionPath) . $class;
-            $classInfo->namespace = $class;
-
-            if ($force) {
-                $classInfo->exist = false;
-            } else {
-                $file = BASE_PATH . '/' . $project->path($class);
-                $classInfo->exist = file_exists($file);
-            }
+            $classInfo = $this->getModelInfo($project, $builder, $table, $option, $force, $this->ddd);
 
             $this->createModel($table, $option);
             $tableClass[] = $classInfo;
