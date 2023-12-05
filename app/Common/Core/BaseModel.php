@@ -14,11 +14,13 @@ namespace App\Common\Core;
 
 use App\Common\Core\Entity\BaseCondition;
 use App\Common\Core\Entity\BaseModelEntity;
+use App\Common\Core\Entity\BaseSort;
 use App\Common\Core\Entity\OutputResult;
 use Hyperf\Database\Model\Builder;
 use Hyperf\Database\Model\SoftDeletes;
 use Hyperf\DbConnection\Db;
 use Hyperf\DbConnection\Model\Model;
+use Lengbin\Common\BaseObject;
 use Lengbin\Common\Entity\Page;
 use Lengbin\Helper\YiiSoft\Arrays\ArrayHelper;
 
@@ -63,14 +65,22 @@ abstract class BaseModel extends Model
         return $this;
     }
 
-    public function buildQuery(BaseCondition $condition, array|BaseModelEntity $search = []): Builder
+    public function buildQuery(BaseCondition $condition, null|array|BaseObject $search = null, null|array|BaseSort $sorts = null): Builder
     {
-        $attributes = $search instanceof BaseModelEntity ? $search->setUnderlineName()->toArray() : $search;
         $query = $this->getModelByCondition($condition)->newQuery();
         if ($condition->_forUpdate) {
             $query = $query->lockForUpdate();
         }
 
+        // sort
+        if (! empty($sorts)) {
+            $orderBys = $sorts instanceof BaseModelEntity ? $sorts->setUnderlineName()->toArray() : $sorts;
+            foreach ($orderBys as $key => $value) {
+                $query = $query->orderBy($key, $value);
+            }
+        }
+
+        $attributes = $search instanceof BaseObject ? $search->setUnderlineName()->toArray() : $search;
         if (empty($attributes)) {
             return $query;
         }
@@ -108,20 +118,20 @@ abstract class BaseModel extends Model
         $model->fill($attributes);
         $ret = $model->save();
 
-        if (!$ret) {
+        if (! $ret) {
             return [];
         }
         return $model->newEntity();
     }
 
-    public function modifyByCondition(BaseCondition $condition, array|BaseModelEntity $search, array|BaseModelEntity $data): int
+    public function modifyByCondition(BaseCondition $condition, array|BaseObject $search, array|BaseModelEntity $data): int
     {
         $query = $this->buildQuery($condition, $search);
-        $attributes = $data instanceof BaseModelEntity ? $data->setUnderlineName()->toArray() : $data;
+        $attributes = $data instanceof BaseObject ? $data->setUnderlineName()->toArray() : $data;
         return $query->update($attributes);
     }
 
-    public function removeByCondition(BaseCondition $condition, array|BaseModelEntity $search): int
+    public function removeByCondition(BaseCondition $condition, array|BaseObject $search): int
     {
         $query = $this->buildQuery($condition, $search);
         if ($condition->_delete) {
@@ -130,24 +140,23 @@ abstract class BaseModel extends Model
         return $query->delete();
     }
 
-    public function output(Builder $query, Page $page): OutputResult
+    public function output(Builder $query, Page $page): array
     {
-        $output = new OutputResult();
+        $output = [];
         if ($page->total) {
             $sql = sprintf('select count(*) as count from (%s) as b', $query->toSql());
             $output['total'] = Db::selectOne($sql, $query->getBindings())->count;
         }
 
-        if (!$page->all) {
+        if (! $page->all) {
             $query->forPage($page->page, $page->pageSize);
-            $output->page = $page->page;
-            $output->pageSize = $page->pageSize;
+            $output['page'] = $page->page;
+            $output['pageSize'] = $page->pageSize;
         }
 
-        $output->list = $query->get()->toArray();
+        $output['list'] = $query->get()->toArray();
         return $output;
     }
-
 
     /**
      * @param array $data [start, end]

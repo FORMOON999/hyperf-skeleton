@@ -37,11 +37,11 @@ class BaseService
         return $data;
     }
 
-    public function outputForArray(array $data, Page $page): OutputResult
+    public function outputForArray(array $data, Page $page): array
     {
-        $output = new OutputResult();
+        $output = [];
         if ($page->total) {
-            $output->total = count($data);
+            $output['total'] = count($data);
         }
 
         $list = $data;
@@ -49,12 +49,12 @@ class BaseService
             $pageSize = $page->pageSize;
             $offset = ($page->page - 1) * $pageSize;
             $data = array_values($data);
-            $output->page = $page->page;
-            $output->pageSize = $pageSize;
+            $output['page'] = $page->page;
+            $output['pageSize'] = $pageSize;
             $list = array_slice($data, $offset, $pageSize);
         }
 
-        $output->list = $list;
+        $output['list'] = $list;
         return $output;
     }
 

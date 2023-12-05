@@ -53,11 +53,11 @@ class ModelCommand extends BaseModelCommand
     {
         $classInfo = new ModelInfo();
 
+        $table = Str::replaceFirst($option->getPrefix(), '', $table);
         $sql = "select TABLE_COMMENT from information_schema.tables where table_name = '%s' and table_schema = '%s';";
         $comment = $builder->getConnection()->selectOne(sprintf($sql, $option->getPrefix() . $table, $builder->getConnection()->getDatabaseName()));
         $classInfo->comment = $comment->TABLE_COMMENT;
 
-        $table = Str::replaceFirst($option->getPrefix(), '', $table);
         $optionPath = $this->getOptionPath($table, $option);
         $classInfo->module = $ddd ? ucwords(Str::before($table, '_')) : '';
 

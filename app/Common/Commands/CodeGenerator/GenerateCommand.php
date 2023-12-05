@@ -1,6 +1,14 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * This file is part of Hyperf.
+ *
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 
 namespace App\Common\Commands\CodeGenerator;
 
@@ -34,7 +42,7 @@ use Hyperf\Dag\Vertex;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Input\InputOption;
 
-/**x
+/*x
  * @Command
  */
 #[Command]
@@ -44,7 +52,6 @@ class GenerateCommand extends HyperfCommand
      * @var ContainerInterface
      */
     protected $container;
-
 
     public function __construct(ContainerInterface $container)
     {
@@ -98,6 +105,80 @@ class GenerateCommand extends HyperfCommand
         $this->process($config, $pool, $table, $ddd);
 
         $this->line('代码自动生成工具完成', 'info');
+    }
+
+    public function process(GeneratorConfig $config, string $pool = 'default', ?string $table = null, bool $ddd = false): void
+    {
+        $force = $this->input->getOption('force');
+        // model 生成
+        $models = (new ModelGenerator($this->container, $ddd))->generate($pool, $table, $force ?? false);
+        $modules = \Hyperf\Config\config('generate.modules', []);
+        if (empty($modules)) {
+            foreach ($models as $model) {
+                if (! in_array($model->module, $modules)) {
+                    $modules[] = $model->module;
+                }
+            }
+        }
+
+        foreach ($models as $model) {
+            $condition = [
+                'modelInfo' => $model,
+                'config' => $config,
+                'ddd' => $ddd,
+            ];
+            $getListRequest = $this->getListRequest($condition);
+            $createRequest = $this->createRequest($condition);
+            $modifyRequest = $this->modifyRequest($condition);
+            $detailRequest = $this->detailRequest($condition);
+            $removeRequest = $this->removeRequest($condition);
+
+            $getListResponse = $this->getListResponse($condition);
+            $detailResponse = $this->detailResponse($condition);
+
+            $dag = new Dag();
+            $dao = Vertex::of(new DaoGenerator($condition), 'dao');
+            $daoInterface = Vertex::of(new DaoInterfaceGenerator($condition), 'daoInterface');
+            $serviceInterface = Vertex::of(new ServiceInterfaceGenerator($condition), 'serviceInterface');
+            $service = Vertex::of(new ServiceGenerator($condition), 'service');
+            $error = Vertex::of(new ErrorGenerator(array_merge($condition, [
+                'moduleIndex' => array_search($model->module, $modules) + 1,
+            ])), 'error');
+            $logic = Vertex::of(new LogicGenerator($condition), 'logic');
+            $controller = Vertex::of(new ControllerGenerator($condition), 'controller');
+            $constantController = Vertex::of(new ConstantControllerGenerator($condition), 'constantController');
+
+            $dag->addVertex($dao)
+                ->addVertex($daoInterface)
+                ->addVertex($error)
+                ->addVertex($serviceInterface)
+                ->addVertex($service)
+                ->addVertex($logic)
+                ->addVertex($controller)
+                ->addVertex($getListRequest)
+                ->addVertex($createRequest)
+                ->addVertex($modifyRequest)
+                ->addVertex($detailRequest)
+                ->addVertex($removeRequest)
+                ->addVertex($getListResponse)
+                ->addVertex($detailResponse)
+                ->addVertex($constantController)
+                ->addEdge($daoInterface, $dao)
+                ->addEdge($error, $service)
+                ->addEdge($dao, $service)
+                ->addEdge($serviceInterface, $service)
+                ->addEdge($getListRequest, $logic)
+                ->addEdge($createRequest, $logic)
+                ->addEdge($modifyRequest, $logic)
+                ->addEdge($detailRequest, $logic)
+                ->addEdge($removeRequest, $logic)
+                ->addEdge($getListResponse, $logic)
+                ->addEdge($detailResponse, $logic)
+                ->addEdge($service, $logic)
+                ->addEdge($logic, $controller)
+                ->addEdge($logic, $constantController)
+                ->run();
+        }
     }
 
     protected function getListRequest(array $condition): Vertex
@@ -204,79 +285,5 @@ class GenerateCommand extends HyperfCommand
             ->addVertex($responseListItem)
             ->addEdge($responseListItem, $responseDetail);
         return Vertex::of($dagResponseDetail, 'entity_item');
-    }
-
-    public function process(GeneratorConfig $config, string $pool = 'default', ?string $table = null, bool $ddd = false): void
-    {
-        $force = $this->input->getOption('force');
-        // model 生成
-        $models = (new ModelGenerator($this->container, $ddd))->generate($pool, $table, $force ?? false);
-        $modules = \Hyperf\Config\config('generate.modules', []);
-        if (empty($modules)) {
-            foreach ($models as $model) {
-                if (!in_array($model->module, $modules)) {
-                    $modules[] = $model->module;
-                }
-            }
-        }
-
-        foreach ($models as $model) {
-            $condition = [
-                'modelInfo' => $model,
-                'config' => $config,
-                'ddd' => $ddd
-            ];
-            $getListRequest = $this->getListRequest($condition);
-            $createRequest = $this->createRequest($condition);
-            $modifyRequest = $this->modifyRequest($condition);
-            $detailRequest = $this->detailRequest($condition);
-            $removeRequest = $this->removeRequest($condition);
-
-            $getListResponse = $this->getListResponse($condition);
-            $detailResponse = $this->detailResponse($condition);
-
-            $dag = new Dag();
-            $dao = Vertex::of(new DaoGenerator($condition), 'dao');
-            $daoInterface = Vertex::of(new DaoInterfaceGenerator($condition), 'daoInterface');
-            $serviceInterface = Vertex::of(new ServiceInterfaceGenerator($condition), 'serviceInterface');
-            $service = Vertex::of(new ServiceGenerator($condition), 'service');
-            $error = Vertex::of(new ErrorGenerator(array_merge($condition, [
-                'moduleIndex' => array_search($model->module, $modules) + 1
-            ])), 'error');
-            $logic = Vertex::of(new LogicGenerator($condition), 'logic');
-            $controller = Vertex::of(new ControllerGenerator($condition), 'controller');
-            $constantController = Vertex::of(new ConstantControllerGenerator($condition), 'constantController');
-
-            $dag->addVertex($dao)
-                ->addVertex($daoInterface)
-                ->addVertex($error)
-                ->addVertex($serviceInterface)
-                ->addVertex($service)
-                ->addVertex($logic)
-                ->addVertex($controller)
-                ->addVertex($getListRequest)
-                ->addVertex($createRequest)
-                ->addVertex($modifyRequest)
-                ->addVertex($detailRequest)
-                ->addVertex($removeRequest)
-                ->addVertex($getListResponse)
-                ->addVertex($detailResponse)
-                ->addVertex($constantController)
-                ->addEdge($daoInterface, $dao)
-                ->addEdge($error, $service)
-                ->addEdge($dao, $service)
-                ->addEdge($serviceInterface, $service)
-                ->addEdge($getListRequest, $logic)
-                ->addEdge($createRequest, $logic)
-                ->addEdge($modifyRequest, $logic)
-                ->addEdge($detailRequest, $logic)
-                ->addEdge($removeRequest, $logic)
-                ->addEdge($getListResponse, $logic)
-                ->addEdge($detailResponse, $logic)
-                ->addEdge($service, $logic)
-                ->addEdge($logic, $controller)
-                ->addEdge($logic, $constantController)
-                ->run();
-        }
     }
 }
