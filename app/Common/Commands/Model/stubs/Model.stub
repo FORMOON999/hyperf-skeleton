@@ -44,6 +44,9 @@ class %CLASS% extends %INHERITANCE%
      */
     protected array $casts = [];
 
+    /**
+     * @return BaseModelEntity
+     */
     public function newEntity(): BaseModelEntity
     {
         return new %CLASS%Entity($this->getAttributes());
