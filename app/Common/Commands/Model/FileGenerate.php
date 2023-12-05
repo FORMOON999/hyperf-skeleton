@@ -14,8 +14,8 @@ namespace App\Common\Commands\Model;
 
 use Hyperf\ApiDocs\Annotation\ApiModelProperty;
 use Hyperf\DTO\Annotation\Validation\Required;
-use Hyperf\Utils\Str;
 use Lengbin\Common\BaseObject;
+use Lengbin\Helper\Util\FormatHelper;
 use Lengbin\Helper\YiiSoft\StringHelper;
 use Lengbin\PhpGenerator\GenerateClass;
 use Lengbin\PhpGenerator\Printer\PrinterFactory;
@@ -62,7 +62,7 @@ class FileGenerate
     public function handle(): string
     {
         foreach ($this->modelInfo->columns as $column) {
-            if (! $this->all && (in_array($column['column_name'], [$this->modelInfo->pk]) || in_array($column['column_name'], $this->exceptColumn))) {
+            if (! $this->all && (in_array($column['column_name'], $this->exceptColumn))) {
                 continue;
             }
             [$name, $type, $comment] = $this->getProperty($column);
@@ -103,7 +103,7 @@ class FileGenerate
 
     protected function getProperty($column): array
     {
-        $name = Str::camel($column['column_name']);
+        $name = FormatHelper::camelize($column['column_name']);
 
         $type = $this->formatPropertyType($column['data_type'], $column['cast'] ?? null);
 
