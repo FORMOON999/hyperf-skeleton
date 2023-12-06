@@ -70,7 +70,7 @@ abstract class BaseEnum extends Enum implements Serializable
 
     protected function getTranslator(): ?TranslatorInterface
     {
-        if (! empty($this->translator)) {
+        if (!empty($this->translator)) {
             return $this->translator;
         }
         $this->translator = \Hyperf\Support\make(TranslatorInterface::class);
@@ -103,7 +103,7 @@ abstract class BaseEnum extends Enum implements Serializable
         $message = '';
         if (version_compare(PHP_VERSION, '8.0.0', '>')) {
             $attributes = $constant->getAttributes(EnumMessage::class);
-            if (! empty($attributes)) {
+            if (!empty($attributes)) {
                 $message = $attributes[0]->newInstance()->message;
             }
         }
@@ -115,7 +115,7 @@ abstract class BaseEnum extends Enum implements Serializable
 
         $arr = [];
         foreach ($replace as $key => $value) {
-            if (! str_contains($key, ':')) {
+            if (!str_contains($key, ':')) {
                 $key = ":{$key}";
             }
             $arr[$key] = $value;
@@ -131,5 +131,22 @@ abstract class BaseEnum extends Enum implements Serializable
         $classname = get_called_class();
         $constant = new ReflectionClassConstant($classname, $this->getName());
         return $this->handleMessage($constant, $replace);
+    }
+
+    public $name;
+    public $value;
+
+    public static function from($value)
+    {
+        return self::byValue($value);
+    }
+
+    public static function tryFrom($value)
+    {
+        try {
+            return self::byValue($value);
+        } catch (\Throwable $exception) {
+            return null;
+        }
     }
 }

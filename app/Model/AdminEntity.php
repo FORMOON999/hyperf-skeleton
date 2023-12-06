@@ -12,7 +12,6 @@ use Hyperf\ApiDocs\Annotation\ApiModelProperty;
  */
 class AdminEntity extends \App\Common\Core\Entity\BaseModelEntity
 {
-
     #[ApiModelProperty("账号")]
     public string $username;
 

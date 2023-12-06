@@ -34,7 +34,7 @@ use Hyperf\HttpServer\Annotation\PostMapping;
 
 #[Controller(prefix: 'api/v1/app/admin')]
 #[Api(tags: 'App/管理员管理')]
-#[Middleware(AppMiddleware::class)]
+//#[Middleware(AppMiddleware::class)]
 #[ApiHeader(name: 'Authorization')]
 class AdminController extends BaseController
 {

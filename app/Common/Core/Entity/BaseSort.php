@@ -11,5 +11,5 @@ use Lengbin\Common\BaseObject;
 class BaseSort extends BaseObject
 {
     #[ApiModelProperty('创建时间排序')]
-    public SortType $createAt;
+    public ?SortType $createAt = null;
 }
