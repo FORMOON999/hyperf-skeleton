@@ -15,7 +15,6 @@ namespace App\Common\Core;
 use App\Common\Core\Entity\BaseCondition;
 use App\Common\Core\Entity\BaseModelEntity;
 use App\Common\Core\Entity\BaseSort;
-use App\Common\Core\Entity\OutputResult;
 use Hyperf\Database\Model\Builder;
 use Hyperf\Database\Model\SoftDeletes;
 use Hyperf\DbConnection\Db;

@@ -17,7 +17,6 @@ declare(strict_types=1);
 
 namespace App\Common\Core;
 
-use App\Common\Core\Entity\OutputResult;
 use Hyperf\Codec\Json;
 use Hyperf\HttpServer\Exception\Http\EncodingException;
 use Lengbin\Common\Entity\Page;
