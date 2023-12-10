@@ -9,12 +9,13 @@ declare(strict_types=1);
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
-// use Lengbin\Hyperf\Common\Middlewares\CorsMiddleware;
-// use Lengbin\Hyperf\Common\Middlewares\DebugLogMiddleware;
+
+use App\Common\Middleware\CorsMiddleware;
+use App\Common\Middleware\DebugLogMiddleware;
 
 return [
     'http' => [
-        //        CorsMiddleware::class,
-        //        DebugLogMiddleware::class,
+        CorsMiddleware::class,
+        DebugLogMiddleware::class,
     ],
 ];

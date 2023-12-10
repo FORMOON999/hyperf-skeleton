@@ -9,7 +9,6 @@ declare(strict_types=1);
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
-
 return [
     'scan' => [
         'paths' => [
@@ -17,6 +16,12 @@ return [
         ],
         'ignore_annotations' => [
             'mixin',
+        ],
+        'class_map' => [
+            // 字典
+            Hyperf\DTO\Scan\PropertyEnum::class => BASE_PATH . '/app/Common/Core/CLassMap/PropertyEnum.php',
+            Hyperf\DTO\JsonMapper::class => BASE_PATH . '/app/Common/Core/CLassMap/JsonMapper.php',
+            Hyperf\DTO\Aspect\CoreMiddlewareAspect::class => BASE_PATH . '/app/Common/Core/CLassMap/CoreMiddlewareAspect.php',
         ],
     ],
 ];

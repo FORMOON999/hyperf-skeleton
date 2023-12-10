@@ -73,8 +73,11 @@ abstract class BaseModel extends Model
 
         // sort
         if (! empty($sorts)) {
-            $orderBys = $sorts instanceof BaseModelEntity ? $sorts->setUnderlineName()->toArray() : $sorts;
+            $orderBys = $sorts instanceof BaseSort ? $sorts->setUnderlineName()->toArray() : $sorts;
             foreach ($orderBys as $key => $value) {
+                if (empty($value)) {
+                    continue;
+                }
                 $query = $query->orderBy($key, $value);
             }
         }
