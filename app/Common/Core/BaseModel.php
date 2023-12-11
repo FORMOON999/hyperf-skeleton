@@ -64,7 +64,7 @@ abstract class BaseModel extends Model
         return $this;
     }
 
-    public function buildQuery(BaseCondition $condition, null|array|BaseObject $search = null, null|array|BaseSort $sorts = null): Builder
+    public function buildQuery(BaseCondition $condition, array|BaseObject $search = [], array|BaseSort $sorts = []): Builder
     {
         $query = $this->getModelByCondition($condition)->newQuery();
         if ($condition->_forUpdate) {
@@ -72,7 +72,7 @@ abstract class BaseModel extends Model
         }
 
         // sort
-        if (! empty($sorts)) {
+        if (!empty($sorts)) {
             $orderBys = $sorts instanceof BaseSort ? $sorts->setUnderlineName()->toArray() : $sorts;
             foreach ($orderBys as $key => $value) {
                 if (empty($value)) {
@@ -101,10 +101,10 @@ abstract class BaseModel extends Model
         return $query;
     }
 
-    public function createByCondition(BaseCondition $condition, array|BaseModelEntity $data): array|BaseModelEntity
+    public function createByCondition(BaseCondition $condition, array|BaseModelEntity $data): int
     {
         if (empty($data)) {
-            return [];
+            return 0;
         }
 
         $model = $this->getModelByCondition($condition);
@@ -119,11 +119,7 @@ abstract class BaseModel extends Model
         $attributes = $data instanceof BaseModelEntity ? $data->setUnderlineName()->toArray() : $data;
         $model->fill($attributes);
         $ret = $model->save();
-
-        if (! $ret) {
-            return [];
-        }
-        return $model->newEntity();
+        return $ret ? $this->getKey() : 0;
     }
 
     public function modifyByCondition(BaseCondition $condition, array|BaseObject $search, array|BaseModelEntity $data): int
@@ -150,7 +146,7 @@ abstract class BaseModel extends Model
             $output['total'] = Db::selectOne($sql, $query->getBindings())->count;
         }
 
-        if (! $page->all) {
+        if (!$page->all) {
             $query->forPage($page->page, $page->pageSize);
             $output['page'] = $page->page;
             $output['pageSize'] = $page->pageSize;

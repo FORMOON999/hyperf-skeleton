@@ -67,27 +67,21 @@ trait MySQLModelTrait
     /**
      * @param array|BaseModelEntity[] $data
      */
-    public function batchInsert(array $data): array
+    public function batchInsert(array $data): int
     {
         $data = $this->appendTime($data);
         $ret = $this->newQuery()->insert($data);
-        if (! $ret) {
-            return [];
-        }
-        return $data;
+        return $ret ? 1 : 0;
     }
 
     /**
      * @param array|BaseModelEntity[] $data
      */
-    public function batchUpdate(array $data, array $column = []): array
+    public function batchUpdate(array $data, array $column = []): int
     {
         $data = $this->appendTime($data, [$this->getUpdatedAtColumn()]);
         $ret = $this->insertOrUpdate($data, $column);
-        if (! $ret) {
-            return [];
-        }
-        return $data;
+        return $ret ? 1 : 0;
     }
 
     /**
