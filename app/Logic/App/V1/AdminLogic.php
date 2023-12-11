@@ -44,8 +44,7 @@ class AdminLogic
 
     public function modify(AdminModifyRequest $request): BaseSuccessResponse
     {
-        $this->admin->modifyByCondition($request->condition, $request->search, $request->data);
-        return new BaseSuccessResponse();
+        $this->admin->modifyByCondition($request->condition, $request->search, $request->data);        return new BaseSuccessResponse();
     }
 
     public function remove(AdminRemoveRequest $request): BaseSuccessResponse
