@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Hyperf\DTO\Aspect;
 
+use App\Common\Core\Entity\CommonResponse;
 use Hyperf\Context\Context;
-use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\DTO\Mapper;
 use Hyperf\DTO\Scan\MethodParametersManager;
@@ -15,7 +15,7 @@ use Hyperf\HttpServer\CoreMiddleware;
 use Hyperf\Utils\Codec\Json;
 use Hyperf\Utils\Contracts\Arrayable;
 use Hyperf\Utils\Contracts\Jsonable;
-use Lengbin\Common\BaseObject;
+use Lengbin\Helper\YiiSoft\Arrays\ArrayHelper;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -87,9 +87,11 @@ class CoreMiddlewareAspect
         }
         // object
         if (is_object($response)) {
+            $commonResponse = new CommonResponse();
+            $commonResponse->data = $response;
             return $this->response()
                 ->withAddedHeader('content-type', 'application/json')
-                ->withBody(new SwooleStream(\Hyperf\Codec\Json::encode($response instanceof BaseObject ? $response->toArray() : $response)));
+                ->withBody(new SwooleStream(\Hyperf\Codec\Json::encode($commonResponse->toArray())));
         }
 
         if ($this->response()->hasHeader('content-type')) {
@@ -157,6 +159,6 @@ class CoreMiddlewareAspect
         if ($methodParameter->isValid()) {
             $validationDTO->validate($className, $param);
         }
-        return Mapper::map($param, make($className));
+        return Mapper::map(array_merge(ArrayHelper::getObjectVars($obj), $param), \Hyperf\Support\make($className));
     }
 }

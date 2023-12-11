@@ -22,6 +22,7 @@ return [
             Hyperf\DTO\Scan\PropertyEnum::class => BASE_PATH . '/app/Common/Core/CLassMap/PropertyEnum.php',
             Hyperf\DTO\JsonMapper::class => BASE_PATH . '/app/Common/Core/CLassMap/JsonMapper.php',
             Hyperf\DTO\Aspect\CoreMiddlewareAspect::class => BASE_PATH . '/app/Common/Core/CLassMap/CoreMiddlewareAspect.php',
+            Hyperf\ApiDocs\Swagger\GenerateResponses::class => BASE_PATH . '/app/Common/Core/CLassMap/GenerateResponses.php',
         ],
     ],
 ];

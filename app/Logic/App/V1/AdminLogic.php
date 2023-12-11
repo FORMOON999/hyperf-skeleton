@@ -57,6 +57,6 @@ class AdminLogic
     public function detail(AdminDetailRequest $request): AdminDetailResponse
     {
         $query = $this->admin->buildQuery($request->condition, $request->search);
-        return $query->first();
+        return new AdminDetailResponse($query->first()->toArray());
     }
 }

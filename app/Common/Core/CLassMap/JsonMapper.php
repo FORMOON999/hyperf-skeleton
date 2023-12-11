@@ -18,6 +18,7 @@ use Hyperf\DTO\Annotation\ArrayType;
 use Hyperf\DTO\Scan\PropertyAliasMappingManager;
 use InvalidArgumentException;
 use JsonMapper_Exception;
+use Lengbin\Common\BaseObject;
 use phpDocumentor\Reflection\DocBlock\Tags\Var_;
 use phpDocumentor\Reflection\DocBlockFactory;
 use phpDocumentor\Reflection\Types\ContextFactory;
@@ -125,7 +126,8 @@ class JsonMapper extends \JsonMapper
 
             if ($isNullable || ! $this->bStrictNullTypes) {
                 if ($jvalue === null) {
-                    $this->setProperty($object, $accessor, null);
+                    $jvalue = is_subclass_of($type, BaseObject::class) ? $this->createInstance($type) : null;
+                    $this->setProperty($object, $accessor, $jvalue);
                     continue;
                 }
                 $type = $this->removeNullable($type);
