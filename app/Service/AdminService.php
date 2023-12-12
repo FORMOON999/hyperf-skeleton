@@ -15,17 +15,14 @@ namespace App\Service;
 use App\Common\Core\BaseService;
 use App\Common\Exceptions\BusinessException;
 use App\Constants\Errors\AdminError;
+use App\Model\Admin;
 use Lengbin\Helper\YiiSoft\Arrays\ArrayHelper;
 
 class AdminService extends BaseService
 {
-    /**
-     * @param array $condition 控制参数
-     * @param array $search 搜索参数
-     * @param array $sort 排序参数
-     * @param array $page 分页参数
-     * @param array $field 字段
-     */
+    public function __construct(protected Admin $admin) {}
+
+
     public function getList(array $condition, array $search, array $sort, array $page, array $field = ['*']): array
     {
         $result = $this->adminDao->getList($condition, $search, $sort, $page, $field);
@@ -54,7 +51,7 @@ class AdminService extends BaseService
     {
         $data = $this->validate($condition, $data);
         $result = $this->adminDao->create($condition, $data);
-        if (!$result && ArrayHelper::isValidValue($condition, '_throw')) {
+        if (! $result && ArrayHelper::isValidValue($condition, '_throw')) {
             throw new BusinessException(AdminError::CREATE_ERROR());
         }
         if (ArrayHelper::isValidValue($condition, '_format')) {
@@ -73,7 +70,7 @@ class AdminService extends BaseService
         $data = $this->validate($condition, $data, $search);
         $result = $this->adminDao->modify($condition, $search, $data);
 
-        if (!$result && ArrayHelper::isValidValue($condition, '_throw')) {
+        if (! $result && ArrayHelper::isValidValue($condition, '_throw')) {
             throw new BusinessException(AdminError::UPDATE_ERROR());
         }
         return $result;
@@ -86,7 +83,7 @@ class AdminService extends BaseService
     public function remove(array $condition, array $search): int
     {
         $result = $this->adminDao->remove($condition, $search);
-        if (!$result && ArrayHelper::isValidValue($condition, '_throw')) {
+        if (! $result && ArrayHelper::isValidValue($condition, '_throw')) {
             throw new BusinessException(AdminError::DELETE_ERROR());
         }
         return $result;
@@ -100,7 +97,7 @@ class AdminService extends BaseService
     public function detail(array $condition, array $search, array $field = ['*']): array
     {
         $result = $this->adminDao->detail($condition, $search, $field);
-        if (!$result && ArrayHelper::isValidValue($condition, '_throw')) {
+        if (! $result && ArrayHelper::isValidValue($condition, '_throw')) {
             throw new BusinessException(AdminError::NOT_FOUND());
         }
         if (ArrayHelper::isValidValue($condition, '_format')) {

@@ -24,7 +24,6 @@ use Lengbin\Helper\YiiSoft\Arrays\ArrayHelper;
 abstract class BaseModel extends Model
 {
     use SoftDeletes;
-    use MySQLModelTrait;
 
     abstract public function newEntity(): BaseModelEntity;
 
@@ -41,20 +40,20 @@ abstract class BaseModel extends Model
         return parent::newCollection($result);
     }
 
-    public function getModelByCondition(BaseCondition $condition): static
+    public function getModelByCondition(array $condition): static
     {
         $tableName = '';
-        if ($condition->_subTable_date && method_exists($this, 'getSubTableDate')) {
-            $tableName = $this->getSubTableDate($condition->_subTable_date);
+        if (ArrayHelper::isValidValue($condition, '_subTable_date') && method_exists($this, 'getSubTableDate')) {
+            $tableName = $this->getSubTableDate($condition['_subTable_date']);
         }
-        if ($condition->_subTable_hash && method_exists($this, 'getSubTableHash')) {
-            $tableName = $this->getSubTableHash($condition->_subTable_hash);
+        if (ArrayHelper::isValidValue($condition, '_subTable_hash') && method_exists($this, 'getSubTableHash')) {
+            $tableName = $this->getSubTableHash($condition['_subTable_hash']);
         }
-        if ($condition->_subTable && method_exists($this, 'getSubTable')) {
-            $tableName = $this->getSubTable($condition->_subTable);
+        if (ArrayHelper::isValidValue($condition, '_subTable') && method_exists($this, 'getSubTable')) {
+            $tableName = $this->getSubTable($condition['_subTable']);
         }
-        if ($condition->_table) {
-            $tableName = $condition->_table;
+        if (ArrayHelper::isValidValue($condition, '_table')) {
+            $tableName = $condition['_table'];
         }
         if ($tableName) {
             $this->setTable($tableName);
@@ -62,12 +61,9 @@ abstract class BaseModel extends Model
         return $this;
     }
 
-    public function buildQuery(BaseCondition $condition, array $search = [], array $sorts = []): Builder
+    public function buildQuery(array $condition, array $search = [], array $sorts = []): Builder
     {
         $query = $this->getModelByCondition($condition)->newQuery();
-        if ($condition->_forUpdate) {
-            $query = $query->lockForUpdate();
-        }
 
         // sort
         if (! empty($sorts)) {
@@ -91,52 +87,14 @@ abstract class BaseModel extends Model
             if (is_null($value)) {
                 continue;
             }
-            if ($condition->_exceptPk && $key == $this->getKeyName()) {
-                $query = is_array($value) ? $query->whereNotIn($key, $value) : $query->where($key, '!=', $value);
-                continue;
-            }
             $query = is_array($value) ? $query->whereIn($key, $value) : $query->where($key, $value);
         }
         return $query;
     }
 
-    public function createByCondition(BaseCondition $condition, array $data): int
+    public function output(Builder $query, array $pages): array
     {
-        if (empty($data)) {
-            return 0;
-        }
-
-        $model = $this->getModelByCondition($condition);
-        if ($condition->_insert) {
-            return $model->batchInsert($data);
-        }
-
-        if ($condition->_update) {
-            return $model->batchUpdate($data);
-        }
-
-        $model->fill($data);
-        $ret = $model->save();
-        return $ret ? $this->getKey() : 0;
-    }
-
-    public function modifyByCondition(BaseCondition $condition, array $search, array $data): int
-    {
-        $query = $this->buildQuery($condition, $search);
-        return $query->update($data);
-    }
-
-    public function removeByCondition(BaseCondition $condition, array $search): int
-    {
-        $query = $this->buildQuery($condition, $search);
-        if ($condition->_delete) {
-            return $query->forceDelete();
-        }
-        return $query->delete();
-    }
-
-    public function output(Builder $query, Page $page): array
-    {
+        $page = ! empty($pages) ? new Page($pages) : Page::all();
         $output = [];
         if ($page->total) {
             $sql = sprintf('select count(*) as count from (%s) as b', $query->toSql());
@@ -168,5 +126,53 @@ abstract class BaseModel extends Model
         });
 
         return $query;
+    }
+
+    public function getTable(bool $isTablePrefix = false): string
+    {
+        $tableName = parent::getTable();
+        if ($isTablePrefix) {
+            $tableName = $this->getConnection()->getTablePrefix() . $tableName;
+        }
+        return $tableName;
+    }
+
+    public function batchInsert(array $data): int
+    {
+        $data = $this->appendTime($data);
+        $ret = $this->newQuery()->insert($data);
+        return $ret ? 1 : 0;
+    }
+
+    public function batchUpdate(array $data, array $column = []): int
+    {
+        $data = $this->appendTime($data, [$this->getUpdatedAtColumn()]);
+        if (empty($column)) {
+            $column = array_keys(current($data));
+        }
+        return $this->newQuery()->upsert($data, [$this->getKeyName()], $column);
+    }
+
+    private function appendTime(array $data, array $columns = []): array
+    {
+        if (empty($columns)) {
+            $columns = [$this->getCreatedAtColumn(), $this->getUpdatedAtColumn()];
+        }
+
+        $result = [];
+        $time = $this->freshTimestamp();
+        $now = $this->timestamps ? $this->fromDateTime($time) : $time->timestamp;
+        foreach ($data as $item) {
+            if ($item instanceof BaseModelEntity) {
+                $item = $item->setUnderlineName()->toArray();
+            }
+            foreach ($columns as $column) {
+                if (! ArrayHelper::keyExists($item, $column)) {
+                    $item[$column] = $now;
+                }
+            }
+            $result[] = $item;
+        }
+        return $result;
     }
 }
