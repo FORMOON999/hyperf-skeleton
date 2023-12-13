@@ -20,42 +20,64 @@ use App\Entity\Request\App\V1\Admin\AdminModifyRequest;
 use App\Entity\Request\App\V1\Admin\AdminRemoveRequest;
 use App\Entity\Response\App\V1\Admin\AdminDetailResponse;
 use App\Entity\Response\App\V1\Admin\AdminListResponse;
-use App\Model\Admin;
+use App\Service\AdminService;
 use Hyperf\Di\Annotation\Inject;
 
 class AdminLogic
 {
+    #[Inject()]
+    protected AdminService $adminService;
 
-    #[Inject]
-    protected Admin $admin;
+    protected array $field = [
+        'id',
+        'username',
+        'password',
+        'status',
+        'created_at',
+        'updated_at',
+    ];
 
     public function getList(AdminListRequest $request): AdminListResponse
     {
-        $query = $this->admin->buildQuery($request->condition, $request->search, $request->sort);
-        $result = $this->admin->output($query, $request->page);
+        $result = $this->adminService->getList(
+            $request->condition->setHumpName()->toArray(),
+            $request->search->setUnderlineName()->toArray(),
+            $this->field,
+            $request->sort->setUnderlineName()->toArray(),
+            $request->page->toArray(),
+        );
         return new AdminListResponse($result);
     }
 
     public function create(AdminCreateRequest $request): BaseSuccessResponse
     {
-        $this->admin->createByCondition($request->condition, $request->data);
+        $this->adminService->create($request->condition->setHumpName()->toArray(), $request->data->setUnderlineName()->toArray());
         return new BaseSuccessResponse();
     }
 
     public function modify(AdminModifyRequest $request): BaseSuccessResponse
     {
-        $this->admin->modifyByCondition($request->condition, $request->search, $request->data);        return new BaseSuccessResponse();
+        $this->adminService->modify(
+            $request->condition->setHumpName()->toArray(),
+            $request->search->setUnderlineName()->toArray(),
+            $request->data->setUnderlineName()->toArray()
+        );
+        return new BaseSuccessResponse();
     }
 
     public function remove(AdminRemoveRequest $request): BaseSuccessResponse
     {
-        $this->admin->removeByCondition($request->condition, $request->search);
+        $this->adminService->remove($request->condition->setHumpName()->toArray(), $request->search->setUnderlineName()->toArray());
         return new BaseSuccessResponse();
     }
 
     public function detail(AdminDetailRequest $request): AdminDetailResponse
     {
-        $query = $this->admin->buildQuery($request->condition, $request->search);
-        return new AdminDetailResponse($query->first()->toArray());
+        $result = $this->adminService->detail(
+            $request->condition->setHumpName()->toArray(),
+            $request->search->setUnderlineName()->toArray(),
+            $this->field
+        );
+        return new AdminDetailResponse($result);
     }
 }
