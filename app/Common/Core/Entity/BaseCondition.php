@@ -25,4 +25,16 @@ class BaseCondition extends BaseObject
 
     #[ApiModelProperty(value: '是否强制删除', hidden: true)]
     public int $_delete = 0;
+
+    #[ApiModelProperty(value: '日期分表', hidden: true)]
+    public string $_subTable_date = '';
+
+    #[ApiModelProperty(value: 'hash分表', hidden: true)]
+    public string $_subTable_hash = '';
+
+    #[ApiModelProperty(value: '自定义分表hash', hidden: true)]
+    public string $_subTable = '';
+
+    #[ApiModelProperty(value: '指定表', hidden: true)]
+    public string $_table = '';
 }
