@@ -18,7 +18,7 @@ class AdminListRequest extends BaseObject
     public ?AdminListSearch $search = null;
 
     #[ApiModelProperty('分页参数')]
-    public Page $page;
+    public ?Page $page = null;
 
     #[ApiModelProperty('排序参数')]
     public ?BaseSort $sort = null;

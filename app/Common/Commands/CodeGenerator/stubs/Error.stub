@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace %NAMESPACE%;
 
-use Lengbin\ErrorCode\Annotation\EnumMessage;
-use App\ErrorCode\BaseEnum;
+use App\Common\Core\Enum\Annotation\EnumMessage;
+use App\Common\Core\Enum\BaseEnum;
 
 class %CLASS% extends BaseEnum
 {

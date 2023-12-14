@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace %NAMESPACE%;
 
-use App\Common\Entity\Request\BaseSort;
+use App\Common\Core\Entity\BaseSort;
 use Hyperf\ApiDocs\Annotation\ApiModelProperty;
 use Lengbin\Common\BaseObject;
 use Lengbin\Common\Entity\Page;
@@ -18,7 +18,7 @@ class %CLASS% extends BaseObject
     public ?%SEARCH% $search = null;
 
     #[ApiModelProperty('分页参数')]
-    public Page $page;
+    public ?Page $page = null;
 
     #[ApiModelProperty('排序参数')]
     public ?BaseSort $sort = null;

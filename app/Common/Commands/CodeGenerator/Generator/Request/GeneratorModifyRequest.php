@@ -18,7 +18,7 @@ class GeneratorModifyRequest extends BaseGeneratorRequest
         $stub = file_get_contents(dirname(__DIR__, 2) . '/stubs/Request/ModifyRequest.stub');
         $this->replaceNamespace($stub, $class->namespace)
             ->replaceClass($stub, $class->name)
-            ->replace($stub, '%DATA%', $results['requestModifyData']->name)
+            ->replace($stub, '%DATA%', $this->modelInfo->name . 'Entity')
             ->replace($stub, '%SEARCH%', $results['requestSearch']->name)
             ->replace($stub, '%CONDITION%', $results['requestCondition']->name);
         return $stub;

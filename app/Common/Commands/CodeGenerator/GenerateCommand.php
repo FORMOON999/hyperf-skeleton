@@ -137,8 +137,6 @@ class GenerateCommand extends HyperfCommand
             $detailResponse = $this->detailResponse($condition);
 
             $dag = new Dag();
-            $dao = Vertex::of(new DaoGenerator($condition), 'dao');
-            $daoInterface = Vertex::of(new DaoInterfaceGenerator($condition), 'daoInterface');
             $serviceInterface = Vertex::of(new ServiceInterfaceGenerator($condition), 'serviceInterface');
             $service = Vertex::of(new ServiceGenerator($condition), 'service');
             $error = Vertex::of(new ErrorGenerator(array_merge($condition, [
@@ -148,9 +146,7 @@ class GenerateCommand extends HyperfCommand
             $controller = Vertex::of(new ControllerGenerator($condition), 'controller');
             $constantController = Vertex::of(new ConstantControllerGenerator($condition), 'constantController');
 
-            $dag->addVertex($dao)
-                ->addVertex($daoInterface)
-                ->addVertex($error)
+            $dag->addVertex($error)
                 ->addVertex($serviceInterface)
                 ->addVertex($service)
                 ->addVertex($logic)
@@ -163,9 +159,7 @@ class GenerateCommand extends HyperfCommand
                 ->addVertex($getListResponse)
                 ->addVertex($detailResponse)
                 ->addVertex($constantController)
-                ->addEdge($daoInterface, $dao)
                 ->addEdge($error, $service)
-                ->addEdge($dao, $service)
                 ->addEdge($serviceInterface, $service)
                 ->addEdge($getListRequest, $logic)
                 ->addEdge($createRequest, $logic)
@@ -197,18 +191,13 @@ class GenerateCommand extends HyperfCommand
 
     protected function createRequest(array $condition): Vertex
     {
-        $requestCreateData = Vertex::of(new GeneratorCreateData($condition), 'requestCreateData');
         $requestCreate = Vertex::of(new GeneratorCreateRequest($condition), 'requestCreate');
         $requestCondition = Vertex::of(new GeneratorCondition($condition), 'requestCondition');
-        $requestSearch = Vertex::of(new GeneratorSearch($condition), 'requestSearch');
 
         $dagRequestCreate = new Dag();
-        $dagRequestCreate->addVertex($requestCreateData)
+        $dagRequestCreate
             ->addVertex($requestCreate)
             ->addVertex($requestCondition)
-            ->addVertex($requestSearch)
-            ->addEdge($requestSearch, $requestCreate)
-            ->addEdge($requestCreateData, $requestCreate)
             ->addEdge($requestCondition, $requestCreate);
         return Vertex::of($dagRequestCreate, 'entity_create');
     }
@@ -216,18 +205,15 @@ class GenerateCommand extends HyperfCommand
     protected function modifyRequest(array $condition): Vertex
     {
         $requestSearch = Vertex::of(new GeneratorSearch($condition), 'requestSearch');
-        $requestModifyData = Vertex::of(new GeneratorModifyData($condition), 'requestModifyData');
         $requestModify = Vertex::of(new GeneratorModifyRequest($condition), 'requestModify');
         $requestCondition = Vertex::of(new GeneratorCondition($condition), 'requestCondition');
 
         $dagRequestModify = new Dag();
         $dagRequestModify->addVertex($requestSearch)
-            ->addVertex($requestModifyData)
             ->addVertex($requestModify)
             ->addVertex($requestCondition)
             ->addEdge($requestCondition, $requestModify)
-            ->addEdge($requestSearch, $requestModify)
-            ->addEdge($requestModifyData, $requestModify);
+            ->addEdge($requestSearch, $requestModify);
         return Vertex::of($dagRequestModify, 'entity_modify');
     }
 
@@ -266,24 +252,18 @@ class GenerateCommand extends HyperfCommand
 
     protected function getListResponse(array $condition): Vertex
     {
-        $responseListItem = Vertex::of(new GeneratorListItem($condition), 'responseListItem');
         $responseList = Vertex::of(new GeneratorListResponse($condition), 'responseList');
 
         $dagResponseList = new Dag();
-        $dagResponseList->addVertex($responseList)
-            ->addVertex($responseListItem)
-            ->addEdge($responseListItem, $responseList);
+        $dagResponseList->addVertex($responseList);
         return Vertex::of($dagResponseList, 'entity_list_response');
     }
 
     protected function detailResponse(array $condition): Vertex
     {
-        $responseListItem = Vertex::of(new GeneratorListItem($condition), 'responseListItem');
         $dagResponseDetail = new Dag();
         $responseDetail = Vertex::of(new GeneratorDetailResponse($condition), 'responseDetail');
-        $dagResponseDetail->addVertex($responseDetail)
-            ->addVertex($responseListItem)
-            ->addEdge($responseListItem, $responseDetail);
+        $dagResponseDetail->addVertex($responseDetail);
         return Vertex::of($dagResponseDetail, 'entity_item');
     }
 }

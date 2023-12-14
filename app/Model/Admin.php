@@ -1,12 +1,22 @@
 <?php
 
-declare (strict_types=1);
+declare(strict_types=1);
+/**
+ * This file is part of Hyperf.
+ *
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
+
 namespace App\Model;
 
 use App\Common\Core\BaseModel;
 use App\Common\Core\Entity\BaseModelEntity;
+
 /**
- * @property int $id 
+ * @property int $id
  * @property string $username 账号
  * @property string $password 密码
  * @property int $status 昵称
@@ -17,33 +27,26 @@ use App\Common\Core\Entity\BaseModelEntity;
 class Admin extends BaseModel
 {
     /**
-     * primaryKey
-     *
-     * @var string
+     * primaryKey.
      */
     protected string $primaryKey = 'id';
+
     /**
      * The table associated with the model.
-     *
-     * @var string
      */
     protected ?string $table = 'admin';
+
     /**
      * The attributes that are mass assignable.
-     *
-     * @var array
      */
     protected array $fillable = ['id', 'username', 'password', 'status', 'created_at', 'updated_at', 'deleted_at'];
+
     /**
      * The attributes that should be cast to native types.
-     *
-     * @var array
      */
     protected array $casts = ['id' => 'integer', 'status' => 'integer'];
-    /**
-     * @return BaseModelEntity
-     */
-    public function newEntity() : BaseModelEntity
+
+    public function newEntity(): BaseModelEntity
     {
         return new AdminEntity($this->getAttributes());
     }

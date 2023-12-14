@@ -1,6 +1,14 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * This file is part of Hyperf.
+ *
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 
 namespace App\Common\Commands\CodeGenerator\Generator;
 
@@ -21,19 +29,19 @@ class ServiceGenerator extends AbstractGenerator
     public function buildClass(ClassInfo $class, array $results = []): string
     {
         $stub = file_get_contents(dirname(__DIR__) . '/stubs/Service.stub');
-        $daoInterface = $results['daoInterface'];
         $error = $results['error'];
         $serviceInterface = $results['serviceInterface'];
         $this->replaceNamespace($stub, $class->namespace)
             ->replaceClass($stub, $class->name)
             ->replaceUses($stub, [
-                $daoInterface->namespace,
                 $serviceInterface->namespace,
-                $error->namespace
+                $error->namespace,
+                $this->modelInfo->namespace,
+                $this->modelInfo->namespace . 'Entity',
             ])
             ->replaceInheritance($stub, $serviceInterface->name)
-            ->replace($stub, '%DAO_INTERFACE%', $daoInterface->name)
-            ->replace($stub, '%DAO_NAME%', str_replace('Interface', '', lcfirst($daoInterface->name)))
+            ->replace($stub, '%MODEL_NAME%', $this->modelInfo->name)
+            ->replace($stub, '%MODEL_NAME_ENTITY%', $this->modelInfo->name . 'Entity')
             ->replace($stub, '%ERROR%', $error->name);
         return $stub;
     }

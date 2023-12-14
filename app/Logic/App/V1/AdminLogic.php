@@ -28,21 +28,19 @@ class AdminLogic
     #[Inject()]
     protected AdminService $adminService;
 
-    protected array $field = [
-        'id',
-        'username',
-        'password',
-        'status',
-        'created_at',
-        'updated_at',
-    ];
-
     public function getList(AdminListRequest $request): AdminListResponse
     {
         $result = $this->adminService->getList(
             $request->condition->setHumpName()->toArray(),
             $request->search->setUnderlineName()->toArray(),
-            $this->field,
+            [
+                'id',
+                'username',
+                'password',
+                'status',
+                'created_at',
+                'updated_at',
+            ],
             $request->sort->setUnderlineName()->toArray(),
             $request->page->toArray(),
         );
@@ -76,7 +74,14 @@ class AdminLogic
         $result = $this->adminService->detail(
             $request->condition->setHumpName()->toArray(),
             $request->search->setUnderlineName()->toArray(),
-            $this->field
+            [
+                'id',
+                'username',
+                'password',
+                'status',
+                'created_at',
+                'updated_at',
+            ],
         );
         return new AdminDetailResponse($result);
     }

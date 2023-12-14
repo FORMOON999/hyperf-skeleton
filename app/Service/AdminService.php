@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Common\Core\BaseService;
+use App\Common\Core\Entity\BaseModelEntity;
 use App\Common\Exceptions\BusinessException;
 use App\Constants\Errors\AdminError;
 use App\Infrastructure\AdminInterface;
@@ -97,7 +98,7 @@ class AdminService extends BaseService implements AdminInterface
         return $result;
     }
 
-    protected function format(AdminEntity $result, array $condition): AdminEntity
+    protected function format(AdminEntity $result, array $condition): BaseModelEntity
     {
         return $result;
     }

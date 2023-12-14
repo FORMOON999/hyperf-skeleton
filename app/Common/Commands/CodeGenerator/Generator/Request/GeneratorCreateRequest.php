@@ -1,6 +1,14 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * This file is part of Hyperf.
+ *
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 
 namespace App\Common\Commands\CodeGenerator\Generator\Request;
 
@@ -19,8 +27,7 @@ class GeneratorCreateRequest extends BaseGeneratorRequest
         $this->replaceNamespace($stub, $class->namespace)
             ->replaceClass($stub, $class->name)
             ->replace($stub, '%CONDITION%', $results['requestCondition']->name)
-            ->replace($stub, '%SEARCH%', $results['requestSearch']->name)
-            ->replace($stub, '%DATA%', $results['requestCreateData']->name);
+            ->replace($stub, '%DATA%', $this->modelInfo->name . 'Entity');
         return $stub;
     }
 }

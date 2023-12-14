@@ -5,24 +5,21 @@ declare(strict_types=1);
 namespace %NAMESPACE%;
 
 use Hyperf\Di\Annotation\Inject;
-use App\Common\BaseLogic;
 use App\Common\Entity\Response\BaseSuccessResponse;
 %USES%
-class %CLASS% extends BaseLogic
+class %CLASS%
 {
     #[Inject()]
     protected %SERVICE% $%SERVICE_NAME%;
 
-    protected array $field = %FILED%;
-
     public function getList(%LIST_REQUEST% $request): %LIST_RESPONSE%
     {
-        $result = $this->%SERVICE_NAME%->getList(
+        $result = $this->adminService->getList(
             $request->condition->setHumpName()->toArray(),
             $request->search->setUnderlineName()->toArray(),
+            %FILED%,
             $request->sort->setUnderlineName()->toArray(),
-            $request->page,
-            $this->field
+            $request->page->toArray(),
         );
         return new %LIST_RESPONSE%($result);
     }
@@ -54,7 +51,7 @@ class %CLASS% extends BaseLogic
         $result = $this->%SERVICE_NAME%->detail(
             $request->condition->setHumpName()->toArray(),
             $request->search->setUnderlineName()->toArray(),
-            $this->field
+            %FILED%,
         );
         return new %DETAIL_RESPONSE%($result);
     }

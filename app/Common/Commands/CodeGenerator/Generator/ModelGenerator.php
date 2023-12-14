@@ -1,14 +1,22 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * This file is part of Hyperf.
+ *
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 
 namespace App\Common\Commands\CodeGenerator\Generator;
 
 use App\Common\Commands\Model\ModelCommand;
+use Hyperf\CodeParser\Project;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Database\Commands\ModelOption;
 use Hyperf\Database\ConnectionResolverInterface;
-use Hyperf\CodeParser\Project;
 use Hyperf\Utils\Str;
 use PhpParser\ParserFactory;
 use PhpParser\PrettyPrinter\Standard;
@@ -17,7 +25,6 @@ use Symfony\Component\Console\Output\NullOutput;
 
 class ModelGenerator extends ModelCommand
 {
-
     protected bool $ddd;
 
     public function __construct(ContainerInterface $container, bool $ddd)
@@ -31,6 +38,29 @@ class ModelGenerator extends ModelCommand
         $this->output = new NullOutput();
     }
 
+    public function check(): bool
+    {
+        return false;
+    }
+
+    public function generate(string $pool, ?string $table, ?bool $force): array
+    {
+        $tableClass = [];
+
+        $option = $this->getModelOption($pool);
+        $tables = $this->getTables($option, $table);
+        $project = new Project();
+        $builder = $this->getSchemaBuilder($option->getPool());
+
+        foreach ($tables as $table) {
+            $classInfo = $this->getModelInfo($project, $builder, $table, $option, $force, $this->ddd);
+
+            $this->createModel($table, $option);
+            $tableClass[] = $classInfo;
+        }
+        return $tableClass;
+    }
+
     protected function getOption(string $name, string $key, string $pool = 'default', $default = null)
     {
         return $this->config->get("databases.{$pool}.{$key}", $default);
@@ -39,7 +69,7 @@ class ModelGenerator extends ModelCommand
     protected function getOptionPath(string $table, ModelOption $option): string
     {
         $isOpenDdd = $this->ddd;
-        if (!$isOpenDdd) {
+        if (! $isOpenDdd) {
             return $option->getPath();
         }
         $module = ucwords(Str::before($table, '_'));
@@ -72,44 +102,21 @@ class ModelGenerator extends ModelCommand
         return $option;
     }
 
-    public function check(): bool
-    {
-        return false;
-    }
-
     protected function getTables(ModelOption $option, ?string $table): array
     {
         $tables = [];
-        if (!empty($table)) {
+        if (! empty($table)) {
             $tables = [$table];
         } else {
             $builder = $this->getSchemaBuilder($option->getPool());
             foreach ($builder->getAllTables() as $row) {
-                $row = (array)$row;
+                $row = (array) $row;
                 $table = reset($row);
-                if (!$this->isIgnoreTable($table, $option)) {
+                if (! $this->isIgnoreTable($table, $option)) {
                     $tables[] = $table;
                 }
             }
         }
         return $tables;
-    }
-
-    public function generate(string $pool, ?string $table, ?bool $force): array
-    {
-        $tableClass = [];
-
-        $option = $this->getModelOption($pool);
-        $tables = $this->getTables($option, $table);
-        $project = new Project();
-        $builder = $this->getSchemaBuilder($option->getPool());
-
-        foreach ($tables as $table) {
-            $classInfo = $this->getModelInfo($project, $builder, $table, $option, $force, $this->ddd);
-
-            $this->createModel($table, $option);
-            $tableClass[] = $classInfo;
-        }
-        return $tableClass;
     }
 }
