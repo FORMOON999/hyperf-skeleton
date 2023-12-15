@@ -16,4 +16,9 @@ class BaseListResponse extends BaseObject
 
     #[ApiModelProperty('总数')]
     public ?int $total = 0;
+
+    public function __construct(array|Output $config = [])
+    {
+        parent::__construct($config instanceof Output ? $config->toArray() : $config);
+    }
 }

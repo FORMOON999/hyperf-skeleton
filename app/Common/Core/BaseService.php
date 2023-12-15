@@ -17,6 +17,7 @@ declare(strict_types=1);
 
 namespace App\Common\Core;
 
+use App\Common\Core\Entity\Output;
 use Hyperf\Codec\Json;
 use Hyperf\HttpServer\Exception\Http\EncodingException;
 use Lengbin\Common\Entity\Page;
@@ -36,11 +37,11 @@ class BaseService
         return $data;
     }
 
-    public function outputForArray(array $data, Page $page): array
+    public function outputForArray(array $data, Page $page): Output
     {
-        $output = [];
+        $output = new Output();
         if ($page->total) {
-            $output['total'] = count($data);
+            $output->total = count($data);
         }
 
         $list = $data;
@@ -48,12 +49,12 @@ class BaseService
             $pageSize = $page->pageSize;
             $offset = ($page->page - 1) * $pageSize;
             $data = array_values($data);
-            $output['page'] = $page->page;
-            $output['pageSize'] = $pageSize;
+            $output->page = $page->page;
+            $output->pageSize = $pageSize;
             $list = array_slice($data, $offset, $pageSize);
         }
 
-        $output['list'] = $list;
+        $output->list = $list;
         return $output;
     }
 

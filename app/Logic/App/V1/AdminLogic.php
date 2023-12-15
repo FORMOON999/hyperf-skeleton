@@ -12,7 +12,10 @@ declare(strict_types=1);
 
 namespace App\Logic\App\V1;
 
+use App\Common\Core\Entity\BaseLogic;
 use App\Common\Core\Entity\BaseSuccessResponse;
+use App\Common\Exceptions\BusinessException;
+use App\Constants\Errors\AdminError;
 use App\Entity\Request\App\V1\Admin\AdminCreateRequest;
 use App\Entity\Request\App\V1\Admin\AdminDetailRequest;
 use App\Entity\Request\App\V1\Admin\AdminListRequest;
@@ -21,10 +24,10 @@ use App\Entity\Request\App\V1\Admin\AdminRemoveRequest;
 use App\Entity\Response\App\V1\Admin\AdminDetailResponse;
 use App\Entity\Response\App\V1\Admin\AdminListResponse;
 use App\Infrastructure\AdminInterface;
-use App\Service\AdminService;
+use App\Model\AdminEntity;
 use Hyperf\Di\Annotation\Inject;
 
-class AdminLogic
+class AdminLogic extends BaseLogic
 {
     #[Inject()]
     protected AdminInterface $adminService;
@@ -45,28 +48,39 @@ class AdminLogic
             $request->sort->setUnderlineName()->toArray(),
             $request->page->toArray(),
         );
+        $result->list = $this->toArray($result->list, function ($data) {
+            return $this->format($data);
+        });
         return new AdminListResponse($result);
     }
 
     public function create(AdminCreateRequest $request): BaseSuccessResponse
     {
-        $this->adminService->create($request->condition->setHumpName()->toArray(), $request->data->setUnderlineName()->toArray());
+        $result = $this->adminService->create($request->data->setUnderlineName()->toArray());
+        if (! $result) {
+            throw new BusinessException(AdminError::CREATE_ERROR());
+        }
         return new BaseSuccessResponse();
     }
 
     public function modify(AdminModifyRequest $request): BaseSuccessResponse
     {
-        $this->adminService->modify(
-            $request->condition->setHumpName()->toArray(),
+        $result = $this->adminService->modify(
             $request->search->setUnderlineName()->toArray(),
             $request->data->setUnderlineName()->toArray()
         );
+        if (! $result) {
+            throw new BusinessException(AdminError::UPDATE_ERROR());
+        }
         return new BaseSuccessResponse();
     }
 
     public function remove(AdminRemoveRequest $request): BaseSuccessResponse
     {
-        $this->adminService->remove($request->condition->setHumpName()->toArray(), $request->search->setUnderlineName()->toArray());
+        $result = $this->adminService->remove($request->search->setUnderlineName()->toArray());
+        if (! $result) {
+            throw new BusinessException(AdminError::DELETE_ERROR());
+        }
         return new BaseSuccessResponse();
     }
 
@@ -84,6 +98,23 @@ class AdminLogic
                 'updated_at',
             ],
         );
+        if (! $result) {
+            throw new BusinessException(AdminError::NOT_FOUND());
+        }
         return new AdminDetailResponse($result);
+    }
+
+    protected function format(AdminEntity $result): AdminEntity
+    {
+        return $result;
+    }
+
+    /**
+     * @param array $condition 控制参数
+     * @param array $data 数据
+     */
+    protected function validate(array $condition, array $data, array $search = []): array
+    {
+        return $data;
     }
 }
