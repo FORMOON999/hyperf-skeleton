@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace %NAMESPACE%;
 
+use App\Common\Core\BaseController;
+use App\Common\Core\Entity\BaseSuccessResponse;
+use App\Common\Middleware\%Middleware%Middleware;
 use Hyperf\ApiDocs\Annotation\Api;
 use Hyperf\ApiDocs\Annotation\ApiHeader;
 use Hyperf\ApiDocs\Annotation\ApiOperation;
@@ -12,8 +15,6 @@ use Hyperf\DTO\Annotation\Contracts\Valid;
 use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\Middleware;
 use Hyperf\HttpServer\Annotation\PostMapping;
-use App\Common\BaseController;
-use App\Common\Entity\Response\BaseSuccessResponse;
 %USES%
 #[Controller(prefix: "%URI%")]
 #[Api(tags: "%TITLE%管理")]

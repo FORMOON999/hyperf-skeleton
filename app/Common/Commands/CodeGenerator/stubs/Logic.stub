@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace %NAMESPACE%;
 
 use Hyperf\Di\Annotation\Inject;
-use App\Common\Entity\Response\BaseSuccessResponse;
+use App\Common\Core\Entity\BaseSuccessResponse;
 %USES%
 class %CLASS%
 {
@@ -14,7 +14,7 @@ class %CLASS%
 
     public function getList(%LIST_REQUEST% $request): %LIST_RESPONSE%
     {
-        $result = $this->adminService->getList(
+        $result = $this->%SERVICE_NAME%->getList(
             $request->condition->setHumpName()->toArray(),
             $request->search->setUnderlineName()->toArray(),
             %FILED%,

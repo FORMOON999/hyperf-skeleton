@@ -26,6 +26,12 @@ class GeneratorCreateRequest extends BaseGeneratorRequest
         $stub = file_get_contents(dirname(__DIR__, 2) . '/stubs/Request/CreateRequest.stub');
         $this->replaceNamespace($stub, $class->namespace)
             ->replaceClass($stub, $class->name)
+            ->replaceUses($stub, [
+                'Hyperf\\ApiDocs\\Annotation\\ApiModelProperty',
+                'Hyperf\\DTO\\Annotation\\Validation\\Required',
+                'Lengbin\\Common\\BaseObject',
+                $this->modelInfo->namespace . 'Entity',
+            ])
             ->replace($stub, '%CONDITION%', $results['requestCondition']->name)
             ->replace($stub, '%DATA%', $this->modelInfo->name . 'Entity');
         return $stub;

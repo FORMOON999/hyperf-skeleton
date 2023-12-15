@@ -144,7 +144,6 @@ class GenerateCommand extends HyperfCommand
             ])), 'error');
             $logic = Vertex::of(new LogicGenerator($condition), 'logic');
             $controller = Vertex::of(new ControllerGenerator($condition), 'controller');
-            $constantController = Vertex::of(new ConstantControllerGenerator($condition), 'constantController');
 
             $dag->addVertex($error)
                 ->addVertex($serviceInterface)
@@ -158,7 +157,6 @@ class GenerateCommand extends HyperfCommand
                 ->addVertex($removeRequest)
                 ->addVertex($getListResponse)
                 ->addVertex($detailResponse)
-                ->addVertex($constantController)
                 ->addEdge($error, $service)
                 ->addEdge($serviceInterface, $service)
                 ->addEdge($getListRequest, $logic)
@@ -170,7 +168,6 @@ class GenerateCommand extends HyperfCommand
                 ->addEdge($detailResponse, $logic)
                 ->addEdge($service, $logic)
                 ->addEdge($logic, $controller)
-                ->addEdge($logic, $constantController)
                 ->run();
         }
     }
@@ -235,16 +232,13 @@ class GenerateCommand extends HyperfCommand
     protected function removeRequest(array $condition): Vertex
     {
         $requestCondition = Vertex::of(new GeneratorCondition($condition), 'requestCondition');
-        $requestSearch = Vertex::of(new GeneratorSearch($condition), 'requestSearch');
         $requestRemoveSearch = Vertex::of(new GeneratorRemoveSearch($condition), 'requestRemoveSearch');
         $requestRemove = Vertex::of(new GeneratorRemoveRequest($condition), 'requestRemove');
 
         $dagRequestRemove = new Dag();
         $dagRequestRemove->addVertex($requestRemove)
-            ->addVertex($requestSearch)
             ->addVertex($requestRemoveSearch)
             ->addVertex($requestCondition)
-            ->addEdge($requestSearch, $requestRemoveSearch)
             ->addEdge($requestCondition, $requestRemove)
             ->addEdge($requestRemoveSearch, $requestRemove);
         return Vertex::of($dagRequestRemove, 'entity_remove');
