@@ -101,7 +101,7 @@ class AdminLogic extends BaseLogic
         if (! $result) {
             throw new BusinessException(AdminError::NOT_FOUND());
         }
-        return new AdminDetailResponse($result);
+        return new AdminDetailResponse($this->format($result));
     }
 
     protected function format(AdminEntity $result): AdminEntity

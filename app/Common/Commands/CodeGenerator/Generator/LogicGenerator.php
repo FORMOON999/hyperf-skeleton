@@ -32,6 +32,7 @@ class LogicGenerator extends ApplicationGenerator
     public function buildClass(ClassInfo $class, array $results = []): string
     {
         $stub = file_get_contents(dirname(__DIR__) . '/stubs/Logic.stub');
+        $error = $results['error'];
         $serviceInterface = $results['serviceInterface'];
         $requestList = $results['requestList'];
         $responseList = $results['responseList'];
@@ -45,6 +46,7 @@ class LogicGenerator extends ApplicationGenerator
         $this->replaceNamespace($stub, $class->namespace)
             ->replaceClass($stub, $class->name)
             ->replaceUses($stub, [
+                $error->namespace,
                 $serviceInterface->namespace,
                 $requestList->namespace,
                 $responseList->namespace,
@@ -53,6 +55,7 @@ class LogicGenerator extends ApplicationGenerator
                 $responseDetail->namespace,
                 $requestModify->namespace,
                 $requestRemove->namespace,
+                $this->modelInfo->namespace . 'Entity',
             ])
             ->replace($stub, '%SERVICE%', $serviceInterface->name)
             ->replace($stub, '%SERVICE_NAME%', str_replace('Interface', '', lcfirst($serviceInterface->name)))
@@ -63,7 +66,9 @@ class LogicGenerator extends ApplicationGenerator
             ->replace($stub, '%DETAIL_REQUEST%', $requestDetail->name)
             ->replace($stub, '%DETAIL_RESPONSE%', $responseDetail->name)
             ->replace($stub, '%REMOVE_REQUEST%', $requestRemove->name)
-            ->replace($stub, '%FILED%', VarDumper::export($filed));
+            ->replace($stub, '%ERROR%', $error->name)
+            ->replace($stub, '%FILED%', VarDumper::export($filed))
+            ->replace($stub, '%MODEL_NAME_ENTITY%', $this->modelInfo->name . 'Entity');
         return $stub;
     }
 }

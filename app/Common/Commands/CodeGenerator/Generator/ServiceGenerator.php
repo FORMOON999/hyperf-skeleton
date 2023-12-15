@@ -29,20 +29,17 @@ class ServiceGenerator extends AbstractGenerator
     public function buildClass(ClassInfo $class, array $results = []): string
     {
         $stub = file_get_contents(dirname(__DIR__) . '/stubs/Service.stub');
-        $error = $results['error'];
         $serviceInterface = $results['serviceInterface'];
         $this->replaceNamespace($stub, $class->namespace)
             ->replaceClass($stub, $class->name)
             ->replaceUses($stub, [
                 $serviceInterface->namespace,
-                $error->namespace,
                 $this->modelInfo->namespace,
                 $this->modelInfo->namespace . 'Entity',
             ])
             ->replaceInheritance($stub, $serviceInterface->name)
             ->replace($stub, '%MODEL_NAME%', lcfirst($this->modelInfo->name))
-            ->replace($stub, '%MODEL_NAME_ENTITY%', $this->modelInfo->name . 'Entity')
-            ->replace($stub, '%ERROR%', $error->name);
+            ->replace($stub, '%MODEL_NAME_ENTITY%', $this->modelInfo->name . 'Entity');
         return $stub;
     }
 }
