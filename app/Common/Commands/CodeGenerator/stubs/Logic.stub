@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace %NAMESPACE%;
 
+use App\Common\Core\Entity\BaseLogic;
+use App\Common\Exceptions\BusinessException;
 use Hyperf\Di\Annotation\Inject;
 use App\Common\Core\Entity\BaseSuccessResponse;
 %USES%
-class %CLASS%
+class %CLASS% extends BaseLogic
 {
     #[Inject()]
     protected %SERVICE% $%SERVICE_NAME%;
@@ -71,22 +73,10 @@ class %CLASS%
     }
 
     /**
-     * @param array  $condition 控制参数
-     * @param array  $data 数据
-     * @return array
-     */
-    public function validate(array $condition, array $data, array $search = []): array
-    {
-        return $data;
-    }
-
-
-    /**
      * @param %MODEL_NAME_ENTITY% $result 数据
-     * @param array $condition 控制参数
      * @return %MODEL_NAME_ENTITY%
      */
-    public function format(%MODEL_NAME_ENTITY% $result, array $condition): %MODEL_NAME_ENTITY%
+    public function format(%MODEL_NAME_ENTITY% $result): %MODEL_NAME_ENTITY%
     {
         return $result;
     }

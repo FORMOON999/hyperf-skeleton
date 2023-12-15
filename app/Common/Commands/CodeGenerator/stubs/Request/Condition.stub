@@ -6,8 +6,9 @@ namespace %NAMESPACE%;
 
 use Hyperf\ApiDocs\Annotation\ApiModelProperty;
 use App\Common\Core\Entity\BaseCondition;
+use Lengbin\Common\BaseObject;
 
-class %CLASS% extends BaseCondition
+class %CLASS% extends BaseObject
 {
 
 }
