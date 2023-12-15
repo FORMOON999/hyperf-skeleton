@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Infrastructure;
 
+use App\Common\Core\Entity\Output;
+
 interface AdminInterface
 {
 
@@ -13,9 +15,9 @@ interface AdminInterface
      * @param array $field 字段
      * @param array $sort 排序条件
      * @param array $page 分页条件
-     * @return array
+     * @return Output
      */
-    public function getList(array $condition, array $search, array $field = ['*'], array $sort = [], array $page = []): array;
+    public function getList(array $condition, array $search, array $field = ['*'], array $sort = [], array $page = []): Output;
 
     /**
      * @param array $condition 控制参数

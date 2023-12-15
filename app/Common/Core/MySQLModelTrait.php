@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace App\Common\Core;
 
 use App\Common\Core\Entity\BaseModelEntity;
+use App\Common\Core\Entity\Output;
 use Hyperf\Database\Model\Builder;
 use Hyperf\DbConnection\Db;
 use Lengbin\Common\Entity\Page;
@@ -71,22 +72,22 @@ trait MySQLModelTrait
         return $query;
     }
 
-    public function output(Builder $query, array $pages): array
+    public function output(Builder $query, array $pages): Output
     {
         $page = ! empty($pages) ? new Page($pages) : Page::all();
-        $output = [];
+        $output = new Output();
         if ($page->total) {
             $sql = sprintf('select count(*) as count from (%s) as b', $query->toSql());
-            $output['total'] = Db::selectOne($sql, $query->getBindings())->count;
+            $output->total = Db::selectOne($sql, $query->getBindings())->count;
         }
 
         if (! $page->all) {
             $query->forPage($page->page, $page->pageSize);
-            $output['page'] = $page->page;
-            $output['pageSize'] = $page->pageSize;
+            $output->page = $page->page;
+            $output->pageSize = $page->pageSize;
         }
 
-        $output['list'] = $query->get()->toArray();
+        $output->list = $query->get()->toArray();
         return $output;
     }
 

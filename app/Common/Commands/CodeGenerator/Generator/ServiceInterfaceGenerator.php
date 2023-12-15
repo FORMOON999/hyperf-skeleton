@@ -27,6 +27,10 @@ class ServiceInterfaceGenerator extends AbstractGenerator
     {
         $stub = file_get_contents(dirname(__DIR__) . '/stubs/ServiceInterface.stub');
         $this->replaceNamespace($stub, $class->namespace)
+            ->replaceUses($stub, [
+                $this->modelInfo->namespace . 'Entity',
+            ])
+            ->replace($stub, '%MODEL_NAME_ENTITY%', $this->modelInfo->name . 'Entity')
             ->replaceClass($stub, $class->name);
         return $stub;
     }
