@@ -26,8 +26,8 @@ class BaseModelEntity extends BaseObject
     #[ApiModelProperty('更新时间')]
     public string $updatedAt;
 
-    #[ApiModelProperty('删除时间')]
-    public ?string $deletedAt;
+    #[ApiModelProperty(value: '删除时间', hidden: true)]
+    public ?string $deletedAt = null;
 
     public function __construct(array|BaseModelEntity $config = [])
     {

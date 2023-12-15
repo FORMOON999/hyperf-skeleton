@@ -20,13 +20,14 @@ use App\Entity\Request\App\V1\Admin\AdminModifyRequest;
 use App\Entity\Request\App\V1\Admin\AdminRemoveRequest;
 use App\Entity\Response\App\V1\Admin\AdminDetailResponse;
 use App\Entity\Response\App\V1\Admin\AdminListResponse;
+use App\Infrastructure\AdminInterface;
 use App\Service\AdminService;
 use Hyperf\Di\Annotation\Inject;
 
 class AdminLogic
 {
     #[Inject()]
-    protected AdminService $adminService;
+    protected AdminInterface $adminService;
 
     public function getList(AdminListRequest $request): AdminListResponse
     {

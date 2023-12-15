@@ -4,11 +4,7 @@ declare(strict_types=1);
 
 namespace %NAMESPACE%;
 
-use App\Common\Core\Entity\BaseListResponse;
-use Hyperf\ApiDocs\Annotation\ApiModelProperty;
-use Hyperf\DTO\Annotation\ArrayType;
-use %USE%;
-
+%USES%
 class %CLASS% extends BaseListResponse
 {
     #[ApiModelProperty('列表')]

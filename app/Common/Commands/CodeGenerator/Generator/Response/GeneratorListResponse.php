@@ -26,7 +26,12 @@ class GeneratorListResponse extends BaseGeneratorResponse
         $stub = file_get_contents(dirname(__DIR__, 2) . '/stubs/Response/ListResponse.stub');
         $this->replaceNamespace($stub, $class->namespace)
             ->replaceClass($stub, $class->name)
-            ->replace($stub, '%USE%', $this->modelInfo->namespace . 'Entity')
+            ->replaceUses($stub, [
+                'App\\Common\\Core\\Entity\\BaseListResponse',
+                'Hyperf\\ApiDocs\\Annotation\\ApiModelProperty',
+                'Hyperf\\DTO\\Annotation\\ArrayType',
+                $this->modelInfo->namespace . 'Entity',
+            ])
             ->replace($stub, '%NAME%', $this->modelInfo->name . 'Entity');
         return $stub;
     }

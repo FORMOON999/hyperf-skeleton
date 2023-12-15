@@ -26,7 +26,9 @@ class GeneratorDetailResponse extends BaseGeneratorResponse
         $stub = file_get_contents(dirname(__DIR__, 2) . '/stubs/Response/DetailResponse.stub');
         $this->replaceNamespace($stub, $class->namespace)
             ->replaceClass($stub, $class->name)
-            ->replace($stub, '%USE%', $this->modelInfo->namespace . 'Entity')
+            ->replaceUses($stub, [
+                $this->modelInfo->namespace . 'Entity',
+            ])
             ->replace($stub, '%INHERITANCE%', $this->modelInfo->name . 'Entity');
         return $stub;
     }

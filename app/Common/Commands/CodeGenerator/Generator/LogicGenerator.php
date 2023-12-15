@@ -1,6 +1,14 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * This file is part of Hyperf.
+ *
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 
 namespace App\Common\Commands\CodeGenerator\Generator;
 
@@ -24,7 +32,7 @@ class LogicGenerator extends ApplicationGenerator
     public function buildClass(ClassInfo $class, array $results = []): string
     {
         $stub = file_get_contents(dirname(__DIR__) . '/stubs/Logic.stub');
-        $service = $results['service'];
+        $serviceInterface = $results['serviceInterface'];
         $requestList = $results['requestList'];
         $responseList = $results['responseList'];
         $requestCreate = $results['requestCreate'];
@@ -37,7 +45,7 @@ class LogicGenerator extends ApplicationGenerator
         $this->replaceNamespace($stub, $class->namespace)
             ->replaceClass($stub, $class->name)
             ->replaceUses($stub, [
-                $service->namespace,
+                $serviceInterface->namespace,
                 $requestList->namespace,
                 $responseList->namespace,
                 $requestCreate->namespace,
@@ -46,8 +54,8 @@ class LogicGenerator extends ApplicationGenerator
                 $requestModify->namespace,
                 $requestRemove->namespace,
             ])
-            ->replace($stub, '%SERVICE%', $service->name)
-            ->replace($stub, '%SERVICE_NAME%', lcfirst($service->name))
+            ->replace($stub, '%SERVICE%', $serviceInterface->name)
+            ->replace($stub, '%SERVICE_NAME%', str_replace('Interface', '', lcfirst($serviceInterface->name)))
             ->replace($stub, '%LIST_REQUEST%', $requestList->name)
             ->replace($stub, '%LIST_RESPONSE%', $responseList->name)
             ->replace($stub, '%CREAT_REQUEST%', $requestCreate->name)
