@@ -32,7 +32,6 @@ interface %CLASS%
 
     /**
      * @param array $search
-     * @param array $condition 控制参数
      * @return int
      */
     public function remove(array $search): int;

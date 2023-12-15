@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace %NAMESPACE%;
 
 use Hyperf\ApiDocs\Annotation\ApiModelProperty;
-use App\Common\Core\Entity\BaseCondition;
 use Lengbin\Common\BaseObject;
 
 class %CLASS% extends BaseObject

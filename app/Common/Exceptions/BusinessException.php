@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace App\Common\Exceptions;
 
-use App\Common\BaseEnum;
+use App\Common\Core\Enum\BaseEnum;
 use Hyperf\Server\Exception\ServerException;
 use Throwable;
 
