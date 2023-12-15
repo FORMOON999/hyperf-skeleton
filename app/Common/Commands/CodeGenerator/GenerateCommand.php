@@ -25,6 +25,7 @@ use App\Common\Commands\CodeGenerator\Generator\Request\GeneratorCreateRequest;
 use App\Common\Commands\CodeGenerator\Generator\Request\GeneratorDetailRequest;
 use App\Common\Commands\CodeGenerator\Generator\Request\GeneratorListRequest;
 use App\Common\Commands\CodeGenerator\Generator\Request\GeneratorListSearch;
+use App\Common\Commands\CodeGenerator\Generator\Request\GeneratorListSort;
 use App\Common\Commands\CodeGenerator\Generator\Request\GeneratorModifyData;
 use App\Common\Commands\CodeGenerator\Generator\Request\GeneratorModifyRequest;
 use App\Common\Commands\CodeGenerator\Generator\Request\GeneratorRemoveRequest;
@@ -177,12 +178,15 @@ class GenerateCommand extends HyperfCommand
         $requestCondition = Vertex::of(new GeneratorCondition($condition), 'requestCondition');
         $requestListSearch = Vertex::of(new GeneratorListSearch($condition), 'requestListSearch');
         $requestList = Vertex::of(new GeneratorListRequest($condition), 'requestList');
+        $requestSort = Vertex::of(new GeneratorListSort($condition), 'requestListSort');
         $dagRequestList = new Dag();
         $dagRequestList->addVertex($requestCondition)
             ->addVertex($requestListSearch)
             ->addVertex($requestList)
+            ->addVertex($requestSort)
             ->addEdge($requestCondition, $requestList)
-            ->addEdge($requestListSearch, $requestList);
+            ->addEdge($requestListSearch, $requestList)
+            ->addEdge($requestSort, $requestList);
         return Vertex::of($dagRequestList, 'entity_list');
     }
 

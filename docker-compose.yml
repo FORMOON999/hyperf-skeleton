@@ -1,0 +1,12 @@
+version: "3.3"
+
+services:
+  hyperf:
+    container_name: hyperf-server
+    build: ./
+    ports:
+      - "9501:9501"
+    volumes:
+      - ./runtime/logs:/opt/www/runtime/logs
+    network_mode: host
+    tty: true

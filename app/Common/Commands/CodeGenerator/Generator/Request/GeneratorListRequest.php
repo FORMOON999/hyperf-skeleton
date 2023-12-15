@@ -27,7 +27,8 @@ class GeneratorListRequest extends BaseGeneratorRequest
         $this->replaceNamespace($stub, $class->namespace)
             ->replaceClass($stub, $class->name)
             ->replace($stub, '%CONDITION%', $results['requestCondition']->name)
-            ->replace($stub, '%SEARCH%', $results['requestListSearch']->name);
+            ->replace($stub, '%SEARCH%', $results['requestListSearch']->name)
+            ->replace($stub, '%SORT%', $results['requestListSort']->name);
         return $stub;
     }
 }
