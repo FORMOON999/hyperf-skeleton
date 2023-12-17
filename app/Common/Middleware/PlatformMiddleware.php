@@ -1,0 +1,38 @@
+<?php
+
+namespace App\Common\Middleware;
+
+
+use App\Common\Util\Auth\Exception\InvalidTokenException;
+use App\Common\Util\Auth\JwtSubject;
+use App\Common\Util\Auth\Middleware\BaseAuthMiddleware;
+use App\Infrastructure\PlatformInterface;
+use Hyperf\Di\Annotation\Inject;
+use Psr\Http\Message\ServerRequestInterface;
+
+class PlatformMiddleware extends BaseAuthMiddleware
+{
+    #[Inject()]
+    protected PlatformInterface $platform;
+
+    public static function getIss(): ?string
+    {
+        return 'platform';
+    }
+
+    protected function handlePayload(ServerRequestInterface $request, JwtSubject $payload): array
+    {
+        $platform = $this->platform->detail([
+            '_throw' => 1,
+        ], [
+            'platform_id' => $payload->data['sub'] ?? -1,
+//            'status' => BaseStatus::NORMAL,
+        ], ['platform_id']);
+
+        if (empty($platform)) {
+            throw new InvalidTokenException();
+        }
+
+        return $platform->toArray();
+    }
+}
