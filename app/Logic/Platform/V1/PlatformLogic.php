@@ -1,23 +1,31 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * This file is part of Hyperf.
+ *
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 
 namespace App\Logic\Platform\V1;
 
 use App\Common\Core\Entity\BaseLogic;
-use App\Common\Exceptions\BusinessException;
-use Hyperf\Di\Annotation\Inject;
 use App\Common\Core\Entity\BaseSuccessResponse;
+use App\Common\Exceptions\BusinessException;
 use App\Constants\Errors\PlatformError;
-use App\Infrastructure\PlatformInterface;
-use App\Entity\Request\Platform\V1\Platform\PlatformListRequest;
-use App\Entity\Response\Platform\V1\Platform\PlatformListResponse;
 use App\Entity\Request\Platform\V1\Platform\PlatformCreateRequest;
 use App\Entity\Request\Platform\V1\Platform\PlatformDetailRequest;
-use App\Entity\Response\Platform\V1\Platform\PlatformDetailResponse;
+use App\Entity\Request\Platform\V1\Platform\PlatformListRequest;
 use App\Entity\Request\Platform\V1\Platform\PlatformModifyRequest;
 use App\Entity\Request\Platform\V1\Platform\PlatformRemoveRequest;
+use App\Entity\Response\Platform\V1\Platform\PlatformDetailResponse;
+use App\Entity\Response\Platform\V1\Platform\PlatformListResponse;
+use App\Infrastructure\PlatformInterface;
 use App\Model\PlatformEntity;
+use Hyperf\Di\Annotation\Inject;
 
 class PlatformLogic extends BaseLogic
 {
@@ -30,15 +38,14 @@ class PlatformLogic extends BaseLogic
             $request->condition->setHumpName()->toArray(),
             $request->search->setUnderlineName()->toArray(),
             [
-    'id',
-    'created_at',
-    'updated_at',
-    'deleted_at',
-    'username',
-    'nickname',
-    'password',
-    'status',
-],
+                'id',
+                'created_at',
+                'updated_at',
+                'username',
+                'nickname',
+                'password',
+                'status',
+            ],
             $request->sort->setUnderlineName()->toArray(),
             $request->page->toArray(),
         );
@@ -84,15 +91,14 @@ class PlatformLogic extends BaseLogic
             $request->condition->setHumpName()->toArray(),
             $request->search->setUnderlineName()->toArray(),
             [
-    'id',
-    'created_at',
-    'updated_at',
-    'deleted_at',
-    'username',
-    'nickname',
-    'password',
-    'status',
-],
+                'id',
+                'created_at',
+                'updated_at',
+                'username',
+                'nickname',
+                'password',
+                'status',
+            ],
         );
         if (! $result) {
             throw new BusinessException(PlatformError::NOT_FOUND());
@@ -102,7 +108,6 @@ class PlatformLogic extends BaseLogic
 
     /**
      * @param PlatformEntity $result 数据
-     * @return PlatformEntity
      */
     public function format(PlatformEntity $result): PlatformEntity
     {

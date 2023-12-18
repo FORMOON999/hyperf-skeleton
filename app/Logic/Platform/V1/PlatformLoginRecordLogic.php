@@ -30,16 +30,15 @@ class PlatformLoginRecordLogic extends BaseLogic
             $request->condition->setHumpName()->toArray(),
             $request->search->setUnderlineName()->toArray(),
             [
-    'id',
-    'created_at',
-    'updated_at',
-    'deleted_at',
-    'platform_id',
-    'ip',
-    'address',
-    'address1',
-    'address2',
-],
+                'id',
+                'created_at',
+                'updated_at',
+                'platform_id',
+                'ip',
+                'address',
+                'address1',
+                'address2',
+            ],
             $request->sort->setUnderlineName()->toArray(),
             $request->page->toArray(),
         );
@@ -52,7 +51,7 @@ class PlatformLoginRecordLogic extends BaseLogic
     public function create(PlatformLoginRecordCreateRequest $request): BaseSuccessResponse
     {
         $result = $this->platformLoginRecord->create($request->data->setUnderlineName()->toArray());
-        if (! $result) {
+        if (!$result) {
             throw new BusinessException(PlatformLoginRecordError::CREATE_ERROR());
         }
         return new BaseSuccessResponse();
@@ -64,7 +63,7 @@ class PlatformLoginRecordLogic extends BaseLogic
             $request->search->setUnderlineName()->toArray(),
             $request->data->setUnderlineName()->toArray()
         );
-        if (! $result) {
+        if (!$result) {
             throw new BusinessException(PlatformLoginRecordError::UPDATE_ERROR());
         }
         return new BaseSuccessResponse();
@@ -73,7 +72,7 @@ class PlatformLoginRecordLogic extends BaseLogic
     public function remove(PlatformLoginRecordRemoveRequest $request): BaseSuccessResponse
     {
         $result = $this->platformLoginRecord->remove($request->search->setUnderlineName()->toArray());
-        if (! $result) {
+        if (!$result) {
             throw new BusinessException(PlatformLoginRecordError::DELETE_ERROR());
         }
         return new BaseSuccessResponse();
@@ -85,18 +84,17 @@ class PlatformLoginRecordLogic extends BaseLogic
             $request->condition->setHumpName()->toArray(),
             $request->search->setUnderlineName()->toArray(),
             [
-    'id',
-    'created_at',
-    'updated_at',
-    'deleted_at',
-    'platform_id',
-    'ip',
-    'address',
-    'address1',
-    'address2',
-],
+                'id',
+                'created_at',
+                'updated_at',
+                'platform_id',
+                'ip',
+                'address',
+                'address1',
+                'address2',
+            ],
         );
-        if (! $result) {
+        if (!$result) {
             throw new BusinessException(PlatformLoginRecordError::NOT_FOUND());
         }
         return new PlatformLoginRecordDetailResponse($this->format($result));
