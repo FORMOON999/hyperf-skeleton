@@ -1,7 +1,16 @@
 <?php
 
-namespace App\Common\Middleware;
+declare(strict_types=1);
+/**
+ * This file is part of Hyperf.
+ *
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 
+namespace App\Common\Middleware;
 
 use App\Common\Util\Auth\Exception\InvalidTokenException;
 use App\Common\Util\Auth\JwtSubject;
@@ -34,5 +43,12 @@ class PlatformMiddleware extends BaseAuthMiddleware
         }
 
         return $platform->toArray();
+    }
+
+    protected function getTestPayload(ServerRequestInterface $request): array
+    {
+        return [
+            'sub' => 1,
+        ];
     }
 }

@@ -2,10 +2,18 @@
 /**
  * Created by PhpStorm.
  * Date:  2022/2/20
- * Time:  10:50 AM
+ * Time:  10:50 AM.
  */
 
 declare(strict_types=1);
+/**
+ * This file is part of Hyperf.
+ *
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 
 namespace App\Common\Util\Auth\Middleware;
 
@@ -40,8 +48,88 @@ abstract class BaseAuthMiddleware implements MiddlewareInterface
         $this->logger = \Hyperf\Support\make(LoggerFactory::class)->get('jwt-payload');
     }
 
+    public function getTokenByRequest(ServerRequestInterface $request, string $key = 'authorization'): string
+    {
+        $token = $request->getHeaderLine($key);
+        if (empty($token)) {
+            $token = $request->getQueryParams()[$key] ?? '';
+        }
+        if (empty($token)) {
+            $token = $request->getCookieParams()[$key] ?? '';
+        }
+        if (empty($token)) {
+            $token = $request->getParsedBody()[$key] ?? '';
+        }
+        return $token;
+    }
+
     /**
-     * 检测注解路由， 实现路由白名单
+     * 获取Token，  可以 复写 自定义 获取key.
+     */
+    public function getToken(ServerRequestInterface $request): ?string
+    {
+        $token = $this->getTokenByRequest($request);
+        [$token] = sscanf($token, 'Bearer %s');
+        return $token;
+    }
+
+    /**
+     * 解析 jwt 数据， 可以 复写 自己验证 token.
+     */
+    public function validateToken(?string $token, bool $ignoreExpired): JwtSubject
+    {
+        return $this->getLoginMode()->verifyToken($token, $ignoreExpired);
+    }
+
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+    {
+        [$isPublic, $isWhite, $ignoreExpired] = $this->checkRouter($request);
+
+        // 无需鉴权 1，公开的， 2白名单的
+        $token = $this->getToken($request);
+        if ($isPublic || (empty($token) && $isWhite)) {
+            return $handler->handle($request);
+        }
+
+        $isTest = \Hyperf\Support\env('APP_ENV') != 'prod' && $token == '8888';
+        if ($isTest) {
+            $payload = new JwtSubject();
+            $payload->data = $this->getTestPayload($request);
+        } else {
+            $payload = $this->validateToken($token, $ignoreExpired);
+        }
+
+        // 记录 jwt解析 日志
+        if (\Hyperf\Config\config('auth.enable_log', true)) {
+            $requestPayload = get_object_vars($payload);
+            $requestPayload['token'] = $token;
+            $this->logger->info(json_encode($requestPayload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+        }
+
+        if ($payload->invalid || (! $isTest && ! empty(static::getIss()) && static::getIss() !== ($payload->data['iss'] ?? ''))) {
+            throw new InvalidTokenException();
+        }
+
+        if ($payload->expired) {
+            throw new TokenExpireException();
+        }
+
+        $results = $this->handlePayload($request, $payload);
+        $results['token'] = $token;
+        foreach ($results as $key => $value) {
+            $request = $request->withAttribute($key, $value);
+        }
+        Context::set(ServerRequestInterface::class, $request);
+        return $handler->handle($request);
+    }
+
+    /**
+     * jwt签发者, 如果为空 则使用 当前登录uri.
+     */
+    abstract public static function getIss(): ?string;
+
+    /**
+     * 检测注解路由， 实现路由白名单.
      */
     protected function checkRouter(ServerRequestInterface $request): array
     {
@@ -61,97 +149,15 @@ abstract class BaseAuthMiddleware implements MiddlewareInterface
         return [$isPublic, $isWhite, $ignoreExpired];
     }
 
-
-    public function getTokenByRequest(ServerRequestInterface $request, string $key = 'authorization'): string
-    {
-        $token = $request->getHeaderLine($key);
-        if (empty($token)) {
-            $token = $request->getQueryParams()[$key] ?? '';
-        }
-        if (empty($token)) {
-            $token = $request->getCookieParams()[$key] ?? '';
-        }
-        if (empty($token)) {
-            $token = $request->getParsedBody()[$key] ?? '';
-        }
-        return $token;
-    }
-
-    /**
-     * 获取Token，  可以 复写 自定义 获取key
-     */
-    public function getToken(ServerRequestInterface $request): ?string
-    {
-        $token = $this->getTokenByRequest($request);
-        [$token] = sscanf($token, 'Bearer %s');
-        return $token;
-    }
-
     protected function getLoginMode(): LoginInterface
     {
         return $this->login;
     }
 
-    /**
-     * 解析 jwt 数据， 可以 复写 自己验证 token
-     */
-    public function validateToken(?string $token, bool $ignoreExpired): JwtSubject
-    {
-        return $this->getLoginMode()->verifyToken($token, $ignoreExpired);
-    }
-
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
-    {
-        [$isPublic, $isWhite, $ignoreExpired] = $this->checkRouter($request);
-
-        // 无需鉴权 1，公开的， 2白名单的
-        $token = $this->getToken($request);
-        if ($isPublic || (empty($token) && $isWhite)) {
-            return $handler->handle($request);
-        }
-
-        $isTest = \Hyperf\Support\env('APP_ENV') != 'prod';
-        if ($isTest) {
-            $payload = new JwtSubject();
-            $payload->data = [
-                'sub' => $token,
-            ];
-        } else {
-            $payload = $this->validateToken($token, $ignoreExpired);
-        }
-
-        // 记录 jwt解析 日志
-        if (\Hyperf\Config\config('auth.enable_log', true)) {
-            $requestPayload = get_object_vars($payload);
-            $requestPayload['token'] = $token;
-            $this->logger->info(json_encode($requestPayload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
-        }
-
-        if ($payload->invalid || (!$isTest && !empty(static::getIss()) && static::getIss() !== ($payload->data['iss'] ?? ''))) {
-            throw new InvalidTokenException();
-        }
-
-        if ($payload->expired) {
-            throw new TokenExpireException();
-        }
-
-        $results = $this->handlePayload($request, $payload);
-        $results['token'] = $token;
-        foreach ($results as $key => $value) {
-            $request = $request->withAttribute($key, $value);
-        }
-        Context::set(ServerRequestInterface::class, $request);
-        return $handler->handle($request);
-    }
+    abstract protected function getTestPayload(ServerRequestInterface $request): array;
 
     /**
-     * 处理数据
+     * 处理数据.
      */
     abstract protected function handlePayload(ServerRequestInterface $request, JwtSubject $payload): array;
-
-
-    /**
-     * jwt签发者, 如果为空 则使用 当前登录uri
-     */
-    abstract public static function getIss(): ?string;
 }
