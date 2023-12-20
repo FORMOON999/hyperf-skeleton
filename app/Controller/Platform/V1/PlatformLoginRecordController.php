@@ -1,11 +1,28 @@
 <?php
+
 declare(strict_types=1);
+/**
+ * This file is part of Hyperf.
+ *
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 
 namespace App\Controller\Platform\V1;
 
 use App\Common\Core\BaseController;
 use App\Common\Core\Entity\BaseSuccessResponse;
-//use App\Common\Middleware\PlatformMiddleware;
+use App\Common\Middleware\PlatformMiddleware;
+use App\Entity\Request\Platform\V1\PlatformLoginRecord\PlatformLoginRecordCreateRequest;
+use App\Entity\Request\Platform\V1\PlatformLoginRecord\PlatformLoginRecordDetailRequest;
+use App\Entity\Request\Platform\V1\PlatformLoginRecord\PlatformLoginRecordListRequest;
+use App\Entity\Request\Platform\V1\PlatformLoginRecord\PlatformLoginRecordModifyRequest;
+use App\Entity\Request\Platform\V1\PlatformLoginRecord\PlatformLoginRecordRemoveRequest;
+use App\Entity\Response\Platform\V1\PlatformLoginRecord\PlatformLoginRecordDetailResponse;
+use App\Entity\Response\Platform\V1\PlatformLoginRecord\PlatformLoginRecordListResponse;
+use App\Logic\Platform\V1\PlatformLoginRecordLogic;
 use Hyperf\ApiDocs\Annotation\Api;
 use Hyperf\ApiDocs\Annotation\ApiHeader;
 use Hyperf\ApiDocs\Annotation\ApiOperation;
@@ -15,18 +32,10 @@ use Hyperf\DTO\Annotation\Contracts\Valid;
 use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\Middleware;
 use Hyperf\HttpServer\Annotation\PostMapping;
-use App\Logic\Platform\V1\PlatformLoginRecordLogic;
-use App\Entity\Request\Platform\V1\PlatformLoginRecord\PlatformLoginRecordListRequest;
-use App\Entity\Response\Platform\V1\PlatformLoginRecord\PlatformLoginRecordListResponse;
-use App\Entity\Request\Platform\V1\PlatformLoginRecord\PlatformLoginRecordCreateRequest;
-use App\Entity\Request\Platform\V1\PlatformLoginRecord\PlatformLoginRecordDetailRequest;
-use App\Entity\Response\Platform\V1\PlatformLoginRecord\PlatformLoginRecordDetailResponse;
-use App\Entity\Request\Platform\V1\PlatformLoginRecord\PlatformLoginRecordModifyRequest;
-use App\Entity\Request\Platform\V1\PlatformLoginRecord\PlatformLoginRecordRemoveRequest;
 
-#[Controller(prefix: 'api/v1/platform/platform/login/record')]
-#[Api(tags: 'Platform/管理台登录日志管理')]
-//#[Middleware(PlatformMiddleware::class)]
+#[Controller(prefix: 'api/v1/platform/login/record')]
+#[Api(tags: 'Platform/管理台/管理台登录日志管理')]
+#[Middleware(PlatformMiddleware::class)]
 #[ApiHeader(name: 'Authorization')]
 class PlatformLoginRecordController extends BaseController
 {

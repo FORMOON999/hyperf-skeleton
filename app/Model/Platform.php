@@ -1,12 +1,22 @@
 <?php
 
-declare (strict_types=1);
+declare(strict_types=1);
+/**
+ * This file is part of Hyperf.
+ *
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
+
 namespace App\Model;
 
 use App\Common\Core\BaseModel;
 use App\Common\Core\Entity\BaseModelEntity;
+
 /**
- * @property int $id 
+ * @property int $id
  * @property string $created_at 创建时间
  * @property string $updated_at 更新时间
  * @property string $deleted_at 删除时间
@@ -18,33 +28,26 @@ use App\Common\Core\Entity\BaseModelEntity;
 class Platform extends BaseModel
 {
     /**
-     * primaryKey
-     *
-     * @var string
+     * primaryKey.
      */
     protected string $primaryKey = 'id';
+
     /**
      * The table associated with the model.
-     *
-     * @var string
      */
     protected ?string $table = 'platform';
+
     /**
      * The attributes that are mass assignable.
-     *
-     * @var array
      */
     protected array $fillable = ['id', 'created_at', 'updated_at', 'deleted_at', 'username', 'nickname', 'password', 'status'];
+
     /**
      * The attributes that should be cast to native types.
-     *
-     * @var array
      */
     protected array $casts = ['id' => 'integer', 'status' => 'integer'];
-    /**
-     * @return BaseModelEntity
-     */
-    public function newEntity() : BaseModelEntity
+
+    public function newEntity(): BaseModelEntity
     {
         return new PlatformEntity($this->getAttributes());
     }

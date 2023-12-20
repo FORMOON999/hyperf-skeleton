@@ -33,8 +33,8 @@ use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\Middleware;
 use Hyperf\HttpServer\Annotation\PostMapping;
 
-#[Controller(prefix: 'api/v1/platform/platform')]
-#[Api(tags: 'Platform/管理台管理')]
+#[Controller(prefix: 'api/v1/platform')]
+#[Api(tags: 'Platform/管理台/管理台管理')]
 #[Middleware(PlatformMiddleware::class)]
 #[ApiHeader(name: 'Authorization')]
 class PlatformController extends BaseController
