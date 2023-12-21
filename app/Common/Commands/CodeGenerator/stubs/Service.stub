@@ -26,7 +26,10 @@ class %CLASS% extends BaseService implements %INHERITANCE%
      */
     public function getList(array $withs, array $search, array $field = ['*'], array $sort = [], array $page = []): Output
     {
-        $query = $this->%MODEL_NAME%->buildQuery($search, $sort)->with(...$withs)->select($field);
+        $query = $this->%MODEL_NAME%->buildQuery($search, $sort)->select($field);
+        if (! empty($withs)) {
+            $query->with(...$withs);
+        }
         return $this->%MODEL_NAME%->output($query, $page);
     }
 
@@ -70,9 +73,13 @@ class %CLASS% extends BaseService implements %INHERITANCE%
      */
     public function detail(array $withs, array $search, array $field = ['*'], array $sort = []): ?%MODEL_NAME_ENTITY%
     {
+        $query = $this->%MODEL_NAME%->buildQuery($search, $sort)->select($field);
+        if (! empty($withs)) {
+            $query->with(...$withs);
+        }
         /**
          * @var %MODEL_NAME_ENTITY%
          */
-        return $this->%MODEL_NAME%->buildQuery($search, $sort)->with(...$withs)->select($field)->first();
+        return $query->first();
     }
 }

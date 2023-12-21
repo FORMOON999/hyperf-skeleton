@@ -127,6 +127,7 @@ class GenerateResponses
                 unset($schemas[$simpleClassName]);
                 $schemas[$returnClassName] = $commonResponse;
                 $this->swaggerComponents->setSchemas($schemas);
+                $returnTypeClassName = $returnClassName;
             }
             $jsonContent->ref = $this->common->getComponentsName($returnTypeClassName);
         }

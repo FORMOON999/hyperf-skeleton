@@ -17,18 +17,27 @@ declare(strict_types=1);
 
 namespace App\Logic\Platform\V1;
 
+use App\Common\Constants\BaseStatus;
 use App\Common\Core\BaseLogic;
+use App\Common\Core\Entity\BaseSuccessResponse;
+use App\Common\Exceptions\BusinessException;
 use App\Common\Middleware\PlatformMiddleware;
 use App\Common\Util\Auth\LoginFactory;
 use App\Common\Util\Auth\LoginInterface;
+use App\Constants\Errors\PlatformError;
+use App\Entity\Request\Platform\V1\Login\LoginRequest;
+use App\Entity\Response\Platform\V1\Login\LoginResponse;
+use App\Event\PlatformLoginEvent;
 use App\Service\PlatformService;
 use Hyperf\Di\Annotation\Inject;
+use Lengbin\Helper\Util\PasswordHelper;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
 class LoginLogic extends BaseLogic
 {
     #[Inject()]
     protected PlatformService $platformService;
+
     #[Inject()]
     protected EventDispatcherInterface $eventDispatcher;
 
@@ -38,26 +47,29 @@ class LoginLogic extends BaseLogic
     {
         $this->login = $loginFactory->get();
     }
+
     public function login(LoginRequest $request): LoginResponse
     {
-        $platform = $this->getPlatform($request->data->address);
+        $platform = $this->platformService->detail([], ['username' => $request->data->username], [
+            'id',
+            'password',
+            'status',
+        ]);
         if (empty($platform)) {
-            throw new BusinessException(PlatformError::ADDRESS_NOT_FOUND);
+            throw new BusinessException(PlatformError::ACCOUNT_OR_PASSWORD_NOT_FOUND());
         }
-        $code = $this->googleAuthenticator->getCode($platform["secret"]);
-        // 验证签名
-        if (!$this->sign->verify($request->data->address, $code, $request->data->sign)) {
-            throw new BusinessException(PlatformError::SIGN_ERROR);
+
+        if (! PasswordHelper::verifyPassword($request->data->password, $platform->password)) {
+            throw new BusinessException(PlatformError::ACCOUNT_OR_PASSWORD_NOT_FOUND());
         }
         // 状态
-        if ($platform['status'] !== BaseStatus::NORMAL) {
-            throw new BusinessException(PlatformError::FROZEN);
+        if ($platform->status !== BaseStatus::NORMAL()) {
+            throw new BusinessException(PlatformError::FROZEN());
         }
 
         // 登录日志
-        $this->eventDispatcher->dispatch(new PlatformLoginEvent($platform['platform_id']));
-
-        $token = $this->login->makeToke((string)$platform['platform_id'], PlatformMiddleware::getIss());
+        $this->eventDispatcher->dispatch(new PlatformLoginEvent($platform->id));
+        $token = $this->login->makeToke((string) $platform->id, PlatformMiddleware::getIss());
         return $this->formatToken($token);
     }
 
@@ -73,21 +85,6 @@ class LoginLogic extends BaseLogic
         $response = new BaseSuccessResponse();
         $response->result = $result;
         return $response;
-    }
-
-    protected function getPlatform(string $address): array
-    {
-        return $this->platformService->detail([
-            '_notThrow' => 0,
-        ], [
-            'enable' => SoftDeleted::ENABLE,
-            'address' => $address,
-        ], [
-            'nonce',
-            'platform_id',
-            'status',
-            "secret"
-        ]);
     }
 
     protected function formatToken(string $token): LoginResponse

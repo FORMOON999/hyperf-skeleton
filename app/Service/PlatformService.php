@@ -1,24 +1,26 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * This file is part of Hyperf.
+ *
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 
 namespace App\Service;
 
 use App\Common\Core\BaseService;
-use App\Common\Exceptions\BusinessException;
-use Lengbin\Helper\YiiSoft\Arrays\ArrayHelper;
+use App\Common\Core\Entity\Output;
 use App\Infrastructure\PlatformInterface;
 use App\Model\Platform;
 use App\Model\PlatformEntity;
-use App\Common\Core\Entity\Output;
 
 class PlatformService extends BaseService implements PlatformInterface
 {
-
-    public function __construct(protected platform $platform)
-    {
-
-    }
+    public function __construct(protected platform $platform) {}
 
     /**
      * @param array $withs 控制参数
@@ -26,17 +28,18 @@ class PlatformService extends BaseService implements PlatformInterface
      * @param array $field 字段
      * @param array $sort 排序条件
      * @param array $page 分页条件
-     * @return Output
      */
     public function getList(array $withs, array $search, array $field = ['*'], array $sort = [], array $page = []): Output
     {
-        $query = $this->platform->buildQuery($search, $sort)->with(...$withs)->select($field);
+        $query = $this->platform->buildQuery($search, $sort)->select($field);
+        if (! empty($withs)) {
+            $query->with(...$withs);
+        }
         return $this->platform->output($query, $page);
     }
 
     /**
      * @param array $data 新增数据
-     * @return int|string
      */
     public function create(array $data): int|string
     {
@@ -49,7 +52,6 @@ class PlatformService extends BaseService implements PlatformInterface
     /**
      * @param array $search 搜索参数
      * @param array $data 数据
-     * @return int
      */
     public function modify(array $search, array $data): int
     {
@@ -58,7 +60,6 @@ class PlatformService extends BaseService implements PlatformInterface
 
     /**
      * @param array $search 搜索参数
-     * @return int
      */
     public function remove(array $search): int
     {
@@ -70,13 +71,16 @@ class PlatformService extends BaseService implements PlatformInterface
      * @param array $search 搜索参数
      * @param array $field 字段
      * @param array $sort 排序条件
-     * @return PlatformEntity|null
      */
     public function detail(array $withs, array $search, array $field = ['*'], array $sort = []): ?PlatformEntity
     {
+        $query = $this->platform->buildQuery($search, $sort)->select($field);
+        if (! empty($withs)) {
+            $query->with(...$withs);
+        }
         /**
          * @var PlatformEntity
          */
-        return $this->platform->buildQuery($search, $sort)->with(...$withs)->select($field)->first();
+        return $query->first();
     }
 }

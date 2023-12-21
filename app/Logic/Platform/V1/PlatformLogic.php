@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace App\Logic\Platform\V1;
 
-use App\Common\Core\Entity\BaseLogic;
+use App\Common\Core\BaseLogic;
 use App\Common\Core\Entity\BaseSuccessResponse;
 use App\Common\Exceptions\BusinessException;
 use App\Constants\Errors\PlatformError;

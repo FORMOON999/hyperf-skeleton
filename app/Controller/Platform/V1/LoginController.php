@@ -13,8 +13,11 @@ declare(strict_types=1);
 namespace App\Controller\Platform\V1;
 
 use App\Common\Core\BaseController;
+use App\Common\Core\Entity\BaseSuccessResponse;
 use App\Common\Middleware\PlatformMiddleware;
 use App\Common\Util\Auth\Annotation\RouterAuthAnnotation;
+use App\Entity\Request\Platform\V1\Login\LoginRequest;
+use App\Entity\Response\Platform\V1\Login\LoginResponse;
 use App\Logic\Platform\V1\LoginLogic;
 use Hyperf\ApiDocs\Annotation\Api;
 use Hyperf\ApiDocs\Annotation\ApiHeader;
@@ -56,7 +59,6 @@ class LoginController extends BaseController
     #[ApiOperation('退出登录')]
     #[PostMapping(path: 'logout')]
     #[ApiHeader(name: 'Authorization')]
-
     public function logout(): BaseSuccessResponse
     {
         $token = $this->request->getAttribute('token');

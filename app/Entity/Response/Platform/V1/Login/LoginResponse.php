@@ -2,7 +2,7 @@
 /**
  * Created by PhpStorm.
  * Date:  2022/4/13
- * Time:  6:25 PM.
+ * Time:  6:19 PM.
  */
 
 declare(strict_types=1);
@@ -14,18 +14,17 @@ declare(strict_types=1);
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
-namespace App\Entity\Request\Platform\V1\Login;
+
+namespace App\Entity\Response\Platform\V1\Login;
 
 use Hyperf\ApiDocs\Annotation\ApiModelProperty;
-use Hyperf\DTO\Annotation\Validation\Required;
-use Hyperf\DTO\Annotation\Validation\Str;
 use Lengbin\Common\BaseObject;
 
-class LoginData extends BaseObject
+class LoginResponse extends BaseObject
 {
-    #[ApiModelProperty('账号'), Str, Required]
-    public string $username;
+    #[ApiModelProperty('Token')]
+    public string $token;
 
-    #[ApiModelProperty('密码'), Str, Required]
-    public string $password;
+    #[ApiModelProperty('过期时间')]
+    public int $expire = 0;
 }
