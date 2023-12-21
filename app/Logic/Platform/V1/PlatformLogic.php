@@ -43,7 +43,6 @@ class PlatformLogic extends BaseLogic
                 'updated_at',
                 'username',
                 'nickname',
-                'password',
                 'status',
             ],
             $request->sort->setUnderlineName()->toArray(),
@@ -96,7 +95,6 @@ class PlatformLogic extends BaseLogic
                 'updated_at',
                 'username',
                 'nickname',
-                'password',
                 'status',
             ],
         );

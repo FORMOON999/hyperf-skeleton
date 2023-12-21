@@ -32,7 +32,6 @@ use Hyperf\HttpServer\Annotation\PostMapping;
 #[Controller(prefix: 'api/v1/platform')]
 #[Api(tags: 'Platform/管理台/登录')]
 #[Middleware(PlatformMiddleware::class)]
-#[ApiHeader(name: 'Authorization')]
 class LoginController extends BaseController
 {
     #[Inject()]

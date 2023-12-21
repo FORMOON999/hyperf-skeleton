@@ -31,12 +31,9 @@ class PlatformMiddleware extends BaseAuthMiddleware
 
     protected function handlePayload(ServerRequestInterface $request, JwtSubject $payload): array
     {
-        $platform = $this->platform->detail([
-            '_throw' => 1,
-        ], [
-            'platform_id' => $payload->data['sub'] ?? -1,
-//            'status' => BaseStatus::NORMAL,
-        ], ['platform_id']);
+        $platform = $this->platform->detail([], [
+            'id' => $payload->data['sub'] ?? -1,
+        ], ['id']);
 
         if (empty($platform)) {
             throw new InvalidTokenException();
