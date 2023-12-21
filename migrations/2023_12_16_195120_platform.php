@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 /**
  * This file is part of Hyperf.
  *
@@ -9,6 +10,7 @@ declare(strict_types=1);
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
+
 use App\Common\Traits\MigrateFiledTrait;
 use Hyperf\Database\Migrations\Migration;
 use Hyperf\Database\Schema\Blueprint;
@@ -23,7 +25,7 @@ class Platform extends Migration
      */
     public function up(): void
     {
-        if (! Schema::hasTable('platform')) {
+        if (!Schema::hasTable('platform')) {
             Schema::create('platform', function (Blueprint $table) {
                 $this->commonFields($table);
                 $table->comment('管理台');
@@ -34,8 +36,18 @@ class Platform extends Migration
                 $table->tinyInteger('status')->comment('状态');
                 $table->dateTime('last_time')->nullable()->comment('上次登录时间');
             });
+
+            $date = date('Y-m-d H:i:s');
+            \Hyperf\DbConnection\Db::table('platform')->insert([
+                'username' => 'admin',
+                'nickname' => 'admin',
+                'password' => \Lengbin\Helper\Util\PasswordHelper::generatePassword('123456'),
+                'status' => \App\Common\Constants\BaseStatus::NORMAL,
+                'created_at' => $date,
+                'updated_at' => $date,
+            ]);
         }
-        if (! Schema::hasTable('platform_login_record')) {
+        if (!Schema::hasTable('platform_login_record')) {
             Schema::create('platform_login_record', function (Blueprint $table) {
                 $this->commonFields($table);
                 $table->comment('管理台登录日志');
