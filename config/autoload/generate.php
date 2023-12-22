@@ -12,7 +12,6 @@ declare(strict_types=1);
 return [
     // 应用端
     'applications' => [
-        'app',
         'platform',
     ],
     // 是否基于 表区分  ddd

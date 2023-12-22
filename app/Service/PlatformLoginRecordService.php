@@ -75,12 +75,9 @@ class PlatformLoginRecordService extends BaseService implements PlatformLoginRec
     public function detail(array $withs, array $search, array $field = ['*'], array $sort = []): ?PlatformLoginRecordEntity
     {
         $query = $this->platformLoginRecord->buildQuery($search, $sort)->select($field);
-        if (!empty($withs)) {
+        if (! empty($withs)) {
             $query->with(...$withs);
         }
-        /**
-         * @var PlatformLoginRecordEntity
-         */
-        return $query->first();
+        return $query->first()?->newEntity();
     }
 }

@@ -1,23 +1,14 @@
 <?php
 
 declare(strict_types=1);
-/**
- * This file is part of Hyperf.
- *
- * @link     https://www.hyperf.io
- * @document https://hyperf.wiki
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
- */
 
 namespace App\Logic\Platform\V1;
 
 use App\Common\Core\BaseLogic;
+use Hyperf\Di\Annotation\Inject;
+use App\Infrastructure\PlatformLoginRecordInterface;
 use App\Entity\Request\Platform\V1\PlatformLoginRecord\PlatformLoginRecordListRequest;
 use App\Entity\Response\Platform\V1\PlatformLoginRecord\PlatformLoginRecordListResponse;
-use App\Infrastructure\PlatformLoginRecordInterface;
-use App\Model\PlatformLoginRecordEntity;
-use Hyperf\Di\Annotation\Inject;
 
 class PlatformLoginRecordLogic extends BaseLogic
 {
@@ -42,17 +33,6 @@ class PlatformLoginRecordLogic extends BaseLogic
             $request->sort->setUnderlineName()->toArray(),
             $request->page->toArray(),
         );
-        $result->list = $this->toArray($result->list, function ($data) {
-            return $this->format($data);
-        });
         return new PlatformLoginRecordListResponse($result);
-    }
-
-    /**
-     * @param PlatformLoginRecordEntity $result 数据
-     */
-    public function format(PlatformLoginRecordEntity $result): PlatformLoginRecordEntity
-    {
-        return $result;
     }
 }

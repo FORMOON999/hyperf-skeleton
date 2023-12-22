@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace %NAMESPACE%;
 
 use App\Common\Core\BaseService;
-use App\Common\Exceptions\BusinessException;
-use Lengbin\Helper\YiiSoft\Arrays\ArrayHelper;
 %USES%
 class %CLASS% extends BaseService implements %INHERITANCE%
 {
