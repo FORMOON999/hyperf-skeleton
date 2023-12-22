@@ -16,20 +16,20 @@ export const useUserStore = defineStore("user", () => {
     perms: [],
   };
 
-  const token = useStorage("accessToken", "");
+  const accessToken = useStorage("token", "");
 
   /**
    * 登录
    *
-   * @param {LoginData}
    * @returns
+   * @param loginData
    */
   function login(loginData: LoginData) {
     return new Promise<void>((resolve, reject) => {
       loginApi(loginData)
         .then((response) => {
-          const { tokenType, accessToken } = response.data;
-          token.value = tokenType + " " + accessToken; // Bearer eyJhbGciOiJIUzI1NiJ9.xxx.xxx
+          const { token } = response.data;
+          accessToken.value = "Bearer " + token; // Bearer eyJhbGciOiJIUzI1NiJ9.xxx.xxx
           resolve();
         })
         .catch((error) => {
@@ -65,7 +65,7 @@ export const useUserStore = defineStore("user", () => {
     return new Promise<void>((resolve, reject) => {
       logoutApi()
         .then(() => {
-          token.value = "";
+          accessToken.value = "";
           location.reload(); // 清空路由
           resolve();
         })
@@ -78,14 +78,14 @@ export const useUserStore = defineStore("user", () => {
   // remove token
   function resetToken() {
     return new Promise<void>((resolve) => {
-      token.value = "";
+      accessToken.value = "";
       resetRouter();
       resolve();
     });
   }
 
   return {
-    token,
+    accessToken,
     user,
     login,
     getUserInfo,

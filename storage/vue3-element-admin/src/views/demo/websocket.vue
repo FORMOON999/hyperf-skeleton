@@ -57,7 +57,7 @@ function connectWebSocket() {
   stompClient = Stomp.over(socket);
 
   stompClient.connect(
-    { Authorization: userStore.token },
+    { Authorization: userStore.accessToken },
     () => {
       isConnected.value = true;
       messages.value.push({
