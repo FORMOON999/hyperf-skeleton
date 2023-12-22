@@ -77,9 +77,6 @@ class %CLASS% extends BaseService implements %INHERITANCE%
         if (! empty($withs)) {
             $query->with(...$withs);
         }
-        /**
-         * @var %MODEL_NAME_ENTITY%
-         */
-        return $query->first();
+        return $query->first()?->newEntity();
     }
 }

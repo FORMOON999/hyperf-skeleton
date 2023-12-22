@@ -43,7 +43,6 @@ class PlatformLoginRecordLogic extends BaseLogic
             $request->page->toArray(),
         );
         $result->list = $this->toArray($result->list, function ($data) {
-            var_dump($data);
             return $this->format($data);
         });
         return new PlatformLoginRecordListResponse($result);

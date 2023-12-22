@@ -51,7 +51,7 @@ class PlatformLoginRecord extends BaseModel
 
     public function newEntity(): BaseModelEntity
     {
-        return new PlatformLoginRecordEntity($this->getAttributes());
+        return new PlatformLoginRecordEntity($this->toArray());
     }
 
     public function platform(): HasOne

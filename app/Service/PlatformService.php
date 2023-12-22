@@ -78,9 +78,6 @@ class PlatformService extends BaseService implements PlatformInterface
         if (! empty($withs)) {
             $query->with(...$withs);
         }
-        /**
-         * @var PlatformEntity
-         */
-        return $query->first();
+        return $query->first()?->newEntity();
     }
 }

@@ -32,7 +32,7 @@ class PlatformLoginRecordService extends BaseService implements PlatformLoginRec
     public function getList(array $withs, array $search, array $field = ['*'], array $sort = [], array $page = []): Output
     {
         $query = $this->platformLoginRecord->buildQuery($search, $sort)->select($field);
-        if (!empty($withs)) {
+        if (! empty($withs)) {
             $query->with(...$withs);
         }
         return $this->platformLoginRecord->output($query, $page);

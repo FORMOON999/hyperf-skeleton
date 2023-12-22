@@ -49,6 +49,6 @@ class %CLASS% extends %INHERITANCE%
      */
     public function newEntity(): BaseModelEntity
     {
-        return new %CLASS%Entity($this->getAttributes());
+        return new %CLASS%Entity($this->toArray());
     }
 }
