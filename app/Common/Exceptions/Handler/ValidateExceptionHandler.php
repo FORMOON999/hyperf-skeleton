@@ -17,7 +17,9 @@ declare(strict_types=1);
 
 namespace App\Common\Exceptions\Handler;
 
+use App\Common\Core\Enum\CommonError;
 use App\Common\Core\Response;
+use App\Common\Exceptions\BusinessException;
 use Hyperf\ExceptionHandler\ExceptionHandler;
 use Hyperf\Validation\ValidationException;
 use Psr\Http\Message\ResponseInterface;

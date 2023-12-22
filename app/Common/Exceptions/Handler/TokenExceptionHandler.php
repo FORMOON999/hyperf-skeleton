@@ -20,6 +20,8 @@ namespace App\Common\Exceptions\Handler;
 use App\Common\Core\Enum\CommonError;
 use App\Common\Core\Response;
 use App\Common\Exceptions\BusinessException;
+use App\Common\Util\Auth\Exception\InvalidTokenException;
+use App\Common\Util\Auth\Exception\TokenExpireException;
 use Hyperf\ExceptionHandler\ExceptionHandler;
 use Psr\Http\Message\ResponseInterface;
 use Throwable;

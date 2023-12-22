@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
 
-namespace App\Listener;
+namespace App\Common\Listener;
 
 use Hyperf\AsyncQueue\AnnotationJob;
 use Hyperf\AsyncQueue\Event\AfterHandle;

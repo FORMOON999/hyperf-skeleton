@@ -53,6 +53,9 @@ class ModelGenerator extends ModelCommand
         $builder = $this->getSchemaBuilder($option->getPool());
 
         foreach ($tables as $table) {
+            if (str_contains($table, 'migrations')) {
+                continue;
+            }
             $classInfo = $this->getModelInfo($project, $builder, $table, $option, $force, $this->ddd);
 
             $this->createModel($table, $option);

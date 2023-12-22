@@ -22,17 +22,4 @@ abstract class BaseModel extends Model
     use MySQLModelTrait;
 
     abstract public function newEntity(): BaseModelEntity;
-
-    public function newCollection(array $models = [])
-    {
-        $result = [];
-        foreach ($models as $model) {
-            if ($model instanceof BaseModelEntity) {
-                $result = $models;
-                break;
-            }
-            $result[] = $model->newEntity();
-        }
-        return parent::newCollection($result);
-    }
 }

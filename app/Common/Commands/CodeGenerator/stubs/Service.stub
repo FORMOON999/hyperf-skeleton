@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace %NAMESPACE%;
 
 use App\Common\Core\BaseService;
-use App\Common\Exceptions\BusinessException;
-use Lengbin\Helper\YiiSoft\Arrays\ArrayHelper;
 %USES%
 class %CLASS% extends BaseService implements %INHERITANCE%
 {
@@ -26,7 +24,10 @@ class %CLASS% extends BaseService implements %INHERITANCE%
      */
     public function getList(array $withs, array $search, array $field = ['*'], array $sort = [], array $page = []): Output
     {
-        $query = $this->%MODEL_NAME%->buildQuery($search, $sort)->with(...$withs)->select($field);
+        $query = $this->%MODEL_NAME%->buildQuery($search, $sort)->select($field);
+        if (! empty($withs)) {
+            $query->with(...$withs);
+        }
         return $this->%MODEL_NAME%->output($query, $page);
     }
 
@@ -70,9 +71,10 @@ class %CLASS% extends BaseService implements %INHERITANCE%
      */
     public function detail(array $withs, array $search, array $field = ['*'], array $sort = []): ?%MODEL_NAME_ENTITY%
     {
-        /**
-         * @var %MODEL_NAME_ENTITY%
-         */
-        return $this->%MODEL_NAME%->buildQuery($search, $sort)->with(...$withs)->select($field)->first();
+        $query = $this->%MODEL_NAME%->buildQuery($search, $sort)->select($field);
+        if (! empty($withs)) {
+            $query->with(...$withs);
+        }
+        return $query->first()?->newEntity();
     }
 }

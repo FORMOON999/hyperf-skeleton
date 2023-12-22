@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace %NAMESPACE%;
 
-use App\Common\Core\Entity\BaseLogic;
+use App\Common\Core\BaseLogic;
 use App\Common\Exceptions\BusinessException;
 use Hyperf\Di\Annotation\Inject;
 use App\Common\Core\Entity\BaseSuccessResponse;
@@ -23,9 +23,6 @@ class %CLASS% extends BaseLogic
             $request->sort->setUnderlineName()->toArray(),
             $request->page->toArray(),
         );
-        $result->list = $this->toArray($result->list, function ($data) {
-            return $this->format($data);
-        });
         return new %LIST_RESPONSE%($result);
     }
 
@@ -69,15 +66,6 @@ class %CLASS% extends BaseLogic
         if (! $result) {
             throw new BusinessException(%ERROR%::NOT_FOUND());
         }
-        return new %DETAIL_RESPONSE%($this->format($result));
-    }
-
-    /**
-     * @param %MODEL_NAME_ENTITY% $result 数据
-     * @return %MODEL_NAME_ENTITY%
-     */
-    public function format(%MODEL_NAME_ENTITY% $result): %MODEL_NAME_ENTITY%
-    {
-        return $result;
+        return new %DETAIL_RESPONSE%($result);
     }
 }
