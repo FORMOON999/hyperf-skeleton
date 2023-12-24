@@ -73,7 +73,7 @@
 # 如何使用
 
 ## 管理台
-请移驾到 [vue3-element-admin](https://github.com/youlaitech/vue3-element-admin)
+请移驾到 [vue3-element-admin](https://github.com/youlaitech/vue3-element-admin) [接口文档](https://apifox.com/apidoc/shared-195e783f-4d85-4235-a038-eec696de4ea5)
 
 ## 安装
 

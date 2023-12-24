@@ -14,10 +14,10 @@ namespace Hyperf\DTO;
 
 use App\Common\Core\Enum\BaseEnum;
 use BackedEnum;
-use Hyperf\DTO\Annotation\ArrayType;
 use Hyperf\DTO\Scan\PropertyAliasMappingManager;
 use InvalidArgumentException;
 use JsonMapper_Exception;
+use Lengbin\Common\Annotation\ArrayType;
 use Lengbin\Common\BaseObject;
 use phpDocumentor\Reflection\DocBlock\Tags\Var_;
 use phpDocumentor\Reflection\DocBlockFactory;
@@ -394,16 +394,13 @@ class JsonMapper extends \JsonMapper
         /** @var ReflectionAttribute $arrayType */
         $arrayType = $reflectionProperty->getAttributes(ArrayType::class)[0] ?? [];
         if (! empty($arrayType)) {
-            $type = $arrayType->getArguments()[0] ?? null;
-            if (! empty($type)) {
-                $isSimpleType = $this->isSimpleType($type);
-                if ($isSimpleType) {
-                    $annotations['var'][] = $type . '[]';
-                } else {
-                    $annotations['var'][] = '\\' . $type . '[]';
-                }
-                return $annotations;
+            $arrayTypeObj = $arrayType->newInstance();
+            if (! empty($arrayTypeObj->className)) {
+                $annotations['var'][] = '\\' . $arrayTypeObj->className . '[]';
+            } else {
+                $annotations['var'][] = $arrayTypeObj->type . '[]';
             }
+            return $annotations;
         }
         if (! is_string($docblock)) {
             return [];

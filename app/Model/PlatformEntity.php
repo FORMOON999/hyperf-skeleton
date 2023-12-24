@@ -14,6 +14,7 @@ namespace App\Model;
 
 use App\Common\Constants\BaseStatus;
 use Hyperf\ApiDocs\Annotation\ApiModelProperty;
+use Lengbin\Common\Annotation\ArrayType;
 
 /**
  * Class PlatformEntity.
@@ -31,12 +32,13 @@ class PlatformEntity extends \App\Common\Core\Entity\BaseModelEntity
 
     #[ApiModelProperty('状态')]
     public BaseStatus $status;
+
     #[ApiModelProperty(value: '上次登录时间')]
     public string $lastTime;
 
-    #[ApiModelProperty(value: '角色')]
-    public array $roles = ["admin"];
+    #[ApiModelProperty(value: '角色'), ArrayType(type: 'string')]
+    public array $roles = [];
 
-    #[ApiModelProperty(value: '权限')]
+    #[ApiModelProperty(value: '权限'), ArrayType(type: 'string')]
     public array $perms = [];
 }

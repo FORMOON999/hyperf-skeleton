@@ -6,8 +6,8 @@ namespace App\Entity\Response\Platform\V1\Platform;
 
 use App\Common\Core\Entity\BaseListResponse;
 use Hyperf\ApiDocs\Annotation\ApiModelProperty;
-use Hyperf\DTO\Annotation\ArrayType;
 use App\Model\PlatformEntity;
+use Lengbin\Common\Annotation\ArrayType;
 
 class PlatformListResponse extends BaseListResponse
 {

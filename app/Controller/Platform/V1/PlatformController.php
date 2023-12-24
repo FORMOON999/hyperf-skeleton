@@ -78,7 +78,7 @@ class PlatformController extends BaseController
     }
 
     #[PostMapping(path: 'me')]
-    #[ApiOperation('管理员')]
+    #[ApiOperation('管理员信息')]
     public function me(): PlatformDetailResponse
     {
         $id = $this->request->getAttribute('id');
