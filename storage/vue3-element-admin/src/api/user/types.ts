@@ -2,7 +2,7 @@
  * 登录用户信息
  */
 export interface UserInfo {
-  userId?: number;
+  id?: number;
   username?: string;
   nickname?: string;
   avatar?: string;

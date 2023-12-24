@@ -43,37 +43,45 @@ class PlatformController extends BaseController
     protected PlatformLogic $platformLogic;
 
     #[PostMapping(path: 'list')]
-    #[ApiOperation('获取管理台列表')]
+    #[ApiOperation('获取管理员列表')]
     public function getList(#[Valid] #[RequestBody] PlatformListRequest $request): PlatformListResponse
     {
         return $this->platformLogic->getList($request);
     }
 
     #[PostMapping(path: 'create')]
-    #[ApiOperation('创建管理台')]
+    #[ApiOperation('创建管理员')]
     public function create(#[Valid] #[RequestBody] PlatformCreateRequest $request): BaseSuccessResponse
     {
         return $this->platformLogic->create($request);
     }
 
     #[PostMapping(path: 'modify')]
-    #[ApiOperation('更新管理台')]
+    #[ApiOperation('更新管理员')]
     public function modify(#[Valid] #[RequestBody] PlatformModifyRequest $request): BaseSuccessResponse
     {
         return $this->platformLogic->modify($request);
     }
 
     #[PostMapping(path: 'remove')]
-    #[ApiOperation('删除管理台')]
+    #[ApiOperation('删除管理员')]
     public function remove(#[Valid] #[RequestBody] PlatformRemoveRequest $request): BaseSuccessResponse
     {
         return $this->platformLogic->remove($request);
     }
 
     #[PostMapping(path: 'detail')]
-    #[ApiOperation('获取管理台详情')]
+    #[ApiOperation('获取管理员详情')]
     public function detail(#[Valid] #[RequestBody] PlatformDetailRequest $request): PlatformDetailResponse
     {
         return $this->platformLogic->detail($request);
+    }
+
+    #[PostMapping(path: 'me')]
+    #[ApiOperation('管理员')]
+    public function me(): PlatformDetailResponse
+    {
+        $id = $this->request->getAttribute('id');
+        return $this->platformLogic->me($id);
     }
 }

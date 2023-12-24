@@ -111,4 +111,22 @@ class PlatformLogic extends BaseLogic
     {
         return $result;
     }
+
+    public function me(int $id): PlatformDetailResponse
+    {
+        $result = $this->platform->detail(
+            [],
+            ['id' => $id],
+            [
+                'id',
+                'created_at',
+                'username',
+                'nickname',
+            ],
+        );
+        if (! $result) {
+            throw new BusinessException(PlatformError::NOT_FOUND());
+        }
+        return new PlatformDetailResponse($this->format($result));
+    }
 }

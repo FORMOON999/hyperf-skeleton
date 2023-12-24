@@ -7,8 +7,8 @@ import { UserForm, UserInfo, UserPageVO, UserQuery } from "./types";
  */
 export function getUserInfoApi(): AxiosPromise<UserInfo> {
   return request({
-    url: "/api/v1/users/me",
-    method: "get",
+    url: "/api/v1/platform/me",
+    method: "post",
   });
 }
 

@@ -33,4 +33,10 @@ class PlatformEntity extends \App\Common\Core\Entity\BaseModelEntity
     public BaseStatus $status;
     #[ApiModelProperty(value: '上次登录时间')]
     public string $lastTime;
+
+    #[ApiModelProperty(value: '角色')]
+    public array $roles = ["admin"];
+
+    #[ApiModelProperty(value: '权限')]
+    public array $perms = [];
 }
