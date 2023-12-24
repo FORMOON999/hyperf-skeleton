@@ -1,6 +1,14 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * This file is part of Hyperf.
+ *
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 
 namespace App\Common\Util\Auth\Mode;
 
@@ -10,7 +18,6 @@ use App\Common\Util\Auth\LoginInterface;
 
 class JwtMode implements LoginInterface
 {
-
     protected JwtHelper $jwtHelper;
 
     public function __construct(JwtHelper $jwtHelper)
@@ -29,28 +36,6 @@ class JwtMode implements LoginInterface
         return $token;
     }
 
-    protected function handleOss(string $token, string $event): bool
-    {
-        $status = false;
-        if (!\Hyperf\Config\config('auth.oss', false)) {
-            return $status;
-        }
-        $result = $this->jwtHelper->getManager()->getCodec()->decode($token);
-        switch ($event) {
-            case "add":
-                $this->jwtHelper->getStorage()->add($result['sub'], $result['jti'], $this->getTtl());
-                break;
-            case "remove":
-                $this->jwtHelper->getStorage()->destroy($result['sub']);
-                break;
-            case "check":
-                $jti = $this->jwtHelper->getStorage()->get($result['sub']);
-                $status = $jti !== $result['jti'];
-                break;
-        }
-        return $status;
-    }
-
     public function logout(string $token): bool
     {
         $this->handleOss($token, 'remove');
@@ -67,7 +52,7 @@ class JwtMode implements LoginInterface
     public function verifyToken(?string $token, bool $ignoreExpired = false): JwtSubject
     {
         $payload = $this->jwtHelper->verifyToken($token, $ignoreExpired);
-        if (!$payload->expired && !$payload->invalid) {
+        if (! $payload->expired && ! $payload->invalid) {
             $payload->invalid = $this->handleOss($token, 'check');
         }
         return $payload;
@@ -76,5 +61,27 @@ class JwtMode implements LoginInterface
     public function getTtl(): int
     {
         return $this->jwtHelper->getTtl();
+    }
+
+    protected function handleOss(string $token, string $event): bool
+    {
+        $status = false;
+        if (! \Hyperf\Config\config('auth.oss', false)) {
+            return $status;
+        }
+        $result = $this->jwtHelper->getManager()->getCodec()->decode($token);
+        switch ($event) {
+            case 'add':
+                $this->jwtHelper->getStorage()->add($result['sub'], $result['jti'], $this->getTtl());
+                break;
+            case 'remove':
+                $this->jwtHelper->getStorage()->destroy($result['sub']);
+                break;
+            case 'check':
+                $jti = $this->jwtHelper->getStorage()->get($result['sub']);
+                $status = $jti !== $result['jti'];
+                break;
+        }
+        return $status;
     }
 }

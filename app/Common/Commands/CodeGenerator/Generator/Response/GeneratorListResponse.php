@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace App\Common\Commands\CodeGenerator\Generator\Response;
 
 use App\Common\Commands\Model\ClassInfo;
+use Lengbin\Common\Annotation\ArrayType;
 
 class GeneratorListResponse extends BaseGeneratorResponse
 {
@@ -29,7 +30,7 @@ class GeneratorListResponse extends BaseGeneratorResponse
             ->replaceUses($stub, [
                 'App\\Common\\Core\\Entity\\BaseListResponse',
                 'Hyperf\\ApiDocs\\Annotation\\ApiModelProperty',
-                'Hyperf\\DTO\\Annotation\\ArrayType',
+                ArrayType::class,
                 $this->modelInfo->namespace . 'Entity',
             ])
             ->replace($stub, '%NAME%', $this->modelInfo->name . 'Entity');

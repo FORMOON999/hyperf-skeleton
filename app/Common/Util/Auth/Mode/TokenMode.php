@@ -1,6 +1,14 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * This file is part of Hyperf.
+ *
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 
 namespace App\Common\Util\Auth\Mode;
 
@@ -12,7 +20,6 @@ use HyperfExt\Jwt\Storage\HyperfCache;
 
 class TokenMode implements LoginInterface
 {
-
     protected JwtHelper $jwtHelper;
 
     protected ?StorageInterface $storage = null;
@@ -31,28 +38,6 @@ class TokenMode implements LoginInterface
         $token = $this->jwtHelper->make($data);
         $this->refreshToken($token);
         return $token;
-    }
-
-    protected function getKey(array $result)
-    {
-        $isOss = \Hyperf\Config\config('auth.oss', false);
-        return $isOss ? $result['sub'] : $result['jti'];
-    }
-
-    protected function handle(string $token, string $event, array $result = []): void
-    {
-        if (empty($result)) {
-            $result = $this->jwtHelper->getManager()->getCodec()->decode($token);
-        }
-        $key = $this->getKey($result);
-        switch ($event) {
-            case "add":
-                $this->getStorage()->add($key, $token, $this->getTtl());
-                break;
-            case "remove":
-                $this->getStorage()->destroy($key);
-                break;
-        }
     }
 
     public function logout(string $token): bool
@@ -77,7 +62,7 @@ class TokenMode implements LoginInterface
         $result = $this->jwtHelper->getManager()->getCodec()->decode($token);
         $key = $this->getKey($result);
         $cacheToken = $this->getStorage()->get($key);
-        if (!empty($cacheToken)) {
+        if (! empty($cacheToken)) {
             if ($cacheToken !== $token) {
                 $payload->invalid = true;
             }
@@ -85,7 +70,7 @@ class TokenMode implements LoginInterface
             $payload->expired = true;
         }
 
-        if (!$payload->expired && !$payload->invalid) {
+        if (! $payload->expired && ! $payload->invalid) {
             $this->handle($token, 'add', $result);
             $defaultClaims = $this->jwtHelper->getManager()->getPayloadFactory()->getDefaultClaims();
             foreach ($defaultClaims as $claim) {
@@ -113,5 +98,27 @@ class TokenMode implements LoginInterface
             ]);
         }
         return $this->storage;
+    }
+
+    protected function getKey(array $result)
+    {
+        $isOss = \Hyperf\Config\config('auth.oss', false);
+        return $isOss ? $result['sub'] : $result['jti'];
+    }
+
+    protected function handle(string $token, string $event, array $result = []): void
+    {
+        if (empty($result)) {
+            $result = $this->jwtHelper->getManager()->getCodec()->decode($token);
+        }
+        $key = $this->getKey($result);
+        switch ($event) {
+            case 'add':
+                $this->getStorage()->add($key, $token, $this->getTtl());
+                break;
+            case 'remove':
+                $this->getStorage()->destroy($key);
+                break;
+        }
     }
 }
