@@ -12,13 +12,12 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use App\Common\Core\BaseService;
 use App\Common\Core\Entity\Output;
 use App\Infrastructure\PlatformInterface;
 use App\Model\Platform;
 use App\Model\PlatformEntity;
 
-class PlatformService extends BaseService implements PlatformInterface
+class PlatformService implements PlatformInterface
 {
     public function __construct(protected platform $platform) {}
 

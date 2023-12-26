@@ -12,13 +12,12 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use App\Common\Core\BaseService;
 use App\Common\Core\Entity\Output;
 use App\Infrastructure\PlatformLoginRecordInterface;
 use App\Model\PlatformLoginRecord;
 use App\Model\PlatformLoginRecordEntity;
 
-class PlatformLoginRecordService extends BaseService implements PlatformLoginRecordInterface
+class PlatformLoginRecordService implements PlatformLoginRecordInterface
 {
     public function __construct(protected platformLoginRecord $platformLoginRecord) {}
 

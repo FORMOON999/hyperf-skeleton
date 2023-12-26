@@ -13,8 +13,6 @@ use Hyperf\DTO\Annotation\Validation\Required;
  */
 class PlatformSearch extends \Lengbin\Common\BaseObject
 {
-
     #[ApiModelProperty("管理台ID"), Required]
     public int $id;
-
 }

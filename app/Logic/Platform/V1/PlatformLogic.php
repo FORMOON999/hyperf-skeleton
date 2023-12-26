@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace App\Logic\Platform\V1;
 
-use App\Common\Core\BaseLogic;
 use App\Common\Core\Entity\BaseSuccessResponse;
 use App\Common\Exceptions\BusinessException;
 use App\Constants\Errors\PlatformError;
@@ -24,10 +23,9 @@ use App\Entity\Request\Platform\V1\Platform\PlatformRemoveRequest;
 use App\Entity\Response\Platform\V1\Platform\PlatformDetailResponse;
 use App\Entity\Response\Platform\V1\Platform\PlatformListResponse;
 use App\Infrastructure\PlatformInterface;
-use App\Model\PlatformEntity;
 use Hyperf\Di\Annotation\Inject;
 
-class PlatformLogic extends BaseLogic
+class PlatformLogic
 {
     #[Inject()]
     protected PlatformInterface $platform;
@@ -35,7 +33,7 @@ class PlatformLogic extends BaseLogic
     public function getList(PlatformListRequest $request): PlatformListResponse
     {
         $result = $this->platform->getList(
-            $request->condition->setHumpName()->toArray(),
+            [],
             $request->search->setUnderlineName()->toArray(),
             [
                 'id',
@@ -48,9 +46,6 @@ class PlatformLogic extends BaseLogic
             $request->sort->setUnderlineName()->toArray(),
             $request->page->toArray(),
         );
-        $result->list = $this->toArray($result->list, function ($data) {
-            return $this->format($data);
-        });
         return new PlatformListResponse($result);
     }
 
@@ -87,7 +82,7 @@ class PlatformLogic extends BaseLogic
     public function detail(PlatformDetailRequest $request): PlatformDetailResponse
     {
         $result = $this->platform->detail(
-            $request->condition->setHumpName()->toArray(),
+            [],
             $request->search->setUnderlineName()->toArray(),
             [
                 'id',
@@ -101,15 +96,7 @@ class PlatformLogic extends BaseLogic
         if (! $result) {
             throw new BusinessException(PlatformError::NOT_FOUND());
         }
-        return new PlatformDetailResponse($this->format($result));
-    }
-
-    /**
-     * @param PlatformEntity $result 数据
-     */
-    public function format(PlatformEntity $result): PlatformEntity
-    {
-        return $result;
+        return new PlatformDetailResponse($result);
     }
 
     public function me(int $id): PlatformDetailResponse
@@ -127,6 +114,7 @@ class PlatformLogic extends BaseLogic
         if (! $result) {
             throw new BusinessException(PlatformError::NOT_FOUND());
         }
-        return new PlatformDetailResponse($this->format($result));
+
+        return new PlatformDetailResponse($result);
     }
 }

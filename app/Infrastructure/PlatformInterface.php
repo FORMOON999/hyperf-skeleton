@@ -17,7 +17,7 @@ interface PlatformInterface
      * @param array $page 分页条件
      * @return Output
      */
-    public function getList(array $withs, array $search, array $field = ['*'], array $sort = [], array $page = []): Output;
+    public function getList(array $search, array $field = ['*'], array $sort = [], array $page = []): Output;
 
     /**
      * @param array $data 新增数据

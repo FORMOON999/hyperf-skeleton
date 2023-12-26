@@ -18,7 +18,6 @@ declare(strict_types=1);
 namespace App\Logic\Platform\V1;
 
 use App\Common\Constants\BaseStatus;
-use App\Common\Core\BaseLogic;
 use App\Common\Core\Entity\BaseSuccessResponse;
 use App\Common\Exceptions\BusinessException;
 use App\Common\Middleware\PlatformMiddleware;
@@ -28,15 +27,15 @@ use App\Constants\Errors\PlatformError;
 use App\Entity\Request\Platform\V1\Login\LoginRequest;
 use App\Entity\Response\Platform\V1\Login\LoginResponse;
 use App\Event\PlatformLoginEvent;
-use App\Service\PlatformService;
+use App\Infrastructure\PlatformInterface;
 use Hyperf\Di\Annotation\Inject;
 use Lengbin\Helper\Util\PasswordHelper;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
-class LoginLogic extends BaseLogic
+class LoginLogic
 {
     #[Inject()]
-    protected PlatformService $platformService;
+    protected PlatformInterface $platform;
 
     #[Inject()]
     protected EventDispatcherInterface $eventDispatcher;
@@ -50,7 +49,7 @@ class LoginLogic extends BaseLogic
 
     public function login(LoginRequest $request): LoginResponse
     {
-        $platform = $this->platformService->detail([], ['username' => $request->data->username], [
+        $platform = $this->platform->detail([], ['username' => $request->data->username], [
             'id',
             'password',
             'status',

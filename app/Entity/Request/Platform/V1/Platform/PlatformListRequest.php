@@ -10,9 +10,6 @@ use Lengbin\Common\Entity\Page;
 
 class PlatformListRequest extends BaseObject
 {
-    #[ApiModelProperty('控制参数')]
-    public ?PlatformCondition $condition = null;
-
     #[ApiModelProperty('搜索参数')]
     public ?PlatformListSearch $search = null;
 

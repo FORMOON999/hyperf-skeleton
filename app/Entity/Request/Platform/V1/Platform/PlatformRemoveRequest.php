@@ -10,9 +10,6 @@ use Lengbin\Common\BaseObject;
 
 class PlatformRemoveRequest extends BaseObject
 {
-    #[ApiModelProperty('控制参数')]
-    public ?PlatformCondition $condition = null;
-
     #[ApiModelProperty('搜索参数'), Required]
     public PlatformRemoveSearch $search;
 }

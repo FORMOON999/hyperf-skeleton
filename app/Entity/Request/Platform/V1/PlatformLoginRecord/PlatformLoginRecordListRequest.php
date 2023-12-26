@@ -10,9 +10,6 @@ use Lengbin\Common\Entity\Page;
 
 class PlatformLoginRecordListRequest extends BaseObject
 {
-    #[ApiModelProperty('控制参数')]
-    public ?PlatformLoginRecordCondition $condition = null;
-
     #[ApiModelProperty('搜索参数')]
     public ?PlatformLoginRecordListSearch $search = null;
 

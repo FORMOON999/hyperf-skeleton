@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace App\Logic\Platform\V1;
 
-use App\Common\Core\BaseLogic;
 use Hyperf\Di\Annotation\Inject;
 use App\Infrastructure\PlatformLoginRecordInterface;
 use App\Entity\Request\Platform\V1\PlatformLoginRecord\PlatformLoginRecordListRequest;
 use App\Entity\Response\Platform\V1\PlatformLoginRecord\PlatformLoginRecordListResponse;
 
-class PlatformLoginRecordLogic extends BaseLogic
+class PlatformLoginRecordLogic
 {
     #[Inject()]
     protected PlatformLoginRecordInterface $platformLoginRecord;

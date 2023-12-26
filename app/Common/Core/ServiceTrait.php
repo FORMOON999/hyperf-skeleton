@@ -1,19 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * Date:  2021/9/3
- * Time:  1:17 上午.
- */
-
-declare(strict_types=1);
-/**
- * This file is part of Hyperf.
- *
- * @link     https://www.hyperf.io
- * @document https://hyperf.wiki
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
- */
 
 namespace App\Common\Core;
 
@@ -23,7 +8,7 @@ use Hyperf\HttpServer\Exception\Http\EncodingException;
 use Lengbin\Common\Entity\Page;
 use Throwable;
 
-class BaseService
+trait ServiceTrait
 {
     public function toArray(mixed $data, callable $handler)
     {

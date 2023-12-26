@@ -31,6 +31,6 @@ class BaseModelEntity extends BaseObject
 
     public function __construct(array|BaseModelEntity $config = [])
     {
-        parent::__construct($config instanceof BaseObject ? $config->toArray() : $config);
+        parent::__construct($config instanceof BaseModelEntity ? $config->toArray() : $config);
     }
 }
