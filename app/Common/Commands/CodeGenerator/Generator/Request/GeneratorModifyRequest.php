@@ -33,8 +33,7 @@ class GeneratorModifyRequest extends BaseGeneratorRequest
                 $this->modelInfo->namespace . 'Entity',
             ])
             ->replace($stub, '%DATA%', $this->modelInfo->name . 'Entity')
-            ->replace($stub, '%SEARCH%', $results['requestSearch']->name)
-            ->replace($stub, '%CONDITION%', $results['requestCondition']->name);
+            ->replace($stub, '%SEARCH%', $results['requestSearch']->name);
         return $stub;
     }
 }

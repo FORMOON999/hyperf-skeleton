@@ -26,7 +26,6 @@ class GeneratorListRequest extends BaseGeneratorRequest
         $stub = file_get_contents(dirname(__DIR__, 2) . '/stubs/Request/ListRequest.stub');
         $this->replaceNamespace($stub, $class->namespace)
             ->replaceClass($stub, $class->name)
-            ->replace($stub, '%CONDITION%', $results['requestCondition']->name)
             ->replace($stub, '%SEARCH%', $results['requestListSearch']->name)
             ->replace($stub, '%SORT%', $results['requestListSort']->name);
         return $stub;
