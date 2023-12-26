@@ -9,7 +9,8 @@ use Hyperf\DTO\Annotation\Validation\Required;
 use Lengbin\Common\BaseObject;
 use App\Model\PlatformEntity;
 
-class PlatformCreateRequest extends PlatformEntity
+class PlatformCreateRequest extends BaseObject
 {
-
+    #[ApiModelProperty('请求数据'), Required]
+    public PlatformEntity $data;
 }
