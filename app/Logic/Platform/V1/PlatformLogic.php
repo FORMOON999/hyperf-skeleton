@@ -33,7 +33,6 @@ class PlatformLogic
     public function getList(PlatformListRequest $request): PlatformListResponse
     {
         $result = $this->platform->getList(
-            [],
             $request->search->setUnderlineName()->toArray(),
             [
                 'id',
@@ -82,7 +81,6 @@ class PlatformLogic
     public function detail(PlatformDetailRequest $request): PlatformDetailResponse
     {
         $result = $this->platform->detail(
-            [],
             $request->search->setUnderlineName()->toArray(),
             [
                 'id',
@@ -102,7 +100,6 @@ class PlatformLogic
     public function me(int $id): PlatformDetailResponse
     {
         $result = $this->platform->detail(
-            [],
             ['id' => $id],
             [
                 'id',

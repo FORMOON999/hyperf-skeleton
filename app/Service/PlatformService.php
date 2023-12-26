@@ -28,7 +28,7 @@ class PlatformService implements PlatformInterface
      * @param array $sort 排序条件
      * @param array $page 分页条件
      */
-    public function getList(array $withs, array $search, array $field = ['*'], array $sort = [], array $page = []): Output
+    public function getList(array $search, array $field = ['*'], array $withs = [], array $sort = [], array $page = []): Output
     {
         $query = $this->platform->buildQuery($search, $sort)->select($field);
         if (! empty($withs)) {
@@ -71,7 +71,7 @@ class PlatformService implements PlatformInterface
      * @param array $field 字段
      * @param array $sort 排序条件
      */
-    public function detail(array $withs, array $search, array $field = ['*'], array $sort = []): ?PlatformEntity
+    public function detail(array $search, array $field = ['*'], array $withs = [], array $sort = []): ?PlatformEntity
     {
         $query = $this->platform->buildQuery($search, $sort)->select($field);
         if (! empty($withs)) {

@@ -17,10 +17,15 @@ declare(strict_types=1);
 namespace App\Entity\Request\Platform\V1\Login;
 
 use Hyperf\ApiDocs\Annotation\ApiModelProperty;
+use Hyperf\DTO\Annotation\Validation\Required;
+use Hyperf\DTO\Annotation\Validation\Str;
 use Lengbin\Common\BaseObject;
 
 class LoginRequest extends BaseObject
 {
-    #[ApiModelProperty('信息')]
-    public LoginData $data;
+    #[ApiModelProperty('账号'), Str, Required]
+    public string $username;
+
+    #[ApiModelProperty('密码'), Str, Required]
+    public string $password;
 }

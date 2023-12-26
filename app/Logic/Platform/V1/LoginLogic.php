@@ -49,7 +49,7 @@ class LoginLogic
 
     public function login(LoginRequest $request): LoginResponse
     {
-        $platform = $this->platform->detail([], ['username' => $request->data->username], [
+        $platform = $this->platform->detail(['username' => $request->username], [
             'id',
             'password',
             'status',
@@ -58,7 +58,7 @@ class LoginLogic
             throw new BusinessException(PlatformError::ACCOUNT_OR_PASSWORD_NOT_FOUND());
         }
 
-        if (! PasswordHelper::verifyPassword($request->data->password, $platform->password)) {
+        if (! PasswordHelper::verifyPassword($request->password, $platform->password)) {
             throw new BusinessException(PlatformError::ACCOUNT_OR_PASSWORD_NOT_FOUND());
         }
         // 状态

@@ -12,7 +12,7 @@ export function loginApi(data: LoginData): AxiosPromise<LoginResult> {
   return request({
     url: "/api/v1/platform/login",
     method: "post",
-    data: {"data": data},
+    data: data,
   });
 }
 

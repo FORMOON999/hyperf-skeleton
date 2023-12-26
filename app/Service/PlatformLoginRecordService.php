@@ -21,14 +21,7 @@ class PlatformLoginRecordService implements PlatformLoginRecordInterface
 {
     public function __construct(protected platformLoginRecord $platformLoginRecord) {}
 
-    /**
-     * @param array $withs 控制参数
-     * @param array $search 搜索参数
-     * @param array $field 字段
-     * @param array $sort 排序条件
-     * @param array $page 分页条件
-     */
-    public function getList(array $withs, array $search, array $field = ['*'], array $sort = [], array $page = []): Output
+    public function getList(array $search, array $field = ['*'], array $withs = [], array $sort = [], array $page = []): Output
     {
         $query = $this->platformLoginRecord->buildQuery($search, $sort)->select($field);
         if (! empty($withs)) {
@@ -65,13 +58,7 @@ class PlatformLoginRecordService implements PlatformLoginRecordInterface
         return $this->platformLoginRecord->buildQuery($search)->delete();
     }
 
-    /**
-     * @param array $withs 控制参数
-     * @param array $search 搜索参数
-     * @param array $field 字段
-     * @param array $sort 排序条件
-     */
-    public function detail(array $withs, array $search, array $field = ['*'], array $sort = []): ?PlatformLoginRecordEntity
+    public function detail(array $search, array $field = ['*'], array $withs = [], array $sort = []): ?PlatformLoginRecordEntity
     {
         $query = $this->platformLoginRecord->buildQuery($search, $sort)->select($field);
         if (! empty($withs)) {

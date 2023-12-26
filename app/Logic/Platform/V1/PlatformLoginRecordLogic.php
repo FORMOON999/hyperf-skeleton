@@ -17,7 +17,6 @@ class PlatformLoginRecordLogic
     public function getList(PlatformLoginRecordListRequest $request): PlatformLoginRecordListResponse
     {
         $result = $this->platformLoginRecord->getList(
-            ['platform'],
             $request->search->setUnderlineName()->toArray(),
             [
                 'id',
@@ -29,6 +28,7 @@ class PlatformLoginRecordLogic
                 'address1',
                 'address2',
             ],
+            ['platform'],
             $request->sort->setUnderlineName()->toArray(),
             $request->page->toArray(),
         );
