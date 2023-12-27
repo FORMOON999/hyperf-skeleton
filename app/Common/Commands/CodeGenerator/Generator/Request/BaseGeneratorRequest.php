@@ -20,7 +20,7 @@ abstract class BaseGeneratorRequest extends ApplicationGenerator
     {
         $version = ucfirst($this->config->version);
         $path = $this->ddd ? 'Application' : 'Controller';
-        return parent::getPath("/{$path}/{$module}/{$version}/{$this->modelInfo->name}/Request/{$this->modelInfo->name}");
+        return parent::getPath("/{$path}/{$module}/{$version}/{$this->modelInfo->name}/Request");
     }
 
     public function isWrite(): bool

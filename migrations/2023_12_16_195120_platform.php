@@ -1,7 +1,6 @@
 <?php
 
 declare(strict_types=1);
-
 /**
  * This file is part of Hyperf.
  *
@@ -10,7 +9,6 @@ declare(strict_types=1);
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
-
 use App\Common\Traits\MigrateFiledTrait;
 use Hyperf\Database\Migrations\Migration;
 use Hyperf\Database\Schema\Blueprint;
@@ -25,10 +23,10 @@ class Platform extends Migration
      */
     public function up(): void
     {
-        if (!Schema::hasTable('platform')) {
+        if (! Schema::hasTable('platform')) {
             Schema::create('platform', function (Blueprint $table) {
                 $this->commonFields($table);
-                $table->comment('管理台');
+                $table->comment('管理员');
 
                 $table->string('username', 32)->comment('账号');
                 $table->string('nickname', 32)->comment('昵称');
@@ -47,10 +45,10 @@ class Platform extends Migration
                 'updated_at' => $date,
             ]);
         }
-        if (!Schema::hasTable('platform_login_record')) {
+        if (! Schema::hasTable('platform_login_record')) {
             Schema::create('platform_login_record', function (Blueprint $table) {
                 $this->commonFields($table);
-                $table->comment('管理台登录日志');
+                $table->comment('管理员登录日志');
 
                 $table->integer('platform_id')->default(0)->comment('管理台id');
                 $table->string('ip', 16)->comment('ip');
