@@ -1,13 +1,21 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * This file is part of Hyperf.
+ *
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 
 namespace App\Logic\Platform\V1;
 
-use Hyperf\Di\Annotation\Inject;
+use App\Controller\Platform\V1\PlatformLoginRecord\Request\PlatformLoginRecordListRequest;
+use App\Controller\Platform\V1\PlatformLoginRecord\Response\PlatformLoginRecordListResponse;
 use App\Infrastructure\PlatformLoginRecordInterface;
-use App\Entity\Request\Platform\V1\PlatformLoginRecord\PlatformLoginRecordListRequest;
-use App\Entity\Response\Platform\V1\PlatformLoginRecord\PlatformLoginRecordListResponse;
+use Hyperf\Di\Annotation\Inject;
 
 class PlatformLoginRecordLogic
 {

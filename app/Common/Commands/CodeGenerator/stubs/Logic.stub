@@ -16,9 +16,9 @@ class %CLASS%
     public function getList(%LIST_REQUEST% $request): %LIST_RESPONSE%
     {
         $result = $this->%SERVICE_NAME%->getList(
-            $request->condition->setHumpName()->toArray(),
             $request->search->setUnderlineName()->toArray(),
             %FILED%,
+            [],
             $request->sort->setUnderlineName()->toArray(),
             $request->page->toArray(),
         );
@@ -58,7 +58,6 @@ class %CLASS%
     public function detail(%DETAIL_REQUEST% $request): %DETAIL_RESPONSE%
     {
         $result = $this->%SERVICE_NAME%->detail(
-            $request->condition->setHumpName()->toArray(),
             $request->search->setUnderlineName()->toArray(),
             %FILED%,
         );

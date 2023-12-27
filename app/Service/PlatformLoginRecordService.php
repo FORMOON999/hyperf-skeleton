@@ -19,20 +19,20 @@ use App\Model\PlatformLoginRecordEntity;
 
 class PlatformLoginRecordService implements PlatformLoginRecordInterface
 {
-    public function __construct(protected platformLoginRecord $platformLoginRecord) {}
+    public function __construct(protected PlatformLoginRecord $platformLoginRecord)
+    {
+
+    }
 
     public function getList(array $search, array $field = ['*'], array $withs = [], array $sort = [], array $page = []): Output
     {
         $query = $this->platformLoginRecord->buildQuery($search, $sort)->select($field);
-        if (! empty($withs)) {
+        if (!empty($withs)) {
             $query->with(...$withs);
         }
         return $this->platformLoginRecord->output($query, $page);
     }
 
-    /**
-     * @param array $data 新增数据
-     */
     public function create(array $data): int|string
     {
         $model = clone $this->platformLoginRecord;
@@ -41,18 +41,11 @@ class PlatformLoginRecordService implements PlatformLoginRecordInterface
         return $ret ? $model->getKey() : 0;
     }
 
-    /**
-     * @param array $search 搜索参数
-     * @param array $data 数据
-     */
     public function modify(array $search, array $data): int
     {
         return $this->platformLoginRecord->buildQuery($search)->update($data);
     }
 
-    /**
-     * @param array $search 搜索参数
-     */
     public function remove(array $search): int
     {
         return $this->platformLoginRecord->buildQuery($search)->delete();
@@ -61,7 +54,7 @@ class PlatformLoginRecordService implements PlatformLoginRecordInterface
     public function detail(array $search, array $field = ['*'], array $withs = [], array $sort = []): ?PlatformLoginRecordEntity
     {
         $query = $this->platformLoginRecord->buildQuery($search, $sort)->select($field);
-        if (! empty($withs)) {
+        if (!empty($withs)) {
             $query->with(...$withs);
         }
         return $query->first()?->newEntity();

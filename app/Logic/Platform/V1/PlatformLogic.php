@@ -15,13 +15,13 @@ namespace App\Logic\Platform\V1;
 use App\Common\Core\Entity\BaseSuccessResponse;
 use App\Common\Exceptions\BusinessException;
 use App\Constants\Errors\PlatformError;
-use App\Entity\Request\Platform\V1\Platform\PlatformCreateRequest;
-use App\Entity\Request\Platform\V1\Platform\PlatformDetailRequest;
-use App\Entity\Request\Platform\V1\Platform\PlatformListRequest;
-use App\Entity\Request\Platform\V1\Platform\PlatformModifyRequest;
-use App\Entity\Request\Platform\V1\Platform\PlatformRemoveRequest;
-use App\Entity\Response\Platform\V1\Platform\PlatformDetailResponse;
-use App\Entity\Response\Platform\V1\Platform\PlatformListResponse;
+use App\Controller\Platform\V1\Platform\Request\PlatformCreateRequest;
+use App\Controller\Platform\V1\Platform\Request\PlatformDetailRequest;
+use App\Controller\Platform\V1\Platform\Request\PlatformListRequest;
+use App\Controller\Platform\V1\Platform\Request\PlatformModifyRequest;
+use App\Controller\Platform\V1\Platform\Request\PlatformRemoveRequest;
+use App\Controller\Platform\V1\Platform\Response\PlatformDetailResponse;
+use App\Controller\Platform\V1\Platform\Response\PlatformListResponse;
 use App\Infrastructure\PlatformInterface;
 use Hyperf\Di\Annotation\Inject;
 
@@ -41,7 +41,9 @@ class PlatformLogic
                 'username',
                 'nickname',
                 'status',
+                'last_time',
             ],
+            [],
             $request->sort->setUnderlineName()->toArray(),
             $request->page->toArray(),
         );
@@ -89,29 +91,12 @@ class PlatformLogic
                 'username',
                 'nickname',
                 'status',
+                'last_time',
             ],
         );
         if (! $result) {
             throw new BusinessException(PlatformError::NOT_FOUND());
         }
-        return new PlatformDetailResponse($result);
-    }
-
-    public function me(int $id): PlatformDetailResponse
-    {
-        $result = $this->platform->detail(
-            ['id' => $id],
-            [
-                'id',
-                'created_at',
-                'username',
-                'nickname',
-            ],
-        );
-        if (! $result) {
-            throw new BusinessException(PlatformError::NOT_FOUND());
-        }
-
         return new PlatformDetailResponse($result);
     }
 }

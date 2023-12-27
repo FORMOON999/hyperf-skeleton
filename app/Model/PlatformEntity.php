@@ -21,19 +21,19 @@ use Lengbin\Common\Annotation\ArrayType;
  */
 class PlatformEntity extends \App\Common\Core\Entity\BaseModelEntity
 {
-    #[ApiModelProperty('账号')]
+    #[ApiModelProperty("账号")]
     public string $username;
 
-    #[ApiModelProperty('昵称')]
+    #[ApiModelProperty("昵称")]
     public string $nickname;
 
-    #[ApiModelProperty('密码')]
+    #[ApiModelProperty("密码")]
     public string $password;
 
     #[ApiModelProperty('状态')]
     public BaseStatus $status;
 
-    #[ApiModelProperty(value: '上次登录时间')]
+    #[ApiModelProperty("上次登录时间")]
     public string $lastTime;
 
     #[ApiModelProperty(value: '角色'), ArrayType(type: 'string')]
