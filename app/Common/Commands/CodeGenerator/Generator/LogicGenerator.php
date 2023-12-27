@@ -55,7 +55,6 @@ class LogicGenerator extends ApplicationGenerator
                 $responseDetail->namespace,
                 $requestModify->namespace,
                 $requestRemove->namespace,
-                $this->modelInfo->namespace . 'Entity',
             ])
             ->replace($stub, '%SERVICE%', $serviceInterface->name)
             ->replace($stub, '%SERVICE_NAME%', str_replace('Interface', '', lcfirst($serviceInterface->name)))

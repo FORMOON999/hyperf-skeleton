@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace %NAMESPACE%;
 
-use App\Common\Core\BaseLogic;
 use App\Common\Exceptions\BusinessException;
 use Hyperf\Di\Annotation\Inject;
 use App\Common\Core\Entity\BaseSuccessResponse;
 %USES%
-class %CLASS% extends BaseLogic
+class %CLASS%
 {
     #[Inject()]
     protected %SERVICE% $%SERVICE_NAME%;

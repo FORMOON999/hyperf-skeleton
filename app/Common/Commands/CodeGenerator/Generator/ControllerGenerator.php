@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace App\Common\Commands\CodeGenerator\Generator;
 
 use App\Common\Commands\Model\ClassInfo;
-use Hyperf\Utils\Str;
+use Hyperf\Stringable\Str;
 
 class ControllerGenerator extends ApplicationGenerator
 {
@@ -38,7 +38,7 @@ class ControllerGenerator extends ApplicationGenerator
             explode('/', $this->config->url),
             [
                 lcfirst($this->config->version),
-                $application,
+                $this->ddd ? $application : '',
             ],
             explode('/', Str::snake($this->modelInfo->name, '/'))
         );

@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace %NAMESPACE%;
 
-use App\Common\Core\BaseService;
 %USES%
-class %CLASS% extends BaseService implements %INHERITANCE%
+class %CLASS% implements %INHERITANCE%
 {
 
     public function __construct(protected %MODEL% $%MODEL_NAME%)
