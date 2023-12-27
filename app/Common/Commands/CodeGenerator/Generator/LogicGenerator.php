@@ -42,7 +42,11 @@ class LogicGenerator extends ApplicationGenerator
         $requestModify = $results['requestModify'];
         $requestRemove = $results['requestRemove'];
         $filed = ArrayHelper::get($this->modelInfo->columns, '*.column_name');
-
+        $key = array_search('deleted_at', $filed);
+        if ($key !== false) {
+            unset($filed[$key]);
+            $filed = array_values($filed);
+        }
         $this->replaceNamespace($stub, $class->namespace)
             ->replaceClass($stub, $class->name)
             ->replaceUses($stub, [
