@@ -40,6 +40,7 @@ class ServiceGenerator extends AbstractGenerator
                 Output::class,
             ])
             ->replaceInheritance($stub, $serviceInterface->name)
+            ->replace($stub, '%MODEL%', $this->modelInfo->name)
             ->replace($stub, '%MODEL_NAME%', lcfirst($this->modelInfo->name))
             ->replace($stub, '%MODEL_NAME_ENTITY%', $this->modelInfo->name . 'Entity');
         return $stub;

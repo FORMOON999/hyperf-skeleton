@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace %NAMESPACE%;
 
-use App\Common\Core\BaseLogic;
 use App\Common\Exceptions\BusinessException;
 use Hyperf\Di\Annotation\Inject;
 use App\Common\Core\Entity\BaseSuccessResponse;
 %USES%
-class %CLASS% extends BaseLogic
+class %CLASS%
 {
     #[Inject()]
     protected %SERVICE% $%SERVICE_NAME%;
@@ -17,9 +16,9 @@ class %CLASS% extends BaseLogic
     public function getList(%LIST_REQUEST% $request): %LIST_RESPONSE%
     {
         $result = $this->%SERVICE_NAME%->getList(
-            $request->condition->setHumpName()->toArray(),
             $request->search->setUnderlineName()->toArray(),
             %FILED%,
+            [],
             $request->sort->setUnderlineName()->toArray(),
             $request->page->toArray(),
         );
@@ -59,7 +58,6 @@ class %CLASS% extends BaseLogic
     public function detail(%DETAIL_REQUEST% $request): %DETAIL_RESPONSE%
     {
         $result = $this->%SERVICE_NAME%->detail(
-            $request->condition->setHumpName()->toArray(),
             $request->search->setUnderlineName()->toArray(),
             %FILED%,
         );

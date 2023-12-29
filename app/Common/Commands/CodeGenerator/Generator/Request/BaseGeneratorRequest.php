@@ -1,6 +1,14 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * This file is part of Hyperf.
+ *
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 
 namespace App\Common\Commands\CodeGenerator\Generator\Request;
 
@@ -11,11 +19,12 @@ abstract class BaseGeneratorRequest extends ApplicationGenerator
     public function getPath(string $module = ''): string
     {
         $version = ucfirst($this->config->version);
-        return parent::getPath("/Entity/Request/{$module}/{$version}/{$this->modelInfo->name}");
+        $path = $this->ddd ? 'Application' : 'Controller';
+        return parent::getPath("/{$path}/{$module}/{$version}/{$this->modelInfo->name}/Request");
     }
 
     public function isWrite(): bool
     {
-        return !$this->modelInfo->exist;
+        return ! $this->modelInfo->exist;
     }
 }

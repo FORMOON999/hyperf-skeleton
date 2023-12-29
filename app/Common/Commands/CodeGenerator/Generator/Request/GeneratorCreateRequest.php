@@ -32,7 +32,6 @@ class GeneratorCreateRequest extends BaseGeneratorRequest
                 'Lengbin\\Common\\BaseObject',
                 $this->modelInfo->namespace . 'Entity',
             ])
-            ->replace($stub, '%CONDITION%', $results['requestCondition']->name)
             ->replace($stub, '%DATA%', $this->modelInfo->name . 'Entity');
         return $stub;
     }

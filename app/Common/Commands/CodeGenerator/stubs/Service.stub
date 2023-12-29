@@ -4,25 +4,16 @@ declare(strict_types=1);
 
 namespace %NAMESPACE%;
 
-use App\Common\Core\BaseService;
 %USES%
-class %CLASS% extends BaseService implements %INHERITANCE%
+class %CLASS% implements %INHERITANCE%
 {
 
-    public function __construct(protected %MODEL_NAME% $%MODEL_NAME%)
+    public function __construct(protected %MODEL% $%MODEL_NAME%)
     {
 
     }
 
-    /**
-     * @param array $withs 控制参数
-     * @param array $search 搜索参数
-     * @param array $field 字段
-     * @param array $sort 排序条件
-     * @param array $page 分页条件
-     * @return Output
-     */
-    public function getList(array $withs, array $search, array $field = ['*'], array $sort = [], array $page = []): Output
+    public function getList(array $search, array $field = ['*'], array $withs = [], array $sort = [], array $page = []): Output
     {
         $query = $this->%MODEL_NAME%->buildQuery($search, $sort)->select($field);
         if (! empty($withs)) {
@@ -31,10 +22,6 @@ class %CLASS% extends BaseService implements %INHERITANCE%
         return $this->%MODEL_NAME%->output($query, $page);
     }
 
-    /**
-     * @param array $data 新增数据
-     * @return int|string
-     */
     public function create(array $data): int|string
     {
         $model = clone $this->%MODEL_NAME%;
@@ -43,33 +30,17 @@ class %CLASS% extends BaseService implements %INHERITANCE%
         return $ret ? $model->getKey() : 0;
     }
 
-    /**
-     * @param array $search 搜索参数
-     * @param array $data 数据
-     * @return int
-     */
     public function modify(array $search, array $data): int
     {
         return $this->%MODEL_NAME%->buildQuery($search)->update($data);
     }
 
-    /**
-     * @param array $search 搜索参数
-     * @return int
-     */
     public function remove(array $search): int
     {
         return $this->%MODEL_NAME%->buildQuery($search)->delete();
     }
 
-    /**
-     * @param array $withs 控制参数
-     * @param array $search 搜索参数
-     * @param array $field 字段
-     * @param array $sort 排序条件
-     * @return %MODEL_NAME_ENTITY%|null
-     */
-    public function detail(array $withs, array $search, array $field = ['*'], array $sort = []): ?%MODEL_NAME_ENTITY%
+    public function detail(array $search, array $field = ['*'], array $withs = [], array $sort = []): ?%MODEL_NAME_ENTITY%
     {
         $query = $this->%MODEL_NAME%->buildQuery($search, $sort)->select($field);
         if (! empty($withs)) {

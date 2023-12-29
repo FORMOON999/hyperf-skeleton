@@ -11,7 +11,6 @@ declare(strict_types=1);
  */
 return [
     'enable_log' => true,
-    'x-test-flag' => 'test-flag',
     // 单点登录
     'oss' => false,
 ];

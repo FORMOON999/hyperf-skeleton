@@ -31,7 +31,7 @@ class PlatformMiddleware extends BaseAuthMiddleware
 
     protected function handlePayload(ServerRequestInterface $request, JwtSubject $payload): array
     {
-        $platform = $this->platform->detail([], [
+        $platform = $this->platform->detail([
             'id' => $payload->data['sub'] ?? -1,
         ], ['id']);
 

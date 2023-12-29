@@ -26,7 +26,6 @@ class GeneratorDetailRequest extends BaseGeneratorRequest
         $stub = file_get_contents(dirname(__DIR__, 2) . '/stubs/Request/DetailRequest.stub');
         $this->replaceNamespace($stub, $class->namespace)
             ->replaceClass($stub, $class->name)
-            ->replace($stub, '%CONDITION%', $results['requestCondition']->name)
             ->replace($stub, '%SEARCH%', $results['requestSearch']->name);
         return $stub;
     }

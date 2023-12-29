@@ -1,11 +1,19 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * This file is part of Hyperf.
+ *
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 
 namespace App\Common\Commands\CodeGenerator\Generator;
 
 use App\Common\Commands\Model\ClassInfo;
-use Hyperf\Utils\Str;
+use Hyperf\Stringable\Str;
 
 class ControllerGenerator extends ApplicationGenerator
 {
@@ -13,7 +21,7 @@ class ControllerGenerator extends ApplicationGenerator
     {
         $version = ucfirst($this->config->version);
         $path = $this->ddd ? 'Application' : 'Controller';
-        return parent::getPath("/{$path}/{$module}/{$version}");
+        return parent::getPath("/{$path}/{$module}/{$version}/{$this->modelInfo->name}");
     }
 
     public function getFilename(): string
@@ -27,10 +35,11 @@ class ControllerGenerator extends ApplicationGenerator
         $logic = $results['logic'];
         $application = $results['_application'];
         $url = array_merge(
-            explode('/', $this->config->url), [
-            lcfirst($this->config->version),
-            $application
-        ],
+            explode('/', $this->config->url),
+            [
+                lcfirst($this->config->version),
+                $this->ddd ? $application : '',
+            ],
             explode('/', Str::snake($this->modelInfo->name, '/'))
         );
         $uri = implode('/', array_filter($url));

@@ -9,7 +9,8 @@ declare(strict_types=1);
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
-
-namespace App\Common\Core;
-
-class BaseLogic extends BaseService {}
+return [
+    'locale' => 'zh_CN',
+    'fallback_locale' => 'en',
+    'path' => BASE_PATH . '/storage/languages',
+];

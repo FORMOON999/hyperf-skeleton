@@ -46,7 +46,7 @@ trait MySQLModelTrait
     {
         $query = $this->newQuery();
         // sort
-        if (!empty($sorts)) {
+        if (! empty($sorts)) {
             foreach ($sorts as $key => $value) {
                 if (empty($value)) {
                     continue;
@@ -74,14 +74,14 @@ trait MySQLModelTrait
 
     public function output(Builder $query, array $pages): Output
     {
-        $page = !empty($pages) ? new Page($pages) : Page::all();
+        $page = ! empty($pages) ? new Page($pages) : Page::all();
         $output = new Output();
         if ($page->total) {
             $sql = sprintf('select count(*) as count from (%s) as b', $query->toSql());
             $output->total = Db::selectOne($sql, $query->getBindings())->count;
         }
 
-        if (!$page->all) {
+        if (! $page->all) {
             $query->forPage($page->page, $page->pageSize);
             $output->page = $page->page;
             $output->pageSize = $page->pageSize;
@@ -146,7 +146,7 @@ trait MySQLModelTrait
                 $item = $item->setUnderlineName()->toArray();
             }
             foreach ($columns as $column) {
-                if (!ArrayHelper::keyExists($item, $column)) {
+                if (! ArrayHelper::keyExists($item, $column)) {
                     $item[$column] = $now;
                 }
             }
