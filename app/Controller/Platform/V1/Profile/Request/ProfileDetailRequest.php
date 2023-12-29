@@ -10,16 +10,13 @@ declare(strict_types=1);
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
 
-namespace App\Controller\Platform\V1\Platform\Request;
+namespace App\Controller\Platform\V1\Profile\Request;
 
 use Hyperf\ApiDocs\Annotation\ApiModelProperty;
-use Hyperf\DTO\Annotation\Validation\Required;
+use Lengbin\Common\BaseObject;
 
-/**
- * Class PlatformSearch.
- */
-class PlatformSearch extends \Lengbin\Common\BaseObject
+class ProfileDetailRequest extends BaseObject
 {
-    #[ApiModelProperty('管理员ID'), Required]
-    public int $id;
+    #[ApiModelProperty(hidden: true)]
+    public ProfileSearch $search;
 }

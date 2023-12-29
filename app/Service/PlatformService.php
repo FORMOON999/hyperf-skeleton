@@ -8,6 +8,7 @@ use App\Infrastructure\PlatformInterface;
 use App\Model\Platform;
 use App\Model\PlatformEntity;
 use App\Common\Core\Entity\Output;
+use Lengbin\Helper\Util\PasswordHelper;
 
 class PlatformService implements PlatformInterface
 {
@@ -51,5 +52,11 @@ class PlatformService implements PlatformInterface
             $query->with(...$withs);
         }
         return $query->first()?->newEntity();
+    }
+
+    // 修改密码
+    public function changePassword(int $id, string $password): int
+    {
+        return $this->modify(['id' => $id], ['password' => PasswordHelper::generatePassword($password)]);
     }
 }

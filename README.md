@@ -1,5 +1,4 @@
-> 基于hyperf 框架封装的骨架 带管理台
-
+> 基于 php8.0 hyperf 3.0 框架封装的骨架 带管理台 
 # 谈谈项目分层架构
 
 >  如果不想看的 直接调到下面 看使用方法
@@ -124,7 +123,6 @@ php bin/hyperf.php gen:code
 | Constants               | 静态枚举类目录，建议再创建Status,Enums,Types三个子目录 |
 | Constants/Errors        | 自定义错误码目录                             |
 | Controller              | 接口控制器目录                              |
-| Entity                  | 请求和返回实体                              |
 | Infrastructure          | 服务接口，可对外暴露提供RPC接口，实现微服务调用            |
 | Logic                   | 逻辑层目录，业务代码在此编写                       |
 | Model        | mysql model  和 字段实体                  |
@@ -139,7 +137,6 @@ php bin/hyperf.php gen:code
 | 领域/Application            | 接口控制器目录                              |
 | 领域/Constants              | 静态枚举类目录，建议再创建Status,Enums,Types三个子目录 |
 | 领域/Constants/Errors       | 自定义错误码目录                             |
-| 领域/Entity                 | 请求和返回实体                              |
 | 领域/Logic                  | 逻辑层目录，业务代码在此编写                       |
 | 领域/Model        | mysql model   和 字段实体                             |
 | 领域/Service                | 公共服务， 可对外暴露提供RPC接口，实现微服务调用           |

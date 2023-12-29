@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace Hyperf\DTO\Aspect;
 
+use App\Common\Core\ApiDocs\Annotation\ApiAttributeProperty;
+use App\Common\Core\ApiDocs\Annotation\ApiFileProperty;
+use App\Common\Core\ApiDocs\Annotation\ApiHeaderProperty;
+use App\Common\Core\ApiDocs\Annotation\ApiQueryProperty;
 use App\Common\Core\Entity\CommonResponse;
 use Hyperf\Context\Context;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -21,6 +25,7 @@ use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use ReflectionClass;
 
 class CoreMiddlewareAspect
 {
@@ -155,10 +160,46 @@ class CoreMiddlewareAspect
                 return $value[0];
             }, $request->getHeaders());
         }
+
+        // other property value
+        $param = $this->getPropertyValue($request, $className, $param);
+
         // validate
         if ($methodParameter->isValid()) {
             $validationDTO->validate($className, $param);
         }
         return Mapper::map(array_merge(ArrayHelper::getObjectVars($obj), $param), \Hyperf\Support\make($className));
+    }
+
+    protected function getPropertyValue(ServerRequestInterface $request, string $className, array $param): array
+    {
+        $reflection = new ReflectionClass($className);
+        foreach ($reflection->getProperties() as $property) {
+            $name = $property->getName();
+            if ($property->getAttributes(ApiHeaderProperty::class)) {
+                $param[$name] = $request->getHeaderLine($name);
+            }
+            if ($property->getAttributes(ApiAttributeProperty::class)) {
+                $param[$name] = $request->getAttribute($name);
+            }
+            if ($property->getAttributes(ApiQueryProperty::class)) {
+                $param[$name] = $request->getQueryParams()[$name] ?? null;
+            }
+            if ($property->getAttributes(ApiFileProperty::class)) {
+                $param[$name] = $request->getUploadedFiles()[$name] ?? null;
+            }
+
+            $type = $property->getType();
+            if ($type && !$type->isBuiltin()) {
+                $subParams = $param[$name] ?? [];
+                if (is_array($subParams)) {
+                    $itemValue = $this->getPropertyValue($request, $type->getName(), $subParams);
+                    if (!empty($itemValue)) {
+                        $param[$name] = $itemValue;
+                    }
+                }
+            }
+        }
+        return $param;
     }
 }

@@ -7,6 +7,13 @@ namespace %NAMESPACE%;
 use App\Common\Core\Enum\Annotation\EnumMessage;
 use App\Common\Core\Enum\BaseEnum;
 
+/**
+ * @method static %CLASS% CREATE_ERROR()
+ * @method static %CLASS% UPDATE_ERROR()
+ * @method static %CLASS% DELETE_ERROR()
+ * @method static %CLASS% NOT_FOUND()
+ * @method static %CLASS% EXISTS()
+ */
 class %CLASS% extends BaseEnum
 {
     #[EnumMessage(message: "创建%MESSAGE%失败")]

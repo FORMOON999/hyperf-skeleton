@@ -15,6 +15,15 @@ namespace App\Constants\Errors;
 use App\Common\Core\Enum\Annotation\EnumMessage;
 use App\Common\Core\Enum\BaseEnum;
 
+/**
+ * @method static PlatformError CREATE_ERROR()
+ * @method static PlatformError UPDATE_ERROR()
+ * @method static PlatformError DELETE_ERROR()
+ * @method static PlatformError NOT_FOUND()
+ * @method static PlatformError EXISTS()
+ * @method static PlatformError ACCOUNT_OR_PASSWORD_NOT_FOUND()
+ * @method static PlatformError FROZEN()
+ */
 class PlatformError extends BaseEnum
 {
     #[EnumMessage(message: '创建管理台失败')]
