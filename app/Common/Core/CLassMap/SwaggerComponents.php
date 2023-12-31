@@ -46,7 +46,7 @@ class SwaggerComponents
             return ['propertyArr' => [], 'requiredArr' => []];
         }
 
-        $obj = make($className);
+        $obj = \Hyperf\Support\make($className);
         $rc = ReflectionManager::reflectClass($className);
         $propertyArr = [];
         $requiredArr = [];

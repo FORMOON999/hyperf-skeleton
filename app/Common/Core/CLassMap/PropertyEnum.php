@@ -60,7 +60,7 @@ class PropertyEnum
         }
 
         $propertyEnum->className = trim($className, '\\');
-        $propertyEnum->valueList = \Hyperf\Collection\collect($className::cases())->map(fn ($v) => "{$v->value}({$v->getMessage()})")->all();
+        $propertyEnum->valueList = \Hyperf\Collection\collect($className::cases())->map(fn ($v) => "{$v->value}")->all();
         return $propertyEnum;
     }
 }
