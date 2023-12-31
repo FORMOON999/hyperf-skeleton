@@ -16,29 +16,29 @@ class %CLASS%
     public function getList(%LIST_REQUEST% $request): %LIST_RESPONSE%
     {
         $result = $this->%SERVICE_NAME%->getList(
-            $request->search->setUnderlineName()->toArray(),
+            $request->search?->setUnderlineName()?->toArray() ?? [],
             %FILED%,
             [],
-            $request->sort->setUnderlineName()->toArray(),
-            $request->page->toArray(),
+            $request->sort?->setUnderlineName()?->toArray() ?? [],
+            $request->page?->toArray() ?? [],
         );
         return new %LIST_RESPONSE%($result);
     }
 
     public function create(%CREAT_REQUEST% $request): BaseSuccessResponse
     {
-        $result = $this->%SERVICE_NAME%->create($request->data->setUnderlineName()->toArray());
+        $result = $this->%SERVICE_NAME%->create($request->setUnderlineName()->toArray());
         if (! $result) {
             throw new BusinessException(%ERROR%::CREATE_ERROR());
         }
         return new BaseSuccessResponse();
     }
 
-    public function modify(%MODIFY_REQUEST% $request): BaseSuccessResponse
+    public function modify(int $id, %MODIFY_REQUEST% $request): BaseSuccessResponse
     {
         $result = $this->%SERVICE_NAME%->modify(
-            $request->search->setUnderlineName()->toArray(),
-            $request->data->setUnderlineName()->toArray()
+            ['id' => $id],
+            $request->setUnderlineName()->toArray()
         );
         if (! $result) {
             throw new BusinessException(%ERROR%::UPDATE_ERROR());
@@ -48,7 +48,7 @@ class %CLASS%
 
     public function remove(%REMOVE_REQUEST% $request): BaseSuccessResponse
     {
-        $result = $this->%SERVICE_NAME%->remove($request->search->setUnderlineName()->toArray());
+        $result = $this->%SERVICE_NAME%->remove($request->toArray());
         if (! $result) {
             throw new BusinessException(%ERROR%::DELETE_ERROR());
         }
@@ -58,7 +58,7 @@ class %CLASS%
     public function detail(%DETAIL_REQUEST% $request): %DETAIL_RESPONSE%
     {
         $result = $this->%SERVICE_NAME%->detail(
-            $request->search->setUnderlineName()->toArray(),
+            $request->toArray(),
             %FILED%,
         );
         if (! $result) {

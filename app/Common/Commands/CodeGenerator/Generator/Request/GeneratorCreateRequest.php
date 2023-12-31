@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace App\Common\Commands\CodeGenerator\Generator\Request;
 
 use App\Common\Commands\Model\ClassInfo;
+use App\Common\Commands\Model\FileGenerate;
 
 class GeneratorCreateRequest extends BaseGeneratorRequest
 {
@@ -23,16 +24,7 @@ class GeneratorCreateRequest extends BaseGeneratorRequest
 
     public function buildClass(ClassInfo $class, array $results = []): string
     {
-        $stub = file_get_contents(dirname(__DIR__, 2) . '/stubs/Request/CreateRequest.stub');
-        $this->replaceNamespace($stub, $class->namespace)
-            ->replaceClass($stub, $class->name)
-            ->replaceUses($stub, [
-                'Hyperf\\ApiDocs\\Annotation\\ApiModelProperty',
-                'Hyperf\\DTO\\Annotation\\Validation\\Required',
-                'Lengbin\\Common\\BaseObject',
-                $this->modelInfo->namespace . 'Entity',
-            ])
-            ->replace($stub, '%DATA%', $this->modelInfo->name . 'Entity');
-        return $stub;
+        $fileGenerate = new FileGenerate($this->modelInfo, $class, true);
+        return $fileGenerate->handle();
     }
 }

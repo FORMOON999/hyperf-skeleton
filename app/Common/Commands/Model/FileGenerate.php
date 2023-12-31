@@ -62,17 +62,21 @@ class FileGenerate
     public function handle(): string
     {
         foreach ($this->modelInfo->columns as $column) {
-            if (! $this->all && (in_array($column['column_name'], $this->exceptColumn))) {
+            if (! $this->all && in_array($column['column_name'], $this->exceptColumn)) {
                 continue;
             }
             [$name, $type, $comment] = $this->getProperty($column);
-            $required = $this->required ? ', Required' : '';
+            if ($this->required) {
+                $propertyComment = "#[ApiModelProperty(value: '{$comment}', required: true), Required]";
+            } else {
+                $propertyComment = "#[ApiModelProperty(value: '{$comment}')]";
+            }
             $this->generate->addProperty(new Property([
                 'name' => $name,
                 'type' => $type,
                 'annotation' => true,
                 'comments' => [
-                    '#[ApiModelProperty("' . $comment . '")' . $required . ']',
+                    $propertyComment,
                 ],
             ]));
         }
@@ -87,12 +91,17 @@ class FileGenerate
                 if (empty($comment)) {
                     $comment = $this->modelInfo->comment . 'ID';
                 }
+                if ($this->required) {
+                    $propertyComment = "#[ApiModelProperty(value: '{$comment}', required: true), Required]";
+                } else {
+                    $propertyComment = "#[ApiModelProperty(value: '{$comment}')]";
+                }
                 $this->generate->addProperty(new Property([
                     'name' => $name,
                     'type' => $type,
                     'annotation' => true,
                     'comments' => [
-                        '#[ApiModelProperty("' . $comment . '"), Required]',
+                        $propertyComment,
                     ],
                 ]));
                 break;

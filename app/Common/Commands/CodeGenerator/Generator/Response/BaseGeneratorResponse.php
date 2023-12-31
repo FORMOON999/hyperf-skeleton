@@ -22,9 +22,4 @@ abstract class BaseGeneratorResponse extends ApplicationGenerator
         $path = $this->ddd ? 'Application' : 'Controller';
         return parent::getPath("/{$path}/{$module}/{$version}/{$this->modelInfo->name}/Response");
     }
-
-    public function isWrite(): bool
-    {
-        return ! $this->modelInfo->exist;
-    }
 }
