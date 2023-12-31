@@ -12,13 +12,25 @@ declare(strict_types=1);
 
 namespace App\Controller\Platform\V1\Platform\Request;
 
-use App\Model\PlatformEntity;
+use App\Common\Constants\BaseStatus;
 use Hyperf\ApiDocs\Annotation\ApiModelProperty;
 use Hyperf\DTO\Annotation\Validation\Required;
 use Lengbin\Common\BaseObject;
 
+/**
+ * Class PlatformCreateRequest.
+ */
 class PlatformCreateRequest extends BaseObject
 {
-    #[ApiModelProperty('请求数据'), Required]
-    public PlatformEntity $data;
+    #[ApiModelProperty(value: '账号', required: true), Required]
+    public string $username;
+
+    #[ApiModelProperty(value: '昵称', required: true), Required]
+    public string $nickname;
+
+    #[ApiModelProperty(value: '密码', required: true), Required]
+    public string $password;
+
+    #[ApiModelProperty(value: '状态', required: true), Required]
+    public BaseStatus $status;
 }

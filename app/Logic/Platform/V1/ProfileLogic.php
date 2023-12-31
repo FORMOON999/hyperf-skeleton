@@ -16,20 +16,20 @@ use App\Common\Core\Entity\BaseSuccessResponse;
 use App\Common\Exceptions\BusinessException;
 use App\Constants\Errors\PlatformError;
 use App\Controller\Platform\V1\Profile\Request\ChangePasswordRequest;
-use App\Controller\Platform\V1\Profile\Request\ProfileDetailRequest;
 use App\Controller\Platform\V1\Profile\Response\ProfileResponse;
 use App\Infrastructure\PlatformInterface;
 use Hyperf\Di\Annotation\Inject;
+use Lengbin\Helper\Util\PasswordHelper;
 
 class ProfileLogic
 {
     #[Inject()]
     protected PlatformInterface $platform;
 
-    public function detail(ProfileDetailRequest $request): ProfileResponse
+    public function detail(int $id): ProfileResponse
     {
         $result = $this->platform->detail(
-            $request->search->toArray(),
+            ['id' => $id],
             [
                 'id',
                 'created_at',
@@ -45,9 +45,9 @@ class ProfileLogic
         return new ProfileResponse($result);
     }
 
-    public function changePassword(ChangePasswordRequest $request): BaseSuccessResponse
+    public function changePassword(int $id, ChangePasswordRequest $request): BaseSuccessResponse
     {
-        $result = $this->platform->changePassword($request->search->id, $request->data->password);
+        $result = $this->platform->modify(['id' => $id], ['password' => PasswordHelper::generatePassword($request->password)]);
         if (! $result) {
             throw new BusinessException(PlatformError::UPDATE_ERROR());
         }

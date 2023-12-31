@@ -12,16 +12,20 @@ declare(strict_types=1);
 
 namespace App\Controller\Platform\V1\Platform\Request;
 
-use App\Model\PlatformEntity;
+use App\Common\Constants\BaseStatus;
 use Hyperf\ApiDocs\Annotation\ApiModelProperty;
-use Hyperf\DTO\Annotation\Validation\Required;
-use Lengbin\Common\BaseObject;
 
-class PlatformModifyRequest extends BaseObject
+/**
+ * Class PlatformModifyRequest.
+ */
+class PlatformModifyRequest extends \Lengbin\Common\BaseObject
 {
-    #[ApiModelProperty('搜索参数'), Required]
-    public PlatformSearch $search;
+    #[ApiModelProperty(value: '账号')]
+    public string $username;
 
-    #[ApiModelProperty('请求数据'), Required]
-    public PlatformEntity $data;
+    #[ApiModelProperty(value: '昵称')]
+    public string $nickname;
+
+    #[ApiModelProperty(value: '状态')]
+    public BaseStatus $status;
 }

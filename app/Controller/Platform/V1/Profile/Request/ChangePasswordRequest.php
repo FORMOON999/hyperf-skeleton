@@ -14,13 +14,13 @@ namespace App\Controller\Platform\V1\Profile\Request;
 
 use Hyperf\ApiDocs\Annotation\ApiModelProperty;
 use Hyperf\DTO\Annotation\Validation\Required;
+use Hyperf\DTO\Annotation\Validation\Validation;
 use Lengbin\Common\BaseObject;
 
 class ChangePasswordRequest extends BaseObject
 {
-    #[ApiModelProperty(hidden: true)]
-    public ProfileSearch $search;
-
-    #[ApiModelProperty('请求数据'), Required]
-    public ChangePasswordData $data;
+    #[ApiModelProperty('密码'), Required]
+    public string $password;
+    #[ApiModelProperty('确认密码'), Required, Validation('confirmed:password')]
+    public string $confirmPassword;
 }

@@ -1,13 +1,17 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * This file is part of Hyperf.
+ *
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 
 namespace Hyperf\DTO\Aspect;
 
-use App\Common\Core\ApiDocs\Annotation\ApiAttributeProperty;
-use App\Common\Core\ApiDocs\Annotation\ApiFileProperty;
-use App\Common\Core\ApiDocs\Annotation\ApiHeaderProperty;
-use App\Common\Core\ApiDocs\Annotation\ApiQueryProperty;
 use App\Common\Core\Entity\CommonResponse;
 use Hyperf\Context\Context;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -19,13 +23,12 @@ use Hyperf\HttpServer\CoreMiddleware;
 use Hyperf\Utils\Codec\Json;
 use Hyperf\Utils\Contracts\Arrayable;
 use Hyperf\Utils\Contracts\Jsonable;
-use Lengbin\Helper\YiiSoft\Arrays\ArrayHelper;
+use InvalidArgumentException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use ReflectionClass;
 
 class CoreMiddlewareAspect
 {
@@ -34,9 +37,7 @@ class CoreMiddlewareAspect
         CoreMiddleware::class . '::transferToResponse',
     ];
 
-    public function __construct(private ContainerInterface $container)
-    {
-    }
+    public function __construct(private ContainerInterface $container) {}
 
     /**
      * @return mixed
@@ -88,7 +89,7 @@ class CoreMiddlewareAspect
         if ($response instanceof Jsonable) {
             return $this->response()
                 ->withAddedHeader('content-type', 'application/json')
-                ->withBody(new SwooleStream((string)$response));
+                ->withBody(new SwooleStream((string) $response));
         }
         // object
         if (is_object($response)) {
@@ -100,10 +101,10 @@ class CoreMiddlewareAspect
         }
 
         if ($this->response()->hasHeader('content-type')) {
-            return $this->response()->withBody(new SwooleStream((string)$response));
+            return $this->response()->withBody(new SwooleStream((string) $response));
         }
 
-        return $this->response()->withAddedHeader('content-type', 'text/plain')->withBody(new SwooleStream((string)$response));
+        return $this->response()->withAddedHeader('content-type', 'text/plain')->withBody(new SwooleStream((string) $response));
     }
 
     private function getInjections(array $definitions, string $callableName, array $arguments, $coreMiddleware): array
@@ -117,15 +118,15 @@ class CoreMiddlewareAspect
                 } elseif ($definition->allowsNull()) {
                     $injections[] = null;
                 } elseif ($this->container->has($definition->getName())) {
-                    //修改
+                    // 修改
                     $obj = $this->container->get($definition->getName());
                     $injections[] = $this->validateAndMap($callableName, $definition->getMeta('name'), $definition->getName(), $obj);
                 } else {
-                    throw new \InvalidArgumentException("Parameter '{$definition->getMeta('name')}' "
+                    throw new InvalidArgumentException("Parameter '{$definition->getMeta('name')}' "
                         . "of {$callableName} should not be null");
                 }
             } else {
-                //标记
+                // 标记
                 $injections[] = $coreMiddleware->getNormalizer()->denormalize($value, $definition->getName());
             }
         }
@@ -160,46 +161,10 @@ class CoreMiddlewareAspect
                 return $value[0];
             }, $request->getHeaders());
         }
-
-        // other property value
-        $param = $this->getPropertyValue($request, $className, $param);
-
         // validate
         if ($methodParameter->isValid()) {
             $validationDTO->validate($className, $param);
         }
-        return Mapper::map(array_merge(ArrayHelper::getObjectVars($obj), $param), \Hyperf\Support\make($className));
-    }
-
-    protected function getPropertyValue(ServerRequestInterface $request, string $className, array $param): array
-    {
-        $reflection = new ReflectionClass($className);
-        foreach ($reflection->getProperties() as $property) {
-            $name = $property->getName();
-            if ($property->getAttributes(ApiHeaderProperty::class)) {
-                $param[$name] = $request->getHeaderLine($name);
-            }
-            if ($property->getAttributes(ApiAttributeProperty::class)) {
-                $param[$name] = $request->getAttribute($name);
-            }
-            if ($property->getAttributes(ApiQueryProperty::class)) {
-                $param[$name] = $request->getQueryParams()[$name] ?? null;
-            }
-            if ($property->getAttributes(ApiFileProperty::class)) {
-                $param[$name] = $request->getUploadedFiles()[$name] ?? null;
-            }
-
-            $type = $property->getType();
-            if ($type && !$type->isBuiltin()) {
-                $subParams = $param[$name] ?? [];
-                if (is_array($subParams)) {
-                    $itemValue = $this->getPropertyValue($request, $type->getName(), $subParams);
-                    if (!empty($itemValue)) {
-                        $param[$name] = $itemValue;
-                    }
-                }
-            }
-        }
-        return $param;
+        return Mapper::map($param, \Hyperf\Support\make($className));
     }
 }

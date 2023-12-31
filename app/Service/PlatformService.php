@@ -53,10 +53,4 @@ class PlatformService implements PlatformInterface
         }
         return $query->first()?->newEntity();
     }
-
-    // 修改密码
-    public function changePassword(int $id, string $password): int
-    {
-        return $this->modify(['id' => $id], ['password' => PasswordHelper::generatePassword($password)]);
-    }
 }

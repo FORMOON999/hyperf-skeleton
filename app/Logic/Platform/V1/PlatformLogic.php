@@ -33,7 +33,7 @@ class PlatformLogic
     public function getList(PlatformListRequest $request): PlatformListResponse
     {
         $result = $this->platform->getList(
-            $request->search->setUnderlineName()->toArray(),
+            $request->search?->setUnderlineName()?->toArray() ?? [],
             [
                 'id',
                 'created_at',
@@ -44,26 +44,26 @@ class PlatformLogic
                 'last_time',
             ],
             [],
-            $request->sort->setUnderlineName()->toArray(),
-            $request->page->toArray(),
+            $request->sort?->setUnderlineName()?->toArray() ?? [],
+            $request->page?->toArray() ?? [],
         );
         return new PlatformListResponse($result);
     }
 
     public function create(PlatformCreateRequest $request): BaseSuccessResponse
     {
-        $result = $this->platform->create($request->data->setUnderlineName()->toArray());
+        $result = $this->platform->create($request->setUnderlineName()->toArray());
         if (! $result) {
             throw new BusinessException(PlatformError::CREATE_ERROR());
         }
         return new BaseSuccessResponse();
     }
 
-    public function modify(PlatformModifyRequest $request): BaseSuccessResponse
+    public function modify(int $id, PlatformModifyRequest $request): BaseSuccessResponse
     {
         $result = $this->platform->modify(
-            $request->search->setUnderlineName()->toArray(),
-            $request->data->setUnderlineName()->toArray()
+            ['id' => $id],
+            $request->setUnderlineName()->toArray()
         );
         if (! $result) {
             throw new BusinessException(PlatformError::UPDATE_ERROR());
@@ -73,7 +73,7 @@ class PlatformLogic
 
     public function remove(PlatformRemoveRequest $request): BaseSuccessResponse
     {
-        $result = $this->platform->remove($request->search->setUnderlineName()->toArray());
+        $result = $this->platform->remove($request->setUnderlineName()->toArray());
         if (! $result) {
             throw new BusinessException(PlatformError::DELETE_ERROR());
         }
@@ -83,7 +83,7 @@ class PlatformLogic
     public function detail(PlatformDetailRequest $request): PlatformDetailResponse
     {
         $result = $this->platform->detail(
-            $request->search->setUnderlineName()->toArray(),
+            $request->setUnderlineName()->toArray(),
             [
                 'id',
                 'created_at',

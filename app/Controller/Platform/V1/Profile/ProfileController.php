@@ -40,15 +40,17 @@ class ProfileController extends BaseController
 
     #[PostMapping(path: 'detail')]
     #[ApiOperation('获取管理员详情')]
-    public function detail(#[Valid] #[RequestBody] ProfileDetailRequest $request): ProfileResponse
+    public function detail(): ProfileResponse
     {
-        return $this->profileLogic->detail($request);
+        $id = $this->request->getAttribute('id');
+        return $this->profileLogic->detail($id);
     }
 
     #[PostMapping(path: 'changePassword')]
     #[ApiOperation('修改密码')]
     public function changePassword(#[Valid] #[RequestBody] ChangePasswordRequest $request): BaseSuccessResponse
     {
-        return $this->profileLogic->changePassword($request);
+        $id = $this->request->getAttribute('id');
+        return $this->profileLogic->changePassword($id, $request);
     }
 }

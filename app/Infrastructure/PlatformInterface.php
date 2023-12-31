@@ -26,6 +26,4 @@ interface PlatformInterface
     public function remove(array $search): int;
 
     public function detail(array $search, array $field = ['*'], array $withs = [], array $sort = []): ?PlatformEntity;
-
-    public function changePassword(int $id, string $password): int;
 }

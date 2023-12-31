@@ -56,11 +56,11 @@ class PlatformController extends BaseController
         return $this->platformLogic->create($request);
     }
 
-    #[PostMapping(path: 'modify')]
+    #[PostMapping(path: 'modify/{id}')]
     #[ApiOperation('更新管理员')]
-    public function modify(#[Valid] #[RequestBody] PlatformModifyRequest $request): BaseSuccessResponse
+    public function modify(int $id, #[Valid] #[RequestBody] PlatformModifyRequest $request): BaseSuccessResponse
     {
-        return $this->platformLogic->modify($request);
+        return $this->platformLogic->modify($id, $request);
     }
 
     #[PostMapping(path: 'remove')]
