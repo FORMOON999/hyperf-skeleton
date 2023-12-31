@@ -27,18 +27,18 @@ class %CLASS%
 
     public function create(%CREAT_REQUEST% $request): BaseSuccessResponse
     {
-        $result = $this->%SERVICE_NAME%->create($request->data->setUnderlineName()->toArray());
+        $result = $this->%SERVICE_NAME%->create($request->setUnderlineName()->toArray());
         if (! $result) {
             throw new BusinessException(%ERROR%::CREATE_ERROR());
         }
         return new BaseSuccessResponse();
     }
 
-    public function modify(%MODIFY_REQUEST% $request): BaseSuccessResponse
+    public function modify(int $id, %MODIFY_REQUEST% $request): BaseSuccessResponse
     {
         $result = $this->%SERVICE_NAME%->modify(
-            $request->search->setUnderlineName()->toArray(),
-            $request->data->setUnderlineName()->toArray()
+            ['id' => $id],
+            $request->setUnderlineName()->toArray()
         );
         if (! $result) {
             throw new BusinessException(%ERROR%::UPDATE_ERROR());
@@ -48,7 +48,7 @@ class %CLASS%
 
     public function remove(%REMOVE_REQUEST% $request): BaseSuccessResponse
     {
-        $result = $this->%SERVICE_NAME%->remove($request->search->setUnderlineName()->toArray());
+        $result = $this->%SERVICE_NAME%->remove($request->setUnderlineName()->toArray());
         if (! $result) {
             throw new BusinessException(%ERROR%::DELETE_ERROR());
         }
@@ -58,7 +58,7 @@ class %CLASS%
     public function detail(%DETAIL_REQUEST% $request): %DETAIL_RESPONSE%
     {
         $result = $this->%SERVICE_NAME%->detail(
-            $request->search->setUnderlineName()->toArray(),
+            $request->setUnderlineName()->toArray(),
             %FILED%,
         );
         if (! $result) {

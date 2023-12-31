@@ -39,11 +39,11 @@ class %CLASS% extends BaseController
         return $this->%LOGIC_NAME%->create($request);
     }
 
-    #[PostMapping(path: 'modify')]
+    #[PostMapping(path: 'modify/{id}')]
     #[ApiOperation('更新%MESSAGE%')]
-    public function modify(#[Valid] #[RequestBody] %MODIFY_REQUEST% $request): BaseSuccessResponse
+    public function modify(int $id, #[Valid] #[RequestBody] %MODIFY_REQUEST% $request): BaseSuccessResponse
     {
-        return $this->%LOGIC_NAME%->modify($request);
+        return $this->%LOGIC_NAME%->modify($id, $request);
     }
 
     #[PostMapping(path: 'remove')]

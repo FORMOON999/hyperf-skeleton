@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Common\Commands\CodeGenerator\Generator\Request;
 
 use App\Common\Commands\Model\ClassInfo;
+use App\Common\Commands\Model\FileGenerate;
 
 class GeneratorRemoveRequest extends BaseGeneratorRequest
 {
@@ -15,10 +16,7 @@ class GeneratorRemoveRequest extends BaseGeneratorRequest
 
     public function buildClass(ClassInfo $class, array $results = []): string
     {
-        $stub = file_get_contents(dirname(__DIR__, 2) . '/stubs/Request/RemoveRequest.stub');
-        $this->replaceNamespace($stub, $class->namespace)
-            ->replaceClass($stub, $class->name)
-            ->replace($stub, '%SEARCH%', $results['requestRemoveSearch']->name);
-        return $stub;
+        $fileGenerate = new FileGenerate($this->modelInfo, $class, true, false);
+        return $fileGenerate->pk();
     }
 }
