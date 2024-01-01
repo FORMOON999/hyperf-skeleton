@@ -41,6 +41,7 @@ class PlatformLogic
                 'username',
                 'nickname',
                 'status',
+                'role',
                 'last_time',
             ],
             [],
@@ -91,6 +92,7 @@ class PlatformLogic
                 'username',
                 'nickname',
                 'status',
+                'role',
                 'last_time',
             ],
         );

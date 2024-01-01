@@ -14,6 +14,8 @@ namespace App\Controller\Platform\V1\Platform\Request;
 
 use App\Common\Constants\BaseStatus;
 use Hyperf\ApiDocs\Annotation\ApiModelProperty;
+use Hyperf\DTO\Annotation\Validation\Arr;
+use Lengbin\Common\Annotation\ArrayType;
 
 /**
  * Class PlatformModifyRequest.
@@ -28,4 +30,7 @@ class PlatformModifyRequest extends \Lengbin\Common\BaseObject
 
     #[ApiModelProperty(value: '状态')]
     public BaseStatus $status;
+
+    #[ApiModelProperty(value: '角色'), Arr, ArrayType(type: 'int')]
+    public array $role;
 }

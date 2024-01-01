@@ -16,7 +16,6 @@ use App\Common\Core\BaseController;
 use App\Common\Core\Entity\BaseSuccessResponse;
 use App\Common\Middleware\PlatformMiddleware;
 use App\Controller\Platform\V1\Profile\Request\ChangePasswordRequest;
-use App\Controller\Platform\V1\Profile\Request\ProfileDetailRequest;
 use App\Controller\Platform\V1\Profile\Response\ProfileResponse;
 use App\Logic\Platform\V1\ProfileLogic;
 use Hyperf\ApiDocs\Annotation\Api;
@@ -38,8 +37,8 @@ class ProfileController extends BaseController
     #[Inject]
     protected ProfileLogic $profileLogic;
 
-    #[PostMapping(path: 'detail')]
-    #[ApiOperation('获取管理员详情')]
+    #[PostMapping(path: '')]
+    #[ApiOperation('获取详情')]
     public function detail(): ProfileResponse
     {
         $id = $this->request->getAttribute('id');

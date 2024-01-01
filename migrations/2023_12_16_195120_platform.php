@@ -31,6 +31,7 @@ class Platform extends Migration
                 $table->string('username', 32)->comment('账号');
                 $table->string('nickname', 32)->comment('昵称');
                 $table->string('password', 64)->comment('密码');
+                $table->string('role', 500)->comment('角色');
                 $table->tinyInteger('status')->comment('状态');
                 $table->dateTime('last_time')->nullable()->comment('上次登录时间');
             });
@@ -39,6 +40,7 @@ class Platform extends Migration
             \Hyperf\DbConnection\Db::table('platform')->insert([
                 'username' => 'admin',
                 'nickname' => 'admin',
+                'role' => 'ADMIN',
                 'password' => \Lengbin\Helper\Util\PasswordHelper::generatePassword('123456'),
                 'status' => \App\Common\Constants\BaseStatus::NORMAL,
                 'created_at' => $date,

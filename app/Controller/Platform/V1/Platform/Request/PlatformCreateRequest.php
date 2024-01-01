@@ -14,7 +14,9 @@ namespace App\Controller\Platform\V1\Platform\Request;
 
 use App\Common\Constants\BaseStatus;
 use Hyperf\ApiDocs\Annotation\ApiModelProperty;
+use Hyperf\DTO\Annotation\Validation\Arr;
 use Hyperf\DTO\Annotation\Validation\Required;
+use Lengbin\Common\Annotation\ArrayType;
 use Lengbin\Common\BaseObject;
 
 /**
@@ -33,4 +35,7 @@ class PlatformCreateRequest extends BaseObject
 
     #[ApiModelProperty(value: '状态', required: true), Required]
     public BaseStatus $status;
+
+    #[ApiModelProperty(value: '角色'), Arr, Required, ArrayType(type: 'int')]
+    public array $role;
 }
