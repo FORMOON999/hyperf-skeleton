@@ -28,6 +28,6 @@ class %CLASS% extends BaseEnum
     #[EnumMessage(message: "%MESSAGE%不存在，请重试")]
     const NOT_FOUND = %MODULE%%BUSINESS%004;
 
-    #[EnumMessage(message: "数据已被占用")]
+    #[EnumMessage(message: ":name 已被占用")]
     const EXISTS = %MODULE%%BUSINESS%005;
 }
