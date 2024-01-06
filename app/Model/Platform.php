@@ -35,13 +35,13 @@ class Platform extends BaseModel
      *
      * @var array
      */
-    protected array $fillable = ['id', 'created_at', 'updated_at', 'deleted_at', 'username', 'nickname', 'password', 'status', 'last_time'];
+    protected array $fillable = ['id', 'created_at', 'updated_at', 'deleted_at', 'username', 'nickname', 'password', 'status', 'last_time', 'role'];
     /**
      * The attributes that should be cast to native types.
      *
      * @var array
      */
-    protected array $casts = ['id' => 'integer', 'status' => 'integer'];
+    protected array $casts = ['id' => 'integer', 'status' => 'integer', 'role' => 'json'];
     /**
      * @return BaseModelEntity
      */

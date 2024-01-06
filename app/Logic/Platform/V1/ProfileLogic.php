@@ -18,6 +18,7 @@ use App\Constants\Errors\PlatformError;
 use App\Controller\Platform\V1\Profile\Request\ChangePasswordRequest;
 use App\Controller\Platform\V1\Profile\Response\ProfileResponse;
 use App\Infrastructure\PlatformInterface;
+use App\Infrastructure\RoleInterface;
 use Hyperf\Di\Annotation\Inject;
 use Lengbin\Helper\Util\PasswordHelper;
 
@@ -25,6 +26,9 @@ class ProfileLogic
 {
     #[Inject()]
     protected PlatformInterface $platform;
+
+    #[Inject]
+    protected RoleInterface $role;
 
     public function detail(int $id): ProfileResponse
     {
@@ -37,12 +41,15 @@ class ProfileLogic
                 'username',
                 'nickname',
                 'status',
+                'role',
             ],
         );
         if (! $result) {
             throw new BusinessException(PlatformError::NOT_FOUND());
         }
-        return new ProfileResponse($result);
+        $response = new ProfileResponse($result);
+        $response->perms = $this->role->getPermissionByRoles($result->role);
+        return $response;
     }
 
     public function changePassword(int $id, ChangePasswordRequest $request): BaseSuccessResponse

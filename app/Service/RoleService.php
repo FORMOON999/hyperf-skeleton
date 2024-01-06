@@ -1,21 +1,25 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * This file is part of Hyperf.
+ *
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 
 namespace App\Service;
 
+use App\Common\Core\Entity\Output;
 use App\Infrastructure\RoleInterface;
 use App\Model\Role;
 use App\Model\RoleEntity;
-use App\Common\Core\Entity\Output;
 
 class RoleService implements RoleInterface
 {
-
-    public function __construct(protected Role $role)
-    {
-
-    }
+    public function __construct(protected Role $role) {}
 
     public function getList(array $search, array $field = ['*'], array $withs = [], array $sort = [], array $page = []): Output
     {
@@ -51,5 +55,15 @@ class RoleService implements RoleInterface
             $query->with(...$withs);
         }
         return $query->first()?->newEntity();
+    }
+
+    public function getPermissionByRoles(array $roles): array
+    {
+        return $this->role->buildQuery()
+            ->leftJoin('role_menu', 'role_menu.role_id', '=', 'role.id')
+            ->leftJoin('menu', 'menu.id', '=', 'role_menu.menu_id')
+            ->where('menu.perm', '!=', '')
+            ->whereIn('role.code', $roles)
+            ->pluck('menu.perm')->toArray();
     }
 }

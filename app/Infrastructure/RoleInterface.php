@@ -18,4 +18,6 @@ interface RoleInterface
     public function remove(array $search): int;
 
     public function detail(array $search, array $field = ['*'], array $withs = [], array $sort = []): ?RoleEntity;
+
+    public function getPermissionByRoles(array $roles): array;
 }

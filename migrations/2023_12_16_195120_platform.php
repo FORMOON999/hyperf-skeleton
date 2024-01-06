@@ -40,7 +40,7 @@ class Platform extends Migration
             \Hyperf\DbConnection\Db::table('platform')->insert([
                 'username' => 'admin',
                 'nickname' => 'admin',
-                'role' => 'ADMIN',
+                'role' => json_encode(['ADMIN']),
                 'password' => \Lengbin\Helper\Util\PasswordHelper::generatePassword('123456'),
                 'status' => \App\Common\Constants\BaseStatus::NORMAL,
                 'created_at' => $date,
