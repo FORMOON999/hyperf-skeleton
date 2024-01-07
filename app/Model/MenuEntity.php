@@ -50,4 +50,6 @@ class MenuEntity extends \App\Common\Core\Entity\BaseModelEntity
 
     #[ApiModelProperty(value: '跳转路径')]
     public string $redirect;
+
+    public array $role;
 }

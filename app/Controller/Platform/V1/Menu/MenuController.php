@@ -22,6 +22,7 @@ use App\Controller\Platform\V1\Menu\Request\MenuModifyRequest;
 use App\Controller\Platform\V1\Menu\Request\MenuRemoveRequest;
 use App\Controller\Platform\V1\Menu\Response\MenuDetailResponse;
 use App\Controller\Platform\V1\Menu\Response\MenuListResponse;
+use App\Controller\Platform\V1\Menu\Response\MenuRoutResponse;
 use App\Logic\Platform\V1\MenuLogic;
 use Hyperf\ApiDocs\Annotation\Api;
 use Hyperf\ApiDocs\Annotation\ApiHeader;
@@ -75,5 +76,12 @@ class MenuController extends BaseController
     public function detail(#[Valid] #[RequestBody] MenuDetailRequest $request): MenuDetailResponse
     {
         return $this->menuLogic->detail($request);
+    }
+
+    #[PostMapping(path: 'routes')]
+    #[ApiOperation('路由列表')]
+    public function routes(): MenuRoutResponse
+    {
+        return $this->menuLogic->routes();
     }
 }

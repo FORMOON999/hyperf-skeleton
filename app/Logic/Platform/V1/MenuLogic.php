@@ -12,9 +12,12 @@ declare(strict_types=1);
 
 namespace App\Logic\Platform\V1;
 
+use App\Common\Constants\SortType;
 use App\Common\Core\Entity\BaseSuccessResponse;
+use App\Common\Core\Entity\Output;
 use App\Common\Exceptions\BusinessException;
 use App\Constants\Errors\MenuError;
+use App\Constants\Type\MenuType;
 use App\Controller\Platform\V1\Menu\Request\MenuCreateRequest;
 use App\Controller\Platform\V1\Menu\Request\MenuDetailRequest;
 use App\Controller\Platform\V1\Menu\Request\MenuListRequest;
@@ -22,7 +25,11 @@ use App\Controller\Platform\V1\Menu\Request\MenuModifyRequest;
 use App\Controller\Platform\V1\Menu\Request\MenuRemoveRequest;
 use App\Controller\Platform\V1\Menu\Response\MenuDetailResponse;
 use App\Controller\Platform\V1\Menu\Response\MenuListResponse;
+use App\Controller\Platform\V1\Menu\Response\MenuRoutItem;
+use App\Controller\Platform\V1\Menu\Response\MenuRoutMeta;
+use App\Controller\Platform\V1\Menu\Response\MenuRoutResponse;
 use App\Infrastructure\MenuInterface;
+use App\Model\MenuEntity;
 use Hyperf\Di\Annotation\Inject;
 
 class MenuLogic
@@ -110,5 +117,69 @@ class MenuLogic
             throw new BusinessException(MenuError::NOT_FOUND());
         }
         return new MenuDetailResponse($result);
+    }
+
+    public function routes(): MenuRoutResponse
+    {
+        $response = new MenuRoutResponse();
+        $tops = $this->getListByPid(MenuType::CATALOG(), 0);
+        /**
+         * @var MenuEntity $top
+         */
+        foreach ($tops->list as $top) {
+            var_dump($top);
+            exit;
+            $meta = new MenuRoutMeta();
+            $meta->title = $top->name;
+            $meta->icon = $top->icon;
+            $meta->roles = [];
+            $meta->hidden = (bool) $top->status;
+
+            $item = new MenuRoutItem();
+            $item->path = $top->path;
+            $item->component = $top->component;
+            $item->redirect = $top->redirect;
+            $item->meta = $meta;
+            $item->children = $this->getChildren($top->id);
+            $response->list[] = $item;
+        }
+        return $response;
+    }
+
+    protected function getListByPid(MenuType $type, int $pid): Output
+    {
+        return $this->menu->getList(
+            ['pid' => $pid, 'type' => $type->getValue()],
+            [
+                'id',
+                'pid',
+                'name',
+                'type',
+                'path',
+                'component',
+                'perm',
+                'sort',
+                'status',
+                'icon',
+                'redirect',
+            ],
+            ['role'],
+            ['sort' => SortType::ASC]
+        );
+    }
+
+    protected function getChildren(int $pid)
+    {
+        $result = $this->getListByPid(MenuType::MENU(), $pid);
+
+        /*
+         * @var MenuEntity $top
+         */
+        foreach ($result->list as $data) {
+            $item = new MenuRoutItem();
+            $meta = new MenuRoutMeta();
+        }
+
+        return [];
     }
 }
