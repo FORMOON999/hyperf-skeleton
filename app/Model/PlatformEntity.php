@@ -36,5 +36,5 @@ class PlatformEntity extends \App\Common\Core\Entity\BaseModelEntity
     public string $lastTime;
 
     #[ApiModelProperty(value: '角色'), ArrayType(type: 'string')]
-    public array $role;
+    public array $roles;
 }

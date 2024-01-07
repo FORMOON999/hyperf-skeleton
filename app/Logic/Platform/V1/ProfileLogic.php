@@ -41,14 +41,14 @@ class ProfileLogic
                 'username',
                 'nickname',
                 'status',
-                'role',
+                'roles',
             ],
         );
         if (! $result) {
             throw new BusinessException(PlatformError::NOT_FOUND());
         }
         $response = new ProfileResponse($result);
-        $response->perms = $this->role->getPermissionByRoles($result->role);
+        $response->perms = $this->role->getPermissionByRoles($result->roles);
         return $response;
     }
 

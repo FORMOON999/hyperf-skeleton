@@ -127,12 +127,10 @@ class MenuLogic
          * @var MenuEntity $top
          */
         foreach ($tops->list as $top) {
-            var_dump($top);
-            exit;
             $meta = new MenuRoutMeta();
             $meta->title = $top->name;
             $meta->icon = $top->icon;
-            $meta->roles = [];
+            $meta->roles = array_column($top->role, 'code');
             $meta->hidden = (bool) $top->status;
 
             $item = new MenuRoutItem();
@@ -170,16 +168,27 @@ class MenuLogic
 
     protected function getChildren(int $pid)
     {
-        $result = $this->getListByPid(MenuType::MENU(), $pid);
-
-        /*
-         * @var MenuEntity $top
+        $result = [];
+        $menu = $this->getListByPid(MenuType::MENU(), $pid);
+        /**
+         * @var MenuEntity $data
          */
-        foreach ($result->list as $data) {
-            $item = new MenuRoutItem();
+        foreach ($menu->list as $data) {
             $meta = new MenuRoutMeta();
+            $meta->title = $data->name;
+            $meta->icon = $data->icon;
+            $meta->roles = array_column($data->role, 'code');
+            $meta->hidden = (bool) $data->status;
+
+            $item = new MenuRoutItem();
+            $item->path = $data->path;
+            $item->component = $data->component;
+            $item->redirect = $data->redirect;
+            $item->meta = $meta;
+            $item->children = $this->getChildren($data->id);
+            $result[] = $item;
         }
 
-        return [];
+        return $result;
     }
 }

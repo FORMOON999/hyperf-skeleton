@@ -27,8 +27,8 @@ class MenuRoutMeta extends BaseObject
     #[ApiModelProperty(value: '是否隐藏')]
     public bool $hidden;
 
-//    #[ApiModelProperty(value: '拥有路由权限的角色编码'), ArrayType(type: 'string')]
-//    public array $roles;
+    #[ApiModelProperty(value: '拥有路由权限的角色编码'), ArrayType(type: 'string')]
+    public array $roles;
 
     public bool $keepAlive = true;
 }
