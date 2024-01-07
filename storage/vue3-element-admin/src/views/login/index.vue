@@ -173,13 +173,6 @@ const loginRules = computed(() => {
         message: `${prefix}${t("login.password")}`,
       },
     ],
-    captchaCode: [
-      {
-        required: true,
-        trigger: "blur",
-        message: `${prefix}${t("login.captchaCode")}`,
-      },
-    ],
   };
 });
 

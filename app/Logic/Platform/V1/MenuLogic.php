@@ -131,7 +131,7 @@ class MenuLogic
             $meta->title = $top->name;
             $meta->icon = $top->icon;
             $meta->roles = array_column($top->role, 'code');
-            $meta->hidden = (bool) $top->status;
+            $meta->hidden = ! $top->status->getValue();
 
             $item = new MenuRoutItem();
             $item->path = $top->path;
@@ -178,7 +178,7 @@ class MenuLogic
             $meta->title = $data->name;
             $meta->icon = $data->icon;
             $meta->roles = array_column($data->role, 'code');
-            $meta->hidden = (bool) $data->status;
+            $meta->hidden = ! $data->status->getValue();
 
             $item = new MenuRoutItem();
             $item->path = $data->path;

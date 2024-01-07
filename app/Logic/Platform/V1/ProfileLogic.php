@@ -36,11 +36,8 @@ class ProfileLogic
             ['id' => $id],
             [
                 'id',
-                'created_at',
-                'updated_at',
                 'username',
                 'nickname',
-                'status',
                 'roles',
             ],
         );
