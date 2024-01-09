@@ -32,7 +32,7 @@ class UploadConfig extends BaseObject
     public string $bucket;
 
     /**
-     * config
+     * config.
      */
     public array $public;
 }
