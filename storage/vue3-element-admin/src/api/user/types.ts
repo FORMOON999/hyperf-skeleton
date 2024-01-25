@@ -13,13 +13,17 @@ export interface UserInfo {
 /**
  * 用户查询对象类型
  */
-export interface UserQuery extends PageQuery {
+export interface UserQuery {
+  search: UserSearch
+  page: PageQuery
+}
+
+interface UserSearch {
   keywords?: string;
   status?: number;
-  deptId?: number;
-  startTime?: string;
-  endTime?: string;
+  date?: DateQuery
 }
+
 
 /**
  * 用户分页对象

@@ -15,15 +15,15 @@ export function getUserInfoApi(): AxiosPromise<UserInfo> {
 /**
  * 获取用户分页列表
  *
- * @param queryParams
+ * @param data
  */
 export function getUserPage(
-  queryParams: UserQuery
+  data: UserQuery
 ): AxiosPromise<PageResult<UserPageVO[]>> {
   return request({
-    url: "/api/v1/users/page",
-    method: "get",
-    params: queryParams,
+    url: "/api/v1/platform/list",
+    method: "post",
+    data: data,
   });
 }
 

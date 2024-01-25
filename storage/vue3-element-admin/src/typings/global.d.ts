@@ -3,8 +3,18 @@ declare global {
    * 分页查询参数
    */
   interface PageQuery {
-    pageNum: number;
-    pageSize: number;
+    page?: number;
+    pageSize?: number;
+    all?: number;
+    total?: number;
+  }
+
+  /**
+   * 日期查询参数
+   */
+  interface DateQuery {
+    startTime?: string;
+    endTime?: string;
   }
 
   /**
