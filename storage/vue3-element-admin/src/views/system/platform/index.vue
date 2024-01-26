@@ -44,8 +44,8 @@ const roleList = ref<OptionType[]>(); // 角色下拉数据源
 
 watch(dateTimeRange, (newVal) => {
   if (newVal) {
-    queryParams?.search?.date?.startTime = newVal[0];
-    queryParams?.search?.date?.endTime = newVal[1];
+    queryParams.search.date.startTime = newVal[0];
+    queryParams.search.date.endTime = newVal[1];
   }
 });
 
