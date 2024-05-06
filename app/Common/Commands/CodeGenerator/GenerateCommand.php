@@ -12,27 +12,16 @@ declare(strict_types=1);
 
 namespace App\Common\Commands\CodeGenerator;
 
-use App\Common\Commands\CodeGenerator\Generator\ConstantControllerGenerator;
 use App\Common\Commands\CodeGenerator\Generator\ControllerGenerator;
-use App\Common\Commands\CodeGenerator\Generator\DaoGenerator;
-use App\Common\Commands\CodeGenerator\Generator\DaoInterfaceGenerator;
 use App\Common\Commands\CodeGenerator\Generator\ErrorGenerator;
-use App\Common\Commands\CodeGenerator\Generator\LogicGenerator;
 use App\Common\Commands\CodeGenerator\Generator\ModelGenerator;
-use App\Common\Commands\CodeGenerator\Generator\Request\GeneratorCondition;
-use App\Common\Commands\CodeGenerator\Generator\Request\GeneratorCreateData;
 use App\Common\Commands\CodeGenerator\Generator\Request\GeneratorCreateRequest;
 use App\Common\Commands\CodeGenerator\Generator\Request\GeneratorDetailRequest;
 use App\Common\Commands\CodeGenerator\Generator\Request\GeneratorListRequest;
 use App\Common\Commands\CodeGenerator\Generator\Request\GeneratorListSearch;
-use App\Common\Commands\CodeGenerator\Generator\Request\GeneratorListSort;
-use App\Common\Commands\CodeGenerator\Generator\Request\GeneratorModifyData;
 use App\Common\Commands\CodeGenerator\Generator\Request\GeneratorModifyRequest;
 use App\Common\Commands\CodeGenerator\Generator\Request\GeneratorRemoveRequest;
-use App\Common\Commands\CodeGenerator\Generator\Request\GeneratorRemoveSearch;
-use App\Common\Commands\CodeGenerator\Generator\Request\GeneratorSearch;
 use App\Common\Commands\CodeGenerator\Generator\Response\GeneratorDetailResponse;
-use App\Common\Commands\CodeGenerator\Generator\Response\GeneratorListItem;
 use App\Common\Commands\CodeGenerator\Generator\Response\GeneratorListResponse;
 use App\Common\Commands\CodeGenerator\Generator\ServiceGenerator;
 use App\Common\Commands\CodeGenerator\Generator\ServiceInterfaceGenerator;
@@ -144,13 +133,11 @@ class GenerateCommand extends HyperfCommand
                 'moduleIndex' => array_search($model->module, $modules) + 1,
             ])), 'error');
 
-//            $logic = Vertex::of(new LogicGenerator($condition), 'logic');
             $controller = Vertex::of(new ControllerGenerator($condition), 'controller');
 
             $dag->addVertex($error)
                 ->addVertex($serviceInterface)
                 ->addVertex($service)
-//                ->addVertex($logic)
                 ->addVertex($controller)
                 ->addVertex($getListRequest)
                 ->addVertex($createRequest)

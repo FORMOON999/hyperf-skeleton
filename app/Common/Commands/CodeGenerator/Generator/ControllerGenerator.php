@@ -41,7 +41,7 @@ class ControllerGenerator extends ApplicationGenerator
             explode('/', $this->config->url),
             [
                 lcfirst($this->config->version),
-                $application != "api" ? $application : '',
+                $application != 'api' ? $application : '',
             ],
             explode('/', Str::snake($this->modelInfo->name, '/'))
         );

@@ -31,7 +31,7 @@ class %CLASS% extends BaseController
     public function getList(#[Valid] #[RequestBody] %LIST_REQUEST% $request): %LIST_RESPONSE%
     {
         $result = $this->%SERVICE_NAME%->getList(
-            $request->search?->setUnderlineName()?->toArray() ?? [],
+            $request->getSearchParams(),
             %FILED%,
             [],
             $request->getSort(),

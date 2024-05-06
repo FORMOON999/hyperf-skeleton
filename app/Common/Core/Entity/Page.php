@@ -13,24 +13,24 @@ declare(strict_types=1);
 namespace App\Common\Core\Entity;
 
 use App\Common\Core\BaseObject;
+use App\Common\Helpers\Arrays\ArrayHelper;
 
 class Page extends BaseObject
 {
     /**
      * 页码
      */
-    public int $page = 0;
+    public ?int $page = null;
 
     /**
      * 页数.
      */
-    public int $pageSize = 0;
-
+    public ?int $pageSize = null;
 
     /**
      * 排序.
      */
-    public string $sort;
+    public ?string $sort = null;
 
     /**
      * sort = ""  =>  ['id' => 'desc']
@@ -70,5 +70,15 @@ class Page extends BaseObject
             $result['pageSize'] = $this->pageSize;
         }
         return $result;
+    }
+
+    public function getSearchParams(): array
+    {
+        $params = $this->setUnderlineName()?->toArray() ?? [];
+        if (empty($params)) {
+            return [];
+        }
+        ArrayHelper::removes($params, ['page', 'page_size', 'sort']);
+        return $params;
     }
 }
