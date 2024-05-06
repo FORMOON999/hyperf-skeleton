@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace App\Common\Core\Entity;
 
+use App\Common\Core\BaseObject;
 use Hyperf\ApiDocs\Annotation\ApiModelProperty;
-use Lengbin\Common\BaseObject;
 
 class BaseModelEntity extends BaseObject
 {
@@ -28,9 +28,4 @@ class BaseModelEntity extends BaseObject
 
     #[ApiModelProperty(value: '删除时间', hidden: true)]
     public ?string $deletedAt = null;
-
-    public function __construct(array|BaseModelEntity $config = [])
-    {
-        parent::__construct($config instanceof BaseModelEntity ? $config->toArray() : $config);
-    }
 }

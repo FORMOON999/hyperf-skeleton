@@ -16,7 +16,8 @@ declare(strict_types=1);
  */
 namespace App\Common\Util\Upload;
 
-use Lengbin\Helper\Util\RegularHelper;
+
+use App\Common\Helpers\RegularHelper;
 
 abstract class AbstractUpload implements UploadInterface
 {

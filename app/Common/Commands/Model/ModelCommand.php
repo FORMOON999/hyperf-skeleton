@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace App\Common\Commands\Model;
 
 use App\Common\Core\Entity\BaseModelEntity;
+use App\Common\Helpers\StringHelper;
 use Hyperf\CodeParser\Project;
 use Hyperf\Database\Commands\Ast\ModelRewriteConnectionVisitor;
 use Hyperf\Database\Commands\ModelCommand as BaseModelCommand;
@@ -20,7 +21,6 @@ use Hyperf\Database\Commands\ModelData;
 use Hyperf\Database\Commands\ModelOption;
 use Hyperf\Database\Schema\Builder;
 use Hyperf\Stringable\Str;
-use Lengbin\Helper\YiiSoft\StringHelper;
 use PhpParser\NodeTraverser;
 
 class ModelCommand extends BaseModelCommand

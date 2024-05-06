@@ -13,8 +13,8 @@ declare(strict_types=1);
 namespace App\Common\Core\Enum;
 
 use App\Common\Core\Enum\Annotation\EnumMessage;
+use App\Common\Helpers\Arrays\ArrayHelper;
 use Hyperf\Contract\TranslatorInterface;
-use Lengbin\Helper\YiiSoft\Arrays\ArrayHelper;
 
 trait EnumMessageTrait
 {

@@ -15,6 +15,7 @@ use Hyperf\DTO\Annotation\Contracts\Valid;
 use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\Middleware;
 use Hyperf\HttpServer\Annotation\PostMapping;
+use App\Common\Exceptions\BusinessException;
 %USES%
 #[Controller(prefix: '%URI%')]
 #[Api(tags: '%TITLE%管理')]
@@ -22,41 +23,70 @@ use Hyperf\HttpServer\Annotation\PostMapping;
 #[ApiHeader(name: 'Authorization')]
 class %CLASS% extends BaseController
 {
-    #[Inject]
-    protected %LOGIC% $%LOGIC_NAME%;
+    #[Inject()]
+    protected %SERVICE% $%SERVICE_NAME%;
 
     #[PostMapping(path: 'list')]
     #[ApiOperation('获取%MESSAGE%列表')]
     public function getList(#[Valid] #[RequestBody] %LIST_REQUEST% $request): %LIST_RESPONSE%
     {
-        return $this->%LOGIC_NAME%->getList($request);
+        $result = $this->%SERVICE_NAME%->getList(
+            $request->search?->setUnderlineName()?->toArray() ?? [],
+            %FILED%,
+            [],
+            $request->getSort(),
+            $request->getPage(),
+        );
+        return new %LIST_RESPONSE%($result);
     }
 
     #[PostMapping(path: 'create')]
     #[ApiOperation('创建%MESSAGE%')]
     public function create(#[Valid] #[RequestBody] %CREAT_REQUEST% $request): BaseSuccessResponse
     {
-        return $this->%LOGIC_NAME%->create($request);
+        $result = $this->%SERVICE_NAME%->create($request->setUnderlineName()->toArray());
+        if (! $result) {
+            throw new BusinessException(%ERROR%::CREATE_ERROR());
+        }
+        return new BaseSuccessResponse();
     }
 
     #[PostMapping(path: 'modify/{id}')]
     #[ApiOperation('更新%MESSAGE%')]
     public function modify(int $id, #[Valid] #[RequestBody] %MODIFY_REQUEST% $request): BaseSuccessResponse
     {
-        return $this->%LOGIC_NAME%->modify($id, $request);
+        $result = $this->%SERVICE_NAME%->modify(
+            ['id' => $id],
+            $request->setUnderlineName()->toArray()
+        );
+        if (! $result) {
+            throw new BusinessException(%ERROR%::UPDATE_ERROR());
+        }
+        return new BaseSuccessResponse();
     }
 
     #[PostMapping(path: 'remove')]
     #[ApiOperation('删除%MESSAGE%')]
     public function remove(#[Valid] #[RequestBody] %REMOVE_REQUEST% $request): BaseSuccessResponse
     {
-        return $this->%LOGIC_NAME%->remove($request);
+        $result = $this->%SERVICE_NAME%->remove($request->toArray());
+        if (! $result) {
+            throw new BusinessException(%ERROR%::DELETE_ERROR());
+        }
+        return new BaseSuccessResponse();
     }
 
     #[PostMapping(path: 'detail')]
     #[ApiOperation('获取%MESSAGE%详情')]
     public function detail(#[Valid] #[RequestBody] %DETAIL_REQUEST% $request): %DETAIL_RESPONSE%
     {
-        return $this->%LOGIC_NAME%->detail($request);
+        $result = $this->%SERVICE_NAME%->detail(
+            $request->toArray(),
+            %FILED%,
+        );
+        if (! $result) {
+            throw new BusinessException(%ERROR%::NOT_FOUND());
+        }
+        return new %DETAIL_RESPONSE%($result);
     }
 }

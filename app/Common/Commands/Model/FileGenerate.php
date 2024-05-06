@@ -12,14 +12,14 @@ declare(strict_types=1);
 
 namespace App\Common\Commands\Model;
 
+use App\Common\Core\BaseObject;
+use App\Common\Helpers\FormatHelper;
+use App\Common\Helpers\StringHelper;
+use App\Common\Util\PhpGenerator\GenerateClass;
+use App\Common\Util\PhpGenerator\Printer\PrinterFactory;
+use App\Common\Util\PhpGenerator\Property;
 use Hyperf\ApiDocs\Annotation\ApiModelProperty;
 use Hyperf\DTO\Annotation\Validation\Required;
-use Lengbin\Common\BaseObject;
-use Lengbin\Helper\Util\FormatHelper;
-use Lengbin\Helper\YiiSoft\StringHelper;
-use Lengbin\PhpGenerator\GenerateClass;
-use Lengbin\PhpGenerator\Printer\PrinterFactory;
-use Lengbin\PhpGenerator\Property;
 
 class FileGenerate
 {

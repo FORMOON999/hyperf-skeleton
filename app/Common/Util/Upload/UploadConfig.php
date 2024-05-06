@@ -17,7 +17,7 @@ declare(strict_types=1);
 
 namespace App\Common\Util\Upload;
 
-use Lengbin\Common\BaseObject;
+use App\Common\Core\BaseObject;
 
 class UploadConfig extends BaseObject
 {
@@ -32,7 +32,7 @@ class UploadConfig extends BaseObject
     public string $bucket;
 
     /**
-     * config
+     * config.
      */
     public array $public;
 }

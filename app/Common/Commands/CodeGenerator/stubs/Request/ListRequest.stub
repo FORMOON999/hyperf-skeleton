@@ -5,17 +5,10 @@ declare(strict_types=1);
 namespace %NAMESPACE%;
 
 use Hyperf\ApiDocs\Annotation\ApiModelProperty;
-use Lengbin\Common\BaseObject;
-use Lengbin\Common\Entity\Page;
+use App\Common\Core\Entity\Page;
 
-class %CLASS% extends BaseObject
+class %CLASS% extends Page
 {
     #[ApiModelProperty('搜索参数')]
     public ?%SEARCH% $search = null;
-
-    #[ApiModelProperty('分页参数')]
-    public ?Page $page = null;
-
-    #[ApiModelProperty('排序参数')]
-    public ?%SORT% $sort = null;
 }

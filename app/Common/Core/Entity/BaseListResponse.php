@@ -3,22 +3,15 @@ declare(strict_types=1);
 
 namespace App\Common\Core\Entity;
 
+use App\Common\Core\BaseObject;
 use Hyperf\ApiDocs\Annotation\ApiModelProperty;
-use Lengbin\Common\BaseObject;
 
 class BaseListResponse extends BaseObject
 {
-    #[ApiModelProperty('页码')]
-    public ?int $page = 1;
-
-    #[ApiModelProperty('每页数')]
-    public ?int $pageSize = 20;
-
     #[ApiModelProperty('总数')]
     public ?int $total = 0;
-
-    public function __construct(array|Output $config = [])
-    {
-        parent::__construct($config instanceof Output ? $config->toArray() : $config);
-    }
+    #[ApiModelProperty('分页')]
+    public ?int $page = null;
+    #[ApiModelProperty('每页数量')]
+    public ?int $pageSize = null;
 }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace %NAMESPACE%;
 
-use Lengbin\Common\BaseObject;
+use App\Common\Core\BaseObject;
 
 class %CLASS% extends BaseObject
 {

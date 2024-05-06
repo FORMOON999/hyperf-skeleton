@@ -33,8 +33,6 @@
         "hyperf/redis": "~3.0.0",
         "hyperf/signal": "~3.0.0",
         "hyperf/snowflake": "~3.0.0",
-        "lengbin/common": "v2.0.x-dev",
-        "lengbin/php-generator": "dev-main",
         "tangwei/apidocs": "^2.1",
         "marc-mabe/php-enum": "^4.7",
         "symfony/serializer": "^5.0|^6.0"

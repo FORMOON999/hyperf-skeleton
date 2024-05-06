@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace App\Common\Core\Entity;
 
 use App\Common\Constants\SortType;
+use App\Common\Core\BaseObject;
 use Hyperf\ApiDocs\Annotation\ApiModelProperty;
-use Lengbin\Common\BaseObject;
+
 class BaseSort extends BaseObject
 {
     #[ApiModelProperty('创建时间排序')]
@@ -15,7 +16,7 @@ class BaseSort extends BaseObject
     public function toArray(): array
     {
         $result = parent::toArray();
-        if (! empty($result)) {
+        if (!empty($result)) {
             return $result;
         }
         $this->createdAt = SortType::DESC();

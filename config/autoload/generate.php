@@ -13,7 +13,7 @@ return [
     // 应用端
     'applications' => [
         'api',
-        'platform',
+        'admin',
     ],
     // 是否基于 表区分  ddd
     'for_table_ddd' => false,

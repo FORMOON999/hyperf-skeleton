@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace App\Common\Core\Entity;
 
+use App\Common\Core\BaseObject;
 use Hyperf\ApiDocs\Annotation\ApiModelProperty;
-use Lengbin\Common\BaseObject;
 
 class BaseSuccessResponse extends BaseObject
 {

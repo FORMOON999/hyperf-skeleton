@@ -12,13 +12,13 @@ declare(strict_types=1);
 
 namespace Hyperf\DTO;
 
+use App\Common\Core\BaseObject;
 use App\Common\Core\Enum\BaseEnum;
 use BackedEnum;
 use Hyperf\DTO\Scan\PropertyAliasMappingManager;
 use InvalidArgumentException;
 use JsonMapper_Exception;
-use Lengbin\Common\Annotation\ArrayType;
-use Lengbin\Common\BaseObject;
+use App\Common\Core\Annotation\ArrayType;
 use phpDocumentor\Reflection\DocBlock\Tags\Var_;
 use phpDocumentor\Reflection\DocBlockFactory;
 use phpDocumentor\Reflection\Types\ContextFactory;

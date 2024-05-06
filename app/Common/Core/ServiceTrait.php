@@ -1,11 +1,21 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of Hyperf.
+ *
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
+
 namespace App\Common\Core;
 
 use App\Common\Core\Entity\Output;
+use App\Common\Core\Entity\Page;
 use Hyperf\Codec\Json;
 use Hyperf\HttpServer\Exception\Http\EncodingException;
-use Lengbin\Common\Entity\Page;
 use Throwable;
 
 trait ServiceTrait
@@ -25,21 +35,14 @@ trait ServiceTrait
     public function outputForArray(array $data, Page $page): Output
     {
         $output = new Output();
-        if ($page->total) {
-            $output->total = count($data);
-        }
 
-        $list = $data;
-        if (! $page->all) {
-            $pageSize = $page->pageSize;
-            $offset = ($page->page - 1) * $pageSize;
-            $data = array_values($data);
-            $output->page = $page->page;
-            $output->pageSize = $pageSize;
-            $list = array_slice($data, $offset, $pageSize);
-        }
+        $pageSize = $page->pageSize;
+        $offset = ($page->page - 1) * $pageSize;
+        $data = array_values($data);
+        $output->page = $page->page;
+        $output->pageSize = $pageSize;
+        $output->list = array_slice($data, $offset, $pageSize);
 
-        $output->list = $list;
         return $output;
     }
 

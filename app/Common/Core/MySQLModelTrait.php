@@ -14,10 +14,10 @@ namespace App\Common\Core;
 
 use App\Common\Core\Entity\BaseModelEntity;
 use App\Common\Core\Entity\Output;
+use App\Common\Core\Entity\Page;
+use App\Common\Helpers\Arrays\ArrayHelper;
 use Hyperf\Database\Model\Builder;
 use Hyperf\DbConnection\Db;
-use Lengbin\Common\Entity\Page;
-use Lengbin\Helper\YiiSoft\Arrays\ArrayHelper;
 
 trait MySQLModelTrait
 {
@@ -74,14 +74,12 @@ trait MySQLModelTrait
 
     public function output(Builder $query, array $pages): Output
     {
-        $page = ! empty($pages) ? new Page($pages) : Page::all();
         $output = new Output();
-        if ($page->total) {
+        if (! empty($pages)) {
+            $page = new Page($pages);
             $sql = sprintf('select count(*) as count from (%s) as b', $query->toSql());
             $output->total = Db::selectOne($sql, $query->getBindings())->count;
-        }
 
-        if (! $page->all) {
             $query->forPage($page->page, $page->pageSize);
             $output->page = $page->page;
             $output->pageSize = $page->pageSize;

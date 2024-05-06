@@ -12,10 +12,10 @@ declare(strict_types=1);
 
 namespace App\Common\Middleware;
 
+use App\Common\Helpers\Arrays\ArrayHelper;
+use App\Common\Helpers\StringHelper;
 use Hyperf\Contract\TranslatorInterface;
 use Hyperf\Di\Annotation\Inject;
-use Lengbin\Helper\YiiSoft\Arrays\ArrayHelper;
-use Lengbin\Helper\YiiSoft\StringHelper;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;

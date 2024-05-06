@@ -2,7 +2,7 @@
 
 namespace App\Common\Core\Entity;
 
-use Lengbin\Common\BaseObject;
+use App\Common\Core\BaseObject;
 
 class Output extends BaseObject
 {

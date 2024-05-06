@@ -12,10 +12,10 @@ declare(strict_types=1);
 namespace App\Common\Util\Upload\Type;
 
 use AlibabaCloud\Client\AlibabaCloud;
+use App\Common\Helpers\DateHelper;
 use App\Common\Util\Upload\AbstractUpload;
 use EasySwoole\Oss\AliYun\Config;
 use EasySwoole\Oss\AliYun\OssClient;
-use Lengbin\Helper\Util\DateHelper;
 
 class UploadOss extends AbstractUpload
 {

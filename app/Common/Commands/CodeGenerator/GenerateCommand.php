@@ -143,13 +143,14 @@ class GenerateCommand extends HyperfCommand
             $error = Vertex::of(new ErrorGenerator(array_merge($condition, [
                 'moduleIndex' => array_search($model->module, $modules) + 1,
             ])), 'error');
-            $logic = Vertex::of(new LogicGenerator($condition), 'logic');
+
+//            $logic = Vertex::of(new LogicGenerator($condition), 'logic');
             $controller = Vertex::of(new ControllerGenerator($condition), 'controller');
 
             $dag->addVertex($error)
                 ->addVertex($serviceInterface)
                 ->addVertex($service)
-                ->addVertex($logic)
+//                ->addVertex($logic)
                 ->addVertex($controller)
                 ->addVertex($getListRequest)
                 ->addVertex($createRequest)
@@ -159,16 +160,16 @@ class GenerateCommand extends HyperfCommand
                 ->addVertex($getListResponse)
                 ->addVertex($detailResponse)
                 ->addEdge($serviceInterface, $service)
-                ->addEdge($error, $logic)
-                ->addEdge($getListRequest, $logic)
-                ->addEdge($createRequest, $logic)
-                ->addEdge($modifyRequest, $logic)
-                ->addEdge($detailRequest, $logic)
-                ->addEdge($removeRequest, $logic)
-                ->addEdge($getListResponse, $logic)
-                ->addEdge($detailResponse, $logic)
-                ->addEdge($service, $logic)
-                ->addEdge($logic, $controller)
+                ->addEdge($error, $controller)
+                ->addEdge($getListRequest, $controller)
+                ->addEdge($createRequest, $controller)
+                ->addEdge($modifyRequest, $controller)
+                ->addEdge($detailRequest, $controller)
+                ->addEdge($removeRequest, $controller)
+                ->addEdge($getListResponse, $controller)
+                ->addEdge($detailResponse, $controller)
+                ->addEdge($service, $controller)
+//                ->addEdge($logic, $controller)
                 ->run();
         }
     }
@@ -177,14 +178,11 @@ class GenerateCommand extends HyperfCommand
     {
         $requestListSearch = Vertex::of(new GeneratorListSearch($condition), 'requestListSearch');
         $requestList = Vertex::of(new GeneratorListRequest($condition), 'requestList');
-        $requestSort = Vertex::of(new GeneratorListSort($condition), 'requestListSort');
         $dagRequestList = new Dag();
         $dagRequestList
             ->addVertex($requestListSearch)
             ->addVertex($requestList)
-            ->addVertex($requestSort)
-            ->addEdge($requestListSearch, $requestList)
-            ->addEdge($requestSort, $requestList);
+            ->addEdge($requestListSearch, $requestList);
         return Vertex::of($dagRequestList, 'entity_list');
     }
 
