@@ -9,6 +9,5 @@ use App\Common\Core\Entity\Page;
 
 class %CLASS% extends Page
 {
-    #[ApiModelProperty('搜索参数')]
-    public ?%SEARCH% $search = null;
+
 }

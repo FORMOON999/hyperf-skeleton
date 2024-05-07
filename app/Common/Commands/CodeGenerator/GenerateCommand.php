@@ -163,13 +163,9 @@ class GenerateCommand extends HyperfCommand
 
     protected function getListRequest(array $condition): Vertex
     {
-        $requestListSearch = Vertex::of(new GeneratorListSearch($condition), 'requestListSearch');
         $requestList = Vertex::of(new GeneratorListRequest($condition), 'requestList');
         $dagRequestList = new Dag();
-        $dagRequestList
-            ->addVertex($requestListSearch)
-            ->addVertex($requestList)
-            ->addEdge($requestListSearch, $requestList);
+        $dagRequestList->addVertex($requestList);
         return Vertex::of($dagRequestList, 'entity_list');
     }
 
