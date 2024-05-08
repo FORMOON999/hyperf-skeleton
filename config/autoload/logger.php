@@ -23,7 +23,7 @@ return \Hyperf\Support\value(function () {
                 'handler' => \Hyperf\Support\value(function () use ($item) {
                     if (\Hyperf\Support\env('APP_ENV') == 'local') {
                         return [
-                            'class' => App\Common\Log\Handler\StreamHandler::class,
+                            'class' => Monolog\Handler\StreamHandler::class,
                             'constructor' => [
                                 'group' => $item,
                                 'stream' => 'php://stdout',

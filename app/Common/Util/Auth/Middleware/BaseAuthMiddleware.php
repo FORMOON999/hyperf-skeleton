@@ -94,9 +94,10 @@ abstract class BaseAuthMiddleware implements MiddlewareInterface
         $isTest = \Hyperf\Support\env('APP_ENV') != 'prod' && $token == '8888';
         if ($isTest) {
             $payload = new JwtSubject();
-            $payload->data = $this->getTestPayload($request);
+            $results = $this->getTestPayload($request);
         } else {
             $payload = $this->validateToken($token, $ignoreExpired);
+            $results = $this->handlePayload($request, $payload);
         }
 
         // 记录 jwt解析 日志
@@ -114,7 +115,6 @@ abstract class BaseAuthMiddleware implements MiddlewareInterface
             throw new TokenExpireException();
         }
 
-        $results = $this->handlePayload($request, $payload);
         $results['token'] = $token;
         foreach ($results as $key => $value) {
             $request = $request->withAttribute($key, $value);

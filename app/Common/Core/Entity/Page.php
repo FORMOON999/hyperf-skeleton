@@ -20,17 +20,17 @@ class Page extends BaseObject
     /**
      * 页码
      */
-    public ?int $page = null;
+    public int $page = 1;
 
     /**
      * 页数.
      */
-    public ?int $pageSize = null;
+    public int $pageSize = 20;
 
     /**
      * 排序.
      */
-    public ?string $sort = null;
+    public string $sort = '';
 
     /**
      * sort = ""  =>  ['id' => 'desc']
