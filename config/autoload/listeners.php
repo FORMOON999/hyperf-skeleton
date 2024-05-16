@@ -14,4 +14,5 @@ return [
     Hyperf\Command\Listener\FailToHandleListener::class,
     Hyperf\AsyncQueue\Listener\QueueLengthListener::class,
     Hyperf\AsyncQueue\Listener\ReloadChannelListener::class,
+    Hyperf\ModelCache\CacheableInterface::class,
 ];
