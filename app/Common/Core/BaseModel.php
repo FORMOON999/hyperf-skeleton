@@ -15,9 +15,12 @@ namespace App\Common\Core;
 use App\Common\Core\Entity\BaseModelEntity;
 use Hyperf\Database\Model\SoftDeletes;
 use Hyperf\DbConnection\Model\Model;
+use Hyperf\ModelCache\Cacheable;
+use Hyperf\ModelCache\CacheableInterface;
 
-abstract class BaseModel extends Model
+abstract class BaseModel extends Model implements CacheableInterface
 {
+    use Cacheable;
     use SoftDeletes;
     use MySQLModelTrait;
 

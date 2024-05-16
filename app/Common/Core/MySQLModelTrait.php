@@ -44,7 +44,7 @@ trait MySQLModelTrait
 
     public function buildQuery(array $search = [], array $sorts = []): Builder
     {
-        $query = $this->newQuery();
+        $query = $this->newQuery(true);
         // sort
         if (! empty($sorts)) {
             foreach ($sorts as $key => $value) {
@@ -117,7 +117,7 @@ trait MySQLModelTrait
     public function batchInsert(array $data): int
     {
         $data = $this->appendTime($data);
-        $ret = $this->newQuery()->insert($data);
+        $ret = $this->newQuery(true)->insert($data);
         return $ret ? 1 : 0;
     }
 
@@ -127,7 +127,7 @@ trait MySQLModelTrait
         if (empty($column)) {
             $column = array_keys(current($data));
         }
-        return $this->newQuery()->upsert($data, [$this->getKeyName()], $column);
+        return $this->newQuery(true)->upsert($data, [$this->getKeyName()], $column);
     }
 
     private function appendTime(array $data, array $columns = []): array
