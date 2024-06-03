@@ -13,7 +13,7 @@ interface %CLASS%
 
     public function modify(array $search, array $data): int;
 
-    public function remove(array $search): int;
+    public function remove(array $search): ?bool;
 
     public function detail(array $search, array $field = ['*'], array $withs = [], array $sort = []): ?%MODEL_NAME_ENTITY%;
 }

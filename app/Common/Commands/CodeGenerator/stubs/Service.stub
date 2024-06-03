@@ -25,6 +25,7 @@ class %CLASS% implements %INHERITANCE%
     public function create(array $data): int|string
     {
         $model = clone $this->%MODEL_NAME%;
+        $data = $this->check($data);
         $model->fill($data);
         $ret = $model->save();
         return $ret ? $model->getKey() : 0;
@@ -32,12 +33,13 @@ class %CLASS% implements %INHERITANCE%
 
     public function modify(array $search, array $data): int
     {
+        $data = $this->check($data, $search);
         return $this->%MODEL_NAME%->buildQuery($search)->update($data);
     }
 
-    public function remove(array $search): int
+    public function remove(array $search): ?bool
     {
-        return $this->%MODEL_NAME%->buildQuery($search)->delete();
+        return $this->%MODEL_NAME%->buildQuery($search)->first()?->delete();
     }
 
     public function detail(array $search, array $field = ['*'], array $withs = [], array $sort = []): ?%MODEL_NAME_ENTITY%
@@ -47,5 +49,10 @@ class %CLASS% implements %INHERITANCE%
             $query->with(...$withs);
         }
         return $query->first()?->newEntity();
+    }
+
+    protected function check(array $data, array $search = []): array
+    {
+        return $data;
     }
 }
