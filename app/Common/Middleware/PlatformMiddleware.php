@@ -44,8 +44,8 @@ class PlatformMiddleware extends BaseAuthMiddleware
 
     protected function getTestPayload(ServerRequestInterface $request): array
     {
-        return [
-            'sub' => 1,
-        ];
+        $payload = new JwtSubject();
+        $payload->data['sub'] = 1;
+        return $this->handlePayload($request, $payload);
     }
 }
