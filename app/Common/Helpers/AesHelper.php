@@ -1,24 +1,32 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of Hyperf.
+ *
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
+
 namespace App\Common\Helpers;
 
 class AesHelper
 {
     protected string $key;
 
-    protected string $iv;
+    protected string $method;
 
-    protected string $method = 'AES-128-CBC';
+    public function __construct(string $key = 'hyperf', string $method = 'AES-128-CBC')
+    {
+        $this->key = $key;
+        $this->method = $method;
+    }
 
     public function setKey(string $key): static
     {
         $this->key = $key;
-        return $this;
-    }
-
-    public function setIv(string $iv): static
-    {
-        $this->iv = $iv;
         return $this;
     }
 
@@ -28,13 +36,16 @@ class AesHelper
         return $this;
     }
 
-    public function encrypt(string $data): string
+    public function encrypt($data): string
     {
-        return openssl_encrypt($data, $this->method, $this->key, 0, $this->iv);
+        $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length($this->method));
+        $encrypted = openssl_encrypt($data, $this->method, $this->key, 0, $iv);
+        return base64_encode($encrypted . '::' . $iv);
     }
 
-    public function decrypt(string $data): string
+    public function decrypt($data)
     {
-        return openssl_decrypt($data, $this->method, $this->key, 0, $this->iv);
+        [$encryptedData, $iv] = explode('::', base64_decode($data), 2);
+        return openssl_decrypt($encryptedData, $this->method, $this->key, 0, $iv);
     }
 }
