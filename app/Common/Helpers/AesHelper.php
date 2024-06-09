@@ -43,7 +43,7 @@ class AesHelper
         return base64_encode($encrypted . '::' . $iv);
     }
 
-    public function decrypt($data)
+    public function decrypt($data): string
     {
         [$encryptedData, $iv] = explode('::', base64_decode($data), 2);
         return openssl_decrypt($encryptedData, $this->method, $this->key, 0, $iv);
