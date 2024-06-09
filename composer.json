@@ -36,7 +36,8 @@
         "hyperf/snowflake": "~3.0.0",
         "marc-mabe/php-enum": "^4.7",
         "symfony/serializer": "^5.0|^6.0",
-        "tangwei/apidocs": "^2.1"
+        "tangwei/apidocs": "^2.1",
+        "ext-openssl": "Required to use HTTPS."
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.0",
@@ -48,8 +49,7 @@
         "swoole/ide-helper": "^5.0"
     },
     "suggest": {
-        "ext-openssl": "Required to use HTTPS.",
-        "ext-json": "Required to use JSON.",
+      "ext-json": "Required to use JSON.",
         "ext-pdo": "Required to use MySQL Client.",
         "ext-pdo_mysql": "Required to use MySQL Client.",
         "ext-redis": "Required to use Redis Client."
