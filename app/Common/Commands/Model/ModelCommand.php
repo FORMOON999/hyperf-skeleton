@@ -83,6 +83,7 @@ class ModelCommand extends BaseModelCommand
 
     protected function createModel(string $table, ModelOption $option)
     {
+        $originalTable = $table;
         $builder = $this->getSchemaBuilder($option->getPool());
         $table = Str::replaceFirst($option->getPrefix(), '', $table);
         $optionPath = $this->getOptionPath($table, $option);
@@ -111,7 +112,7 @@ class ModelCommand extends BaseModelCommand
         $entityPath = BASE_PATH . '/' . $project->path($entityClass);
         if (! file_exists($entityPath)) {
             $this->mkdir($entityPath);
-            $modelInfo = $this->getModelInfo($project, $builder, $table, $option);
+            $modelInfo = $this->getModelInfo($project, $builder, $originalTable, $option);
             $classInfo = new ClassInfo([
                 'name' => StringHelper::basename($entityClass),
                 'namespace' => $entityClass,

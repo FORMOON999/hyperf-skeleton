@@ -25,15 +25,15 @@ class GeneratorListResponse extends BaseGeneratorResponse
     public function buildClass(ClassInfo $class, array $results = []): string
     {
         $stub = file_get_contents(dirname(__DIR__, 2) . '/stubs/Response/ListResponse.stub');
+        $responseDetail = $results['responseDetail'];
         $this->replaceNamespace($stub, $class->namespace)
             ->replaceClass($stub, $class->name)
             ->replaceUses($stub, [
-                'App\\Common\\Core\\Entity\\BaseListResponse',
-                'Hyperf\\ApiDocs\\Annotation\\ApiModelProperty',
+                'App\Common\Core\Entity\BaseListResponse',
+                'Hyperf\ApiDocs\Annotation\ApiModelProperty',
                 ArrayType::class,
-                $this->modelInfo->namespace . 'Entity',
             ])
-            ->replace($stub, '%NAME%', $this->modelInfo->name . 'Entity');
+            ->replace($stub, '%NAME%', $responseDetail->name);
         return $stub;
     }
 }

@@ -1,6 +1,14 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * This file is part of Hyperf.
+ *
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 
 namespace App\Common\Commands\CodeGenerator\Generator;
 
@@ -11,7 +19,7 @@ abstract class ApplicationGenerator extends AbstractGenerator
     public function run(array $results = [])
     {
         $data = [];
-        foreach ($this->config->applications as $application) {
+        foreach ($this->config->applications as $application => $mode) {
             $context = [];
             foreach ($results as $key => $result) {
                 if ($result instanceof ClassInfo) {
@@ -32,6 +40,7 @@ abstract class ApplicationGenerator extends AbstractGenerator
                 }
             }
             $context['_application'] = $application;
+            $context['_mode'] = $mode;
             $data[$application] = $this->handle($context, ucfirst($application));
         }
         return $data;
@@ -45,11 +54,13 @@ abstract class ApplicationGenerator extends AbstractGenerator
     public function handle(array $results, string $application): ClassInfo
     {
         $class = $this->getClassInfo($application);
-        if ($this->isWrite() && !file_exists($class->file)) {
+        if ($this->isWrite() && ! file_exists($class->file)) {
             $this->mkdir($class->file);
-            file_put_contents($class->file, $this->buildClass($class, $results));
+            $content = $this->buildClass($class, $results);
+            if (! empty($content)) {
+                file_put_contents($class->file, $content);
+            }
         }
         return $class;
     }
-
 }

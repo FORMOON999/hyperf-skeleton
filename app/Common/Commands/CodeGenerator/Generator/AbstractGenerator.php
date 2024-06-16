@@ -1,6 +1,14 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * This file is part of Hyperf.
+ *
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 
 namespace App\Common\Commands\CodeGenerator\Generator;
 
@@ -40,6 +48,18 @@ abstract class AbstractGenerator extends BaseObject implements Runner
         return implode('/', $dirs);
     }
 
+    public function run(array $results = [])
+    {
+        $class = $this->getClassInfo();
+        if (! file_exists($class->file)) {
+            $this->mkdir($class->file);
+            $content = $this->buildClass($class, $results);
+            if (! empty($content)) {
+                file_put_contents($class->file, $content);
+            }
+        }
+        return $class;
+    }
 
     protected function getClassInfo(string $application = ''): ClassInfo
     {
@@ -48,18 +68,8 @@ abstract class AbstractGenerator extends BaseObject implements Runner
         return new ClassInfo([
             'name' => $this->getFilename(),
             'namespace' => $class,
-            'file' => $path
+            'file' => $path,
         ]);
-    }
-
-    public function run(array $results = [])
-    {
-        $class = $this->getClassInfo();
-        if (!file_exists($class->file)) {
-            $this->mkdir($class->file);
-            file_put_contents($class->file, $this->buildClass($class, $results));
-        }
-        return $class;
     }
 
     protected function replace(string &$stub, string $name, string $value): static
@@ -120,7 +130,7 @@ abstract class AbstractGenerator extends BaseObject implements Runner
     protected function replaceUses(string &$stub, array $uses): static
     {
         $str = '';
-        if (!empty($uses)) {
+        if (! empty($uses)) {
             foreach ($uses as $use) {
                 $str .= "use {$use};\n";
             }
@@ -135,11 +145,10 @@ abstract class AbstractGenerator extends BaseObject implements Runner
         return $this;
     }
 
-
     protected function mkdir(string $path): void
     {
         $dir = dirname($path);
-        if (!is_dir($dir)) {
+        if (! is_dir($dir)) {
             @mkdir($dir, 0755, true);
         }
     }

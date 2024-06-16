@@ -10,11 +10,15 @@ use Hyperf\ApiDocs\Annotation\Api;
 use Hyperf\ApiDocs\Annotation\ApiHeader;
 use Hyperf\ApiDocs\Annotation\ApiOperation;
 use Hyperf\Di\Annotation\Inject;
-use Hyperf\DTO\Annotation\Contracts\RequestBody;
+use Hyperf\DTO\Annotation\Contracts\RequestFormData;
+use Hyperf\DTO\Annotation\Contracts\RequestQuery;
 use Hyperf\DTO\Annotation\Contracts\Valid;
 use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\Middleware;
+use Hyperf\HttpServer\Annotation\DeleteMapping;
+use Hyperf\HttpServer\Annotation\GetMapping;
 use Hyperf\HttpServer\Annotation\PostMapping;
+use Hyperf\HttpServer\Annotation\PutMapping;
 use App\Common\Exceptions\BusinessException;
 %USES%
 #[Controller(prefix: '%URI%')]
@@ -26,9 +30,9 @@ class %CLASS% extends BaseController
     #[Inject()]
     protected %SERVICE% $%SERVICE_NAME%;
 
-    #[PostMapping(path: 'list')]
+    #[GetMapping(path: '')]
     #[ApiOperation('获取%MESSAGE%列表')]
-    public function getList(#[Valid] #[RequestBody] %LIST_REQUEST% $request): %LIST_RESPONSE%
+    public function getList(#[Valid] #[RequestQuery] %LIST_REQUEST% $request): %LIST_RESPONSE%
     {
         $result = $this->%SERVICE_NAME%->getList(
             $request->getSearchParams(),
@@ -40,20 +44,20 @@ class %CLASS% extends BaseController
         return new %LIST_RESPONSE%($result);
     }
 
-    #[PostMapping(path: 'create')]
+    #[PostMapping(path: '')]
     #[ApiOperation('创建%MESSAGE%')]
-    public function create(#[Valid] #[RequestBody] %CREAT_REQUEST% $request): BaseSuccessResponse
+    public function create(#[Valid] #[RequestFormData] %CREAT_REQUEST% $request): BaseSuccessResponse
     {
         $result = $this->%SERVICE_NAME%->create($request->setUnderlineName()->toArray());
         if (! $result) {
             throw new BusinessException(%ERROR%::CREATE_ERROR());
         }
-        return new BaseSuccessResponse();
+        return new BaseSuccessResponse($result);
     }
 
-    #[PostMapping(path: 'modify/{id}')]
+    #[PutMapping(path: '{id}')]
     #[ApiOperation('更新%MESSAGE%')]
-    public function modify(int $id, #[Valid] #[RequestBody] %MODIFY_REQUEST% $request): BaseSuccessResponse
+    public function modify(string $id, #[Valid] #[RequestFormData] %MODIFY_REQUEST% $request): BaseSuccessResponse
     {
         $result = $this->%SERVICE_NAME%->modify(
             ['id' => $id],
@@ -62,26 +66,26 @@ class %CLASS% extends BaseController
         if (! $result) {
             throw new BusinessException(%ERROR%::UPDATE_ERROR());
         }
-        return new BaseSuccessResponse();
+        return new BaseSuccessResponse($result);
     }
 
-    #[PostMapping(path: 'remove')]
+    #[DeleteMapping(path: '{ids}')]
     #[ApiOperation('删除%MESSAGE%')]
-    public function remove(#[Valid] #[RequestBody] %REMOVE_REQUEST% $request): BaseSuccessResponse
+    public function remove(string $ids): BaseSuccessResponse
     {
-        $result = $this->%SERVICE_NAME%->remove($request->toArray());
+        $result = $this->%SERVICE_NAME%->remove(['id' => explode(',', $ids)]);
         if (! $result) {
             throw new BusinessException(%ERROR%::DELETE_ERROR());
         }
-        return new BaseSuccessResponse();
+        return new BaseSuccessResponse($result);
     }
 
-    #[PostMapping(path: 'detail')]
+    #[GetMapping(path: '{id}')]
     #[ApiOperation('获取%MESSAGE%详情')]
-    public function detail(#[Valid] #[RequestBody] %DETAIL_REQUEST% $request): %DETAIL_RESPONSE%
+    public function detail(string $id): %DETAIL_RESPONSE%
     {
         $result = $this->%SERVICE_NAME%->detail(
-            $request->toArray(),
+            ['id' => $id],
             %FILED%,
         );
         if (! $result) {

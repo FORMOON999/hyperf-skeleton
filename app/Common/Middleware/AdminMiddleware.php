@@ -19,14 +19,14 @@ use App\Infrastructure\PlatformInterface;
 use Hyperf\Di\Annotation\Inject;
 use Psr\Http\Message\ServerRequestInterface;
 
-class PlatformMiddleware extends BaseAuthMiddleware
+class AdminMiddleware extends BaseAuthMiddleware
 {
     #[Inject()]
     protected PlatformInterface $platform;
 
     public static function getIss(): ?string
     {
-        return 'platform';
+        return 'admin';
     }
 
     protected function handlePayload(ServerRequestInterface $request, JwtSubject $payload): array
@@ -44,8 +44,8 @@ class PlatformMiddleware extends BaseAuthMiddleware
 
     protected function getTestPayload(ServerRequestInterface $request): array
     {
-        return [
-            'sub' => 1,
-        ];
+        $payload = new JwtSubject();
+        $payload->data['sub'] = 1;
+        return $this->handlePayload($request, $payload);
     }
 }

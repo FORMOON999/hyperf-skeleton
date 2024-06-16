@@ -78,7 +78,6 @@ class Page extends BaseObject
         if (empty($params)) {
             return [];
         }
-        ArrayHelper::removes($params, ['page', 'page_size', 'sort']);
-        return $params;
+        return ArrayHelper::unset($params, ['page', 'page_size', 'sort']);
     }
 }

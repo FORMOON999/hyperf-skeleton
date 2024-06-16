@@ -16,6 +16,9 @@ class GeneratorRemoveRequest extends BaseGeneratorRequest
 
     public function buildClass(ClassInfo $class, array $results = []): string
     {
+        if ($results['_mode'] == 'reset') {
+            return '';
+        }
         $fileGenerate = new FileGenerate($this->modelInfo, $class, true, false);
         return $fileGenerate->pk();
     }
