@@ -19,7 +19,7 @@ use App\Infrastructure\PlatformInterface;
 use Hyperf\Di\Annotation\Inject;
 use Psr\Http\Message\ServerRequestInterface;
 
-class PlatformMiddleware extends BaseAuthMiddleware
+class AdminMiddleware extends BaseAuthMiddleware
 {
     #[Inject()]
     protected PlatformInterface $platform;

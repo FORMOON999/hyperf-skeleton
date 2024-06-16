@@ -12,11 +12,13 @@ declare(strict_types=1);
 return [
     // 应用端
     'applications' => [
-        'api',
-        'admin',
+        'api' => 'post',
+        'admin' => 'reset',
     ],
     // 是否基于 表区分  ddd
     'for_table_ddd' => false,
     // 模块
     'modules' => [],
+    // 模式  reset or post
+    'mode' => 'reset',
 ];

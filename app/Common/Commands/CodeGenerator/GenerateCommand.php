@@ -18,7 +18,6 @@ use App\Common\Commands\CodeGenerator\Generator\ModelGenerator;
 use App\Common\Commands\CodeGenerator\Generator\Request\GeneratorCreateRequest;
 use App\Common\Commands\CodeGenerator\Generator\Request\GeneratorDetailRequest;
 use App\Common\Commands\CodeGenerator\Generator\Request\GeneratorListRequest;
-use App\Common\Commands\CodeGenerator\Generator\Request\GeneratorListSearch;
 use App\Common\Commands\CodeGenerator\Generator\Request\GeneratorModifyRequest;
 use App\Common\Commands\CodeGenerator\Generator\Request\GeneratorRemoveRequest;
 use App\Common\Commands\CodeGenerator\Generator\Response\GeneratorDetailResponse;
@@ -78,9 +77,17 @@ class GenerateCommand extends HyperfCommand
             $this->alert('请设置应用端');
             return;
         }
-
+        $mode = \Hyperf\Config\config('generate.mode', 'reset');
+        $applicationData = [];
+        foreach ($applications as $key => $item) {
+            if (is_int($key)) {
+                $applicationData[$item] = $mode;
+            } else {
+                $applicationData[$key] = $item;
+            }
+        }
         $config = new GeneratorConfig();
-        $config->applications = $applications;
+        $config->applications = $applicationData;
         $config->path = $this->input->getOption('path');
         $config->version = $this->input->getOption('path_version');
         $config->url = $this->input->getOption('url');
@@ -123,8 +130,8 @@ class GenerateCommand extends HyperfCommand
             $detailRequest = $this->detailRequest($condition);
             $removeRequest = $this->removeRequest($condition);
 
-            $getListResponse = $this->getListResponse($condition);
             $detailResponse = $this->detailResponse($condition);
+            $getListResponse = $this->getListResponse($condition);
 
             $dag = new Dag();
             $serviceInterface = Vertex::of(new ServiceInterfaceGenerator($condition), 'serviceInterface');
@@ -144,8 +151,8 @@ class GenerateCommand extends HyperfCommand
                 ->addVertex($modifyRequest)
                 ->addVertex($detailRequest)
                 ->addVertex($removeRequest)
-                ->addVertex($getListResponse)
                 ->addVertex($detailResponse)
+                ->addVertex($getListResponse)
                 ->addEdge($serviceInterface, $service)
                 ->addEdge($error, $controller)
                 ->addEdge($getListRequest, $controller)
@@ -203,9 +210,12 @@ class GenerateCommand extends HyperfCommand
 
     protected function getListResponse(array $condition): Vertex
     {
+        $responseDetail = Vertex::of(new GeneratorDetailResponse($condition), 'responseDetail');
         $responseList = Vertex::of(new GeneratorListResponse($condition), 'responseList');
         $dagResponseList = new Dag();
+        $dagResponseList->addVertex($responseDetail);
         $dagResponseList->addVertex($responseList);
+        $dagResponseList->addEdge($responseDetail, $responseList);
         return Vertex::of($dagResponseList, 'entity_list_response');
     }
 

@@ -33,7 +33,13 @@ class ControllerGenerator extends ApplicationGenerator
 
     public function buildClass(ClassInfo $class, array $results = []): string
     {
-        $stub = file_get_contents(dirname(__DIR__) . '/stubs/Controller.stub');
+        if ($results['_mode'] == 'post') {
+            $isPost = true;
+            $stub = file_get_contents(dirname(__DIR__) . '/stubs/ControllerPost.stub');
+        } else {
+            $isPost = false;
+            $stub = file_get_contents(dirname(__DIR__) . '/stubs/Controller.stub');
+        }
         $error = $results['error'];
         $serviceInterface = $results['serviceInterface'];
         $application = $results['_application'];
@@ -62,19 +68,23 @@ class ControllerGenerator extends ApplicationGenerator
             $filed = array_values($filed);
         }
 
+        $uses = [
+            $error->namespace,
+            $serviceInterface->namespace,
+            $requestList->namespace,
+            $responseList->namespace,
+            $requestCreate->namespace,
+            $responseDetail->namespace,
+            $requestModify->namespace,
+        ];
+        if ($isPost) {
+            $uses[] = $requestDetail->namespace;
+            $uses[] = $requestRemove->namespace;
+        }
+
         $this->replaceNamespace($stub, $class->namespace)
             ->replaceClass($stub, $class->name)
-            ->replaceUses($stub, [
-                $error->namespace,
-                $serviceInterface->namespace,
-                $requestList->namespace,
-                $responseList->namespace,
-                $requestCreate->namespace,
-                $requestDetail->namespace,
-                $responseDetail->namespace,
-                $requestModify->namespace,
-                $requestRemove->namespace,
-            ])
+            ->replaceUses($stub, $uses)
             ->replace($stub, '%SERVICE%', $serviceInterface->name)
             ->replace($stub, '%SERVICE_NAME%', str_replace('Interface', '', lcfirst($serviceInterface->name)))
             ->replace($stub, '%Middleware%', ucfirst($application))
