@@ -32,6 +32,7 @@ use Hyperf\Di\Annotation\Inject;
 use Hyperf\DTO\Annotation\Contracts\RequestBody;
 use Hyperf\DTO\Annotation\Contracts\Valid;
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\DeleteMapping;
 use Hyperf\HttpServer\Annotation\GetMapping;
 use Hyperf\HttpServer\Annotation\Middleware;
 use Hyperf\HttpServer\Annotation\PostMapping;
@@ -98,7 +99,7 @@ class LoginController extends BaseController
     }
 
     #[ApiOperation('退出登录')]
-    #[PostMapping(path: 'logout')]
+    #[DeleteMapping(path: 'logout')]
     #[ApiHeader(name: 'Authorization')]
     public function logout(): BaseSuccessResponse
     {
