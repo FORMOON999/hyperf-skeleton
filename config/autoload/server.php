@@ -9,12 +9,16 @@ declare(strict_types=1);
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
+use Hyperf\Framework\Bootstrap\PipeMessageCallback;
+use Hyperf\Framework\Bootstrap\ServerStartCallback;
+use Hyperf\Framework\Bootstrap\WorkerExitCallback;
+use Hyperf\Framework\Bootstrap\WorkerStartCallback;
 use Hyperf\Server\Event;
 use Hyperf\Server\Server;
 use Swoole\Constant;
 
 return [
-    'mode' => SWOOLE_PROCESS,
+    'mode' => SWOOLE_BASE,
     'servers' => [
         [
             'name' => 'http',
@@ -34,15 +38,15 @@ return [
         Constant::OPTION_OPEN_TCP_NODELAY => true,
         Constant::OPTION_MAX_COROUTINE => 100000,
         Constant::OPTION_OPEN_HTTP2_PROTOCOL => true,
-        Constant::OPTION_MAX_REQUEST => 100000,
+        Constant::OPTION_MAX_REQUEST => 0,
         Constant::OPTION_SOCKET_BUFFER_SIZE => 2 * 1024 * 1024,
         Constant::OPTION_BUFFER_OUTPUT_SIZE => 2 * 1024 * 1024,
         Constant::OPTION_PACKAGE_MAX_LENGTH => 2 * 1024 * 1024,
     ],
     'callbacks' => [
-        Event::ON_BEFORE_START => [Hyperf\Framework\Bootstrap\ServerStartCallback::class, 'beforeStart'],
-        Event::ON_WORKER_START => [Hyperf\Framework\Bootstrap\WorkerStartCallback::class, 'onWorkerStart'],
-        Event::ON_PIPE_MESSAGE => [Hyperf\Framework\Bootstrap\PipeMessageCallback::class, 'onPipeMessage'],
-        Event::ON_WORKER_EXIT => [Hyperf\Framework\Bootstrap\WorkerExitCallback::class, 'onWorkerExit'],
+        Event::ON_BEFORE_START => [ServerStartCallback::class, 'beforeStart'],
+        Event::ON_WORKER_START => [WorkerStartCallback::class, 'onWorkerStart'],
+        Event::ON_PIPE_MESSAGE => [PipeMessageCallback::class, 'onPipeMessage'],
+        Event::ON_WORKER_EXIT => [WorkerExitCallback::class, 'onWorkerExit'],
     ],
 ];
