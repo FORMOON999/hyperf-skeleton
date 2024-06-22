@@ -15,6 +15,7 @@ namespace App\Common\Core;
 use App\Common\Core\Entity\Output;
 use App\Common\Core\Entity\Page;
 use Hyperf\Codec\Json;
+use Hyperf\Collection\Collection;
 use Hyperf\HttpServer\Exception\Http\EncodingException;
 use Throwable;
 
@@ -32,9 +33,13 @@ trait ServiceTrait
         return $data;
     }
 
-    public function outputForArray(array $data, Page $page): Output
+    public function outputForArray(array $data, ?Page $page = null): Output
     {
         $output = new Output();
+        if (is_null($page)) {
+            $output->list = $data;
+            return $output;
+        }
 
         $pageSize = $page->pageSize;
         $offset = ($page->page - 1) * $pageSize;
@@ -43,6 +48,26 @@ trait ServiceTrait
         $output->pageSize = $pageSize;
         $output->list = array_slice($data, $offset, $pageSize);
 
+        return $output;
+    }
+
+    public function outputForCollection(Collection $result, ?Page $page = null): Output
+    {
+        $output = new Output();
+        if (is_null($page)) {
+            $output->list = $result->map(function ($item) {
+                return $item instanceof BaseModel ? $item->toArray() : $item;
+            })->toArray();
+            return $output;
+        }
+
+        $pageSize = $page->pageSize;
+        $offset = ($page->page - 1) * $pageSize;
+        $output->page = $page->page;
+        $output->pageSize = $pageSize;
+        $output->list = $result->slice($offset, $pageSize)->map(function ($item) {
+            return $item instanceof BaseModel ? $item->toArray() : $item;
+        })->toArray();
         return $output;
     }
 

@@ -16,4 +16,8 @@ interface %CLASS%
     public function remove(array $search): ?bool;
 
     public function detail(array $search, array $field = ['*'], array $withs = [], array $sort = []): ?%MODEL_NAME_ENTITY%;
+
+    public function getCacheById(string $id): ?%MODEL_NAME_ENTITY%;
+
+    public function getCacheByIds(array $ids): Output;
 }

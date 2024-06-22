@@ -14,6 +14,7 @@ namespace App\Common\Commands\CodeGenerator\Generator;
 
 use App\Common\Commands\Model\ClassInfo;
 use App\Common\Core\Entity\Output;
+use App\Common\Core\ServiceTrait;
 
 class ServiceGenerator extends AbstractGenerator
 {
@@ -38,6 +39,7 @@ class ServiceGenerator extends AbstractGenerator
                 $this->modelInfo->namespace,
                 $this->modelInfo->namespace . 'Entity',
                 Output::class,
+                ServiceTrait::class,
             ])
             ->replaceInheritance($stub, $serviceInterface->name)
             ->replace($stub, '%MODEL%', $this->modelInfo->name)

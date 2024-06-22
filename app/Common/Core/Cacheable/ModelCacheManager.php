@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace App\Common\Core\Cacheable;
 
 use App\Common\Core\ArrayableInterface;
+use App\Common\Core\Entity\Output;
 use DateInterval;
 use Hyperf\Database\Model\Collection;
 use Hyperf\Database\Model\Model;
@@ -240,6 +241,9 @@ class ModelCacheManager extends Manager
         }
 
         $items = call_user_func($call, $targetIds);
+        if ($items instanceof Output) {
+            $items = $items->list;
+        }
         if ($items instanceof Collection) {
             $items = $items->all();
         }

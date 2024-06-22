@@ -8,6 +8,8 @@ namespace %NAMESPACE%;
 class %CLASS% implements %INHERITANCE%
 {
 
+    use ServiceTrait;
+
     public function __construct(protected %MODEL% $%MODEL_NAME%)
     {
 
@@ -49,6 +51,21 @@ class %CLASS% implements %INHERITANCE%
             $query->with(...$withs);
         }
         return $query->first()?->newEntity();
+    }
+
+    public function getCacheById(string $id): ?%MODEL_NAME_ENTITY%
+    {
+        return $this->%MODEL_NAME%->findFromCacheByCustom($id, function ($id) {
+            return $this->detail(['id' => $id]);
+        })?->newEntity();
+    }
+
+    public function getCacheByIds(array $ids): Output
+    {
+        $result = $this->%MODEL_NAME%->findManyFromCacheByCustom($ids, function ($ids) {
+            return $this->getList(['id' => $ids]);
+        });
+        return $this->outputForCollection($result);
     }
 
     protected function check(array $data, array $search = []): array
