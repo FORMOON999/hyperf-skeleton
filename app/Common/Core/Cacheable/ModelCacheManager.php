@@ -166,7 +166,6 @@ class ModelCacheManager extends Manager
         $name = $instance->getConnectionName();
 
         if ($handler = $this->handlers[$name] ?? null) {
-            $this->cacheAll = true;
             $key = $this->getCacheKeyByAll($instance, $handler->getConfig());
             $stringHandler = $this->getRedisStringHandler($handler->getConfig());
             $data = $stringHandler->get($key);
@@ -300,7 +299,7 @@ class ModelCacheManager extends Manager
             $config->getCacheKey(),
             $config->getPrefix(),
             $model->getTable(),
-            '-',
+            'custom',
             'all'
         );
     }
