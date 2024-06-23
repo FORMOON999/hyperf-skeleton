@@ -56,14 +56,14 @@ class %CLASS% implements %INHERITANCE%
     public function getCacheById(string $id): ?%MODEL_NAME_ENTITY%
     {
         return $this->%MODEL_NAME%->findFromCacheByCustom($id, function ($id) {
-            return $this->detail(['id' => $id]);
+            return $this->%MODEL_NAME%->buildQuery(['id' => $id])->first();
         })?->newEntity();
     }
 
     public function getCacheByIds(array $ids): Output
     {
         $result = $this->%MODEL_NAME%->findManyFromCacheByCustom($ids, function ($ids) {
-            return $this->getList(['id' => $ids]);
+            return $this->%MODEL_NAME%->buildQuery(['id' => $ids])->get();
         });
         return $this->outputForCollection($result);
     }
