@@ -81,9 +81,9 @@ trait ModelCacheable
         return $this->getManager()->findManyFromCacheByCustom($ids, get_called_class(), $call, $customKey);
     }
 
-    public function findAllFromCache(?callable $call = null): Collection
+    public function findAllFromCache(?callable $call = null, string $customKey = 'all'): Collection
     {
-        return $this->getManager()->findAllFromCache(get_called_class(), $call);
+        return $this->getManager()->findAllFromCache(get_called_class(), $call, $customKey);
     }
 
     /**
@@ -103,18 +103,24 @@ trait ModelCacheable
         if ($this->enableCacheAll) {
             $this->deleteCacheByAll();
         }
+
+        $this->deleteAllCache();
+
         // return $this->getManager()->destroy([$this->getKey()], get_called_class());
         return true;
     }
+
+    // use deleteCacheByAll
+    public function deleteAllCache(): void {}
 
     public function deleteCacheByCustom(array $ids, string $key): bool
     {
         return $this->getManager()->destroyByCustom($ids, get_called_class(), $key);
     }
 
-    public function deleteCacheByAll(): bool
+    public function deleteCacheByAll(string $customKey = 'all'): bool
     {
-        return $this->getManager()->destroyByAll(get_called_class());
+        return $this->getManager()->destroyByAll(get_called_class(), $customKey);
     }
 
     /**

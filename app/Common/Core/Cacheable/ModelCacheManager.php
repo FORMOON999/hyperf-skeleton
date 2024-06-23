@@ -159,14 +159,14 @@ class ModelCacheManager extends Manager
         return false;
     }
 
-    public function findAllFromCache(string $class, ?callable $call = null): Collection
+    public function findAllFromCache(string $class, ?callable $call = null, string $customKey = 'all'): Collection
     {
         /** @var Model $instance */
         $instance = new $class();
         $name = $instance->getConnectionName();
 
         if ($handler = $this->handlers[$name] ?? null) {
-            $key = $this->getCacheKeyByAll($instance, $handler->getConfig());
+            $key = $this->getCacheKeyByAll($instance, $handler->getConfig(), $customKey);
             $stringHandler = $this->getRedisStringHandler($handler->getConfig());
             $data = $stringHandler->get($key);
             if ($data) {
@@ -191,14 +191,14 @@ class ModelCacheManager extends Manager
         return $instance->hydrate($this->getModelByAll($instance, $call));
     }
 
-    public function destroyByAll(string $class): bool
+    public function destroyByAll(string $class, string $customKey = 'all'): bool
     {
         /** @var Model $instance */
         $instance = new $class();
 
         $name = $instance->getConnectionName();
         if ($handler = $this->handlers[$name] ?? null) {
-            $key = $this->getCacheKeyByAll($instance, $handler->getConfig());
+            $key = $this->getCacheKeyByAll($instance, $handler->getConfig(), $customKey);
             return $handler->deleteMultiple([$key]);
         }
 
@@ -293,14 +293,14 @@ class ModelCacheManager extends Manager
         );
     }
 
-    protected function getCacheKeyByAll(Model $model, Config $config): string
+    protected function getCacheKeyByAll(Model $model, Config $config, string $customKey = 'all'): string
     {
         return sprintf(
             $config->getCacheKey(),
             $config->getPrefix(),
             $model->getTable(),
             'custom',
-            'all'
+            $customKey
         );
     }
 
