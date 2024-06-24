@@ -311,24 +311,22 @@ class ModelCacheManager extends Manager
             return $instance->newQuery()->get()->toArray();
         }
 
-        $models = call_user_func($call);
-        if (empty($models)) {
+        $model = call_user_func($call);
+        if (empty($model)) {
             return $value;
         }
-        foreach ($models as $model) {
-            switch (true) {
-                case $model instanceof Model:
-                    $value[] = $this->formatModel($model);
-                    break;
-                case $model instanceof ArrayableInterface:
-                    $value[] = $model->toArray();
-                    break;
-                case is_array($model):
-                    $value[] = $model;
-                    break;
-                default:
-                    throw new InvalidArgumentException('call data is not match!');
-            }
+        switch (true) {
+            case $model instanceof Model:
+                $value[] = $this->formatModel($model);
+                break;
+            case $model instanceof ArrayableInterface:
+                $value[] = $model->toArray();
+                break;
+            case is_array($model):
+                $value[] = $model;
+                break;
+            default:
+                throw new InvalidArgumentException('call data is not match!');
         }
         return $value;
     }
