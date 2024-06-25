@@ -16,7 +16,7 @@ class AesHelper
 {
     protected string $key = 'v7LkH3dg4Fvz4ZBVGwdVna9ZoQoKekWv';
 
-    protected string $method = 'AES-128-EBC';
+    protected string $method = 'AES-128-ECB';
 
     protected string $vi = '';
 
