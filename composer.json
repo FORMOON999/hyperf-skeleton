@@ -16,6 +16,8 @@
         "ext-bcmath": "*",
         "ext-openssl": "*",
         "ext-json": "*",
+        "ext-zip": "*",
+        "ext-simplexml": "*",
         "hashwallet/hyperf-jwt": "dev-master",
         "hyperf/async-queue": "~3.0.0",
         "hyperf/cache": "~3.0.0",
