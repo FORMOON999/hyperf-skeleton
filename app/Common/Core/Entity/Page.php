@@ -50,7 +50,7 @@ class Page extends BaseObject
         $result = [];
         foreach ($sorts as $sort) {
             $sort = trim($sort);
-            if (str_contains('-', $sort)) {
+            if (str_contains($sort, '-')) {
                 $sort = str_replace('-', '', $sort);
                 $result[$sort] = 'desc';
             } else {
