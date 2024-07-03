@@ -10,8 +10,10 @@ class BaseListResponse extends BaseObject
 {
     #[ApiModelProperty('总数')]
     public int $total = 0;
+
     #[ApiModelProperty('分页')]
     public int $page = 1;
+
     #[ApiModelProperty('每页数量')]
     public int $pageSize = 20;
 }
