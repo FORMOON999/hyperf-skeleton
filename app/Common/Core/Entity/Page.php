@@ -14,23 +14,18 @@ namespace App\Common\Core\Entity;
 
 use App\Common\Core\BaseObject;
 use App\Common\Helpers\Arrays\ArrayHelper;
+use Hyperf\ApiDocs\Annotation\ApiModelProperty;
 
 class Page extends BaseObject
 {
-    /**
-     * 页码
-     */
-    public int $page = 1;
+    #[ApiModelProperty('页码')]
+    public ?int $page = null;
 
-    /**
-     * 页数.
-     */
-    public int $pageSize = 20;
+    #[ApiModelProperty('页数')]
+    public ?int $pageSize = null;
 
-    /**
-     * 排序.
-     */
-    public string $sort = '';
+    #[ApiModelProperty('排序')]
+    public ?string $sort = null;
 
     /**
      * sort = ""  =>  ['id' => 'desc']
