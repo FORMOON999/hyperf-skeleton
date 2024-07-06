@@ -56,7 +56,7 @@ trait ServiceTrait
         $output = new Output();
         if (is_null($page)) {
             $output->list = $result->map(function ($item) {
-                return $item instanceof BaseModel ? $item->toArray() : $item;
+                return $item instanceof BaseModel ? $item->newEntity() : $item;
             })->toArray();
             return $output;
         }
@@ -66,7 +66,7 @@ trait ServiceTrait
         $output->page = $page->page;
         $output->pageSize = $pageSize;
         $output->list = $result->slice($offset, $pageSize)->map(function ($item) {
-            return $item instanceof BaseModel ? $item->toArray() : $item;
+            return $item instanceof BaseModel ? $item->newEntity() : $item;
         })->toArray();
         return $output;
     }
