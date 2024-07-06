@@ -36,7 +36,7 @@ class %CLASS% implements %INHERITANCE%
     public function modify(array $search, array $data): int
     {
         $data = $this->check($data, $search);
-        return $this->%MODEL_NAME%->buildQuery($search)->update($data);
+        return (int) $this->%MODEL_NAME%->buildQuery($search)->first()?->update($data) ?? 0;
     }
 
     public function remove(array $search): ?bool
