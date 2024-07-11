@@ -42,13 +42,13 @@ class Response extends \Hyperf\HttpServer\Response
         ]);
     }
 
-    public function fail($code, $message = ''): PsrResponseInterface
+    public function fail($code, $message = '', $status = 200): PsrResponseInterface
     {
         return $this->json([
             'code' => $code,
             'msg' => $message,
             'data' => new stdClass(),
-        ]);
+        ])->withStatus($status);
     }
 
     public function cookie(Cookie $cookie)

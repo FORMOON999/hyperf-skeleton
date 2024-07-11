@@ -19,7 +19,6 @@ use App\Common\Core\Enum\Annotation\EnumMessage;
  * @method static CommonError SERVER_ERROR()
  * @method static CommonError INVALID_PERMISSION()
  * @method static CommonError INVALID_PARAMS()
- * @method static CommonError TOKEN_EXPIRED()
  * @method static CommonError INVALID_TOKEN()
  */
 class CommonError extends BaseEnum
@@ -47,12 +46,6 @@ class CommonError extends BaseEnum
      */
     #[EnumMessage('错误的请求参数')]
     public const INVALID_PARAMS = 400;
-
-    /**
-     * @Message("登录已超时")
-     */
-    #[EnumMessage('登录已超时')]
-    public const TOKEN_EXPIRED = 408;
 
     /**
      * @Message("请重新登录")

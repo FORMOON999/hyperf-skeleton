@@ -19,7 +19,6 @@ namespace App\Common\Exceptions\Handler;
 
 use App\Common\Core\Enum\CommonError;
 use App\Common\Core\Response;
-use App\Common\Exceptions\BusinessException;
 use App\Common\Util\Auth\Exception\InvalidTokenException;
 use App\Common\Util\Auth\Exception\TokenExpireException;
 use Hyperf\ExceptionHandler\ExceptionHandler;
@@ -38,9 +37,8 @@ class TokenExceptionHandler extends ExceptionHandler
     public function handle(Throwable $throwable, ResponseInterface $response)
     {
         $this->stopPropagation();
-        $errorCode = $throwable instanceof TokenExpireException ? CommonError::TOKEN_EXPIRED() : CommonError::INVALID_TOKEN();
-        $error = new BusinessException($errorCode);
-        return $this->response->fail($error->getCode(), $error->getMessage());
+        $error = CommonError::INVALID_TOKEN();
+        return $this->response->fail($error->getValue(), $error->getMessage());
     }
 
     public function isValid(Throwable $throwable): bool
