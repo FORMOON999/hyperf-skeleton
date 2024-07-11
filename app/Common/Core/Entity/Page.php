@@ -14,6 +14,7 @@ namespace App\Common\Core\Entity;
 
 use App\Common\Core\BaseObject;
 use App\Common\Helpers\Arrays\ArrayHelper;
+use App\Common\Helpers\FormatHelper;
 use Hyperf\ApiDocs\Annotation\ApiModelProperty;
 
 class Page extends BaseObject
@@ -45,6 +46,7 @@ class Page extends BaseObject
         $result = [];
         foreach ($sorts as $sort) {
             $sort = trim($sort);
+            $sort = FormatHelper::uncamelize($sort);
             if (str_contains($sort, '-')) {
                 $sort = str_replace('-', '', $sort);
                 $result[$sort] = 'desc';
