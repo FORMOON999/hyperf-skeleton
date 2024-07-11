@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace App\Common\Core;
 
+use App\Common\Core\Cacheable\ModelCacheBuilder;
 use App\Common\Core\Entity\BaseModelEntity;
 use App\Common\Core\Entity\Output;
 use App\Common\Core\Entity\Page;
@@ -42,37 +43,24 @@ trait MySQLModelTrait
         return $this;
     }
 
-    public function buildQuery(array $search = [], array $sorts = []): Builder
+    public function buildQuery(array $search = [], array $sorts = []): Builder|ModelCacheBuilder
     {
+        /**
+         * @var ModelCacheBuilder $query
+         */
         $query = $this->newQuery();
         // sort
         if (! empty($sorts)) {
-            foreach ($sorts as $key => $value) {
-                if (empty($value)) {
-                    continue;
-                }
-                $query = $query->orderBy($key, $value);
-            }
+            $query = $query->sorts($sorts);
         }
 
         if (empty($search)) {
             return $query;
         }
-
-        if (ArrayHelper::isIndexed($search)) {
-            return $query->where($search);
-        }
-
-        foreach ($search as $key => $value) {
-            if (is_null($value)) {
-                continue;
-            }
-            $query = is_array($value) ? $query->whereIn($key, $value) : $query->where($key, $value);
-        }
-        return $query;
+        return $query->whereSearch($search);
     }
 
-    public function output(Builder $query, array $pages): Output
+    public function output(Builder $query, ?array $pages = []): Output
     {
         $output = new Output();
         if (! empty($pages)) {
@@ -89,20 +77,6 @@ trait MySQLModelTrait
             return $model->newEntity();
         })->toArray();
         return $output;
-    }
-
-    public function betweenTime(Builder $query, string $field, array $data): Builder
-    {
-        $query->where(function (Builder $builder) use ($field, $data) {
-            if ($data['start'] > 0) {
-                $builder->where($field, '>=', $data['start']);
-            }
-            if ($data['end'] > 0) {
-                $builder->where($field, '<', $data['end']);
-            }
-        });
-
-        return $query;
     }
 
     public function getTable(bool $isTablePrefix = false): string

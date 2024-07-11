@@ -193,7 +193,7 @@ trait ModelCacheable
         return parent::newModelBuilder($query);
     }
 
-    public function newQuery(bool $cache = true): Builder
+    public function newQuery(bool $cache = true): Builder|ModelCacheBuilder
     {
         $this->useCacheBuilder = $cache;
         return parent::newQuery();
@@ -203,7 +203,7 @@ trait ModelCacheable
      * @param bool $cache Whether to delete the model cache when batch update
      * @return Builder|static
      */
-    public static function query(bool $cache = true): Builder
+    public static function query(bool $cache = true): Builder|ModelCacheBuilder
     {
         return (new static())->newQuery($cache);
     }
