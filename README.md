@@ -11,9 +11,6 @@
 
 # 如何使用
 
-## 管理台
-请移驾到 [vue3-element-admin](https://github.com/youlaitech/vue3-element-admin)
-
 ## 安装
 
 ```php
