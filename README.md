@@ -1,4 +1,4 @@
-> 基于 php8.0 hyperf3.0 框架封装的骨架
+> 基于 php8.1 hyperf3.1 框架封装的骨架
 
 接口 我也经历了几个版本
 
@@ -10,9 +10,6 @@
 
 
 # 如何使用
-
-## 管理台
-请移驾到 [vue3-element-admin](https://github.com/youlaitech/vue3-element-admin)
 
 ## 安装
 
