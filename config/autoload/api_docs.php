@@ -14,7 +14,9 @@ return [
     'enable' => \Hyperf\Support\env('APP_ENV') !== 'prod',
     'format' => 'json',
     'output_dir' => BASE_PATH . '/runtime/swagger',
+    'proxy_dir' => BASE_PATH . '/runtime/container/proxy',
     'prefix_url' => \Hyperf\Support\env('API_DOCS_PREFIX_URL', '/swagger'),
+    'prefix_swagger_resources' => 'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.5.0',
     // 替换验证属性
     'validation_custom_attributes' => true,
     // 全局responses
