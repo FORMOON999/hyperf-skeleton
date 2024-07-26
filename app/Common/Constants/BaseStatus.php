@@ -18,24 +18,24 @@ declare(strict_types=1);
 namespace App\Common\Constants;
 
 use App\Common\Core\Enum\Annotation\EnumMessage;
-use App\Common\Core\Enum\BaseEnum;
+use App\Common\Core\Enum\EnumMessageTrait;
 
 /**
  * 基础状态
- * @method static BaseStatus FROZEN()
- * @method static BaseStatus NORMAL()
  */
-class BaseStatus extends BaseEnum
+enum BaseStatus: int
 {
+    use EnumMessageTrait;
+
     /**
      * @Message("禁用")
      */
     #[EnumMessage('禁用')]
-    public const FROZEN = 0;
+    case FROZEN = 0;
 
     /**
      * @Message("正常")
      */
     #[EnumMessage('正常')]
-    public const NORMAL = 1;
+    case NORMAL = 1;
 }

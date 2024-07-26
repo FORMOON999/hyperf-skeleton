@@ -16,7 +16,6 @@ use App\Common\Core\Annotation\ArrayType;
 use App\Common\Core\Annotation\EnumView;
 use App\Common\Helpers\FormatHelper;
 use App\Common\Helpers\StringHelper;
-use MabeEnum\Enum;
 use phpDocumentor\Reflection\DocBlock\Tags\TagWithType;
 use phpDocumentor\Reflection\DocBlockFactory;
 use phpDocumentor\Reflection\Types\Array_;
@@ -191,8 +190,8 @@ class BaseObject implements ArrayableInterface
             return $value;
         }
 
-        if (class_exists(Enum::class) && is_subclass_of($classname, Enum::class)) {
-            return $classname::byValue($value);
+        if (enum_exists($classname)) {
+            return $classname::from($value);
         }
 
         $class = new ReflectionClass($classname);
@@ -299,24 +298,24 @@ class BaseObject implements ArrayableInterface
                 }
                 break;
             case is_object($value):
-                if (class_exists(Enum::class) && $value instanceof Enum) {
+                if (enum_exists($value::class)) {
                     $flags = EnumView::ENUM_VALUE;
                     if ($isPhp8 && $enumViews = $property->getAttributes(EnumView::class)) {
                         $flags = $enumViews[0]->newInstance()->flags;
                     }
                     switch ($flags) {
                         case EnumView::ENUM_NAME:
-                            $value = $value->getName();
+                            $value = $value->name;
                             break;
                         case EnumView::ENUM_VALUE:
-                            $value = $value->getValue();
+                            $value = $value->value;
                             break;
                         case EnumView::ENUM_MESSAGE:
                             $value = $value->getMessage();
                             break;
                         case EnumView::ENUM_ALL:
                             $value = [
-                                'value' => $value->getValue(),
+                                'value' => $value->value,
                                 'message' => $value->getMessage(),
                             ];
                             break;

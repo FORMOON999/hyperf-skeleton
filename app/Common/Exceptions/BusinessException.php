@@ -12,19 +12,19 @@ declare(strict_types=1);
 
 namespace App\Common\Exceptions;
 
-use App\Common\Core\Enum\BaseEnum;
+use App\Common\Core\Enum\MessageBackedEnum;
 use Hyperf\Server\Exception\ServerException;
 use Throwable;
 
 class BusinessException extends ServerException
 {
-    public function __construct(BaseEnum|int $code, ?string $message = null, array $replace = [], ?Throwable $previous = null)
+    public function __construct(int|MessageBackedEnum $code, ?string $message = null, array $replace = [], ?Throwable $previous = null)
     {
-        if ($code instanceof BaseEnum) {
+        if ($code instanceof MessageBackedEnum) {
             if (empty($message)) {
                 $message = $code->getMessage($replace);
             }
-            $code = $code->getValue();
+            $code = $code->value;
         }
         parent::__construct($message, $code, $previous);
     }

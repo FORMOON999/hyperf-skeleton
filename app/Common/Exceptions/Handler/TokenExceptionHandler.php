@@ -37,8 +37,8 @@ class TokenExceptionHandler extends ExceptionHandler
     public function handle(Throwable $throwable, ResponseInterface $response)
     {
         $this->stopPropagation();
-        $error = CommonError::INVALID_TOKEN();
-        return $this->response->fail($error->getValue(), $error->getMessage());
+        $error = CommonError::INVALID_TOKEN;
+        return $this->response->fail($error->value, $error->getMessage());
     }
 
     public function isValid(Throwable $throwable): bool

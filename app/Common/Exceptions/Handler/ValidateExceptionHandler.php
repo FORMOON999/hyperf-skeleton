@@ -42,7 +42,7 @@ class ValidateExceptionHandler extends ExceptionHandler
     public function handle(Throwable $throwable, ResponseInterface $response)
     {
         $this->stopPropagation();
-        $systemError = new BusinessException(CommonError::INVALID_PARAMS());
+        $systemError = new BusinessException(CommonError::INVALID_PARAMS);
         $message = $throwable->validator->errors()->first();
         return $this->response->fail($systemError->getCode(), $message);
     }

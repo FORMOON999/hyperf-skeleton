@@ -13,29 +13,22 @@ declare(strict_types=1);
 namespace App\Common\Constants;
 
 use App\Common\Core\Enum\Annotation\EnumMessage;
-use App\Common\Core\Enum\BaseEnum;
+use App\Common\Core\Enum\EnumMessageTrait;
 
 /**
  * 终端.
- * @method static Terminal IOS()
- * @method static Terminal ANDROID()
- * @method static Terminal PC()
- * @method static Terminal H5()
  */
-class Terminal extends BaseEnum
+enum Terminal: int
 {
-    #[EnumMessage(message: '苹果')]
-    public const IOS = 1;
-
+    use EnumMessageTrait;
     #[EnumMessage(message: '安卓')]
-    public const ANDROID = 2;
+    case ANDROID = 1;
+    #[EnumMessage(message: '苹果')]
+    case IOS = 2;
 
-    #[EnumMessage(message: '苹果flutter')]
-    public const IOS_FLUTTER = 3;
-
-    #[EnumMessage(message: '安卓flutter')]
-    public const ANDROID_FLUTTER = 4;
+    #[EnumMessage(message: '苹果书签')]
+    case IOS_BOOKMARK = 3;
 
     #[EnumMessage(message: 'h5')]
-    public const PWA = 5;
+    case PWA = 5;
 }

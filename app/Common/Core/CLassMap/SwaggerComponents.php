@@ -14,12 +14,16 @@ namespace Hyperf\ApiDocs\Swagger;
 
 use Hyperf\ApiDocs\Annotation\ApiModel;
 use Hyperf\ApiDocs\Annotation\ApiModelProperty;
+use Hyperf\ApiDocs\Exception\ApiDocsException;
 use Hyperf\Di\Annotation\AnnotationCollector;
 use Hyperf\Di\ReflectionManager;
 use Hyperf\DTO\Annotation\Validation\In;
+use Hyperf\DTO\Annotation\Validation\Required;
 use Hyperf\DTO\ApiAnnotation;
+use Hyperf\DTO\DtoConfig;
 use Hyperf\DTO\Scan\PropertyManager;
 use OpenApi\Attributes as OA;
+use OpenApi\Generator;
 use ReflectionProperty;
 
 class SwaggerComponents
@@ -27,8 +31,10 @@ class SwaggerComponents
     protected static array $schemas = [];
 
     public function __construct(
-        private SwaggerCommon $common,
-    ) {}
+        protected SwaggerCommon $common,
+        protected PropertyManager $propertyManager,
+    ) {
+    }
 
     public function getSchemas(): array
     {
@@ -46,85 +52,93 @@ class SwaggerComponents
             return ['propertyArr' => [], 'requiredArr' => []];
         }
 
-        $obj = \Hyperf\Support\make($className);
         $rc = ReflectionManager::reflectClass($className);
         $propertyArr = [];
         $requiredArr = [];
-        // 循环类中字段
+        // 循环字段
         foreach ($rc->getProperties(ReflectionProperty::IS_PUBLIC) as $reflectionProperty) {
             // 属性
             $property = new OA\Property();
-
             $fieldName = $reflectionProperty->getName();
+            $propertyManager = $this->propertyManager->getProperty($className, $fieldName);
 
-            $apiModelProperty = $this->getProperty($className, $fieldName, ApiModelProperty::class);
-            $apiModelProperty = $apiModelProperty ?: new ApiModelProperty();
-            /** @var \Hyperf\Di\Annotation\MultipleAnnotation $inAnnotation */
-            $inAnnotation = ApiAnnotation::getProperty($className, $reflectionProperty->getName(), In::class);
-
-            if ($apiModelProperty->hidden) {
+            $apiModelProperty = ApiAnnotation::getProperty($className, $fieldName, ApiModelProperty::class) ?: new ApiModelProperty();
+            /** @var In $inAnnotation */
+            $inAnnotation = ApiAnnotation::getProperty($className, $fieldName, In::class)?->toAnnotations()[0];
+            if ($apiModelProperty->hidden || $propertyManager->alias) {
                 continue;
             }
+            if (! $reflectionProperty->isPublic()
+                && ! $rc->hasMethod(\Hyperf\Support\setter($fieldName))
+                && ! $rc->hasMethod(DtoConfig::getDtoAliasMethodName($fieldName))
+            ) {
+                continue;
+            }
+
             // 字段名称
             $property->property = $fieldName;
-
             // 描述
             $apiModelProperty->value !== null && $property->description = $apiModelProperty->value;
-            if ($apiModelProperty->required !== null) {
-                $apiModelProperty->required && $requiredArr[] = $fieldName;
+            // required
+            /** @var Required $requiredAnnotation */
+            $requiredAnnotation = ApiAnnotation::getProperty($className, $fieldName, Required::class)?->toAnnotations()[0];
+            if ($apiModelProperty->required || $requiredAnnotation) {
+                $requiredArr[] = $fieldName;
             }
             $property->example = $apiModelProperty->example;
-            if ($reflectionProperty->isPublic() && $reflectionProperty->isInitialized($obj)) {
-                $property->default = $reflectionProperty->getValue($obj);
+            $property->default = $this->common->getPropertyDefaultValue($className, $reflectionProperty);
+
+            $isSimpleType = $propertyManager->isSimpleType;
+            $phpSimpleType = $propertyManager->phpSimpleType;
+            if ($apiModelProperty->phpType) {
+                $isSimpleType = true;
+                $phpSimpleType = $apiModelProperty->phpType;
             }
 
-            $propertyClass = PropertyManager::getProperty($className, $fieldName);
             // swagger 类型
-            $swaggerType = $this->common->getSwaggerType($propertyClass->phpSimpleType);
+            $swaggerType = $this->common->getSwaggerType($phpSimpleType);
 
             // 枚举:in
-            if (! empty($inAnnotation)) {
+            if (! empty($inAnnotation) && empty($apiModelProperty->phpType)) {
                 $property->type = $swaggerType;
-                $inFirstAnnotation = $inAnnotation->toAnnotations()[0];
-                $property->enum = $inFirstAnnotation->getValue();
+                $property->enum = $inAnnotation->getValue();
             }
             // 简单类型
-            if ($propertyClass->isSimpleType) {
+            elseif ($isSimpleType) {
                 // 数组
                 if ($swaggerType == 'array') {
                     $property->type = 'array';
                     $items = new OA\Items();
-                    // $items->type = 'string';  可选
+                    $items->type = 'null';
                     $property->items = $items;
                 } else {
                     // 普通简单类型
                     $property->type = $swaggerType;
                 }
-            }
-            // 枚举类型
-            elseif ($propertyClass->enum) {
-                $property->type = $this->common->getSwaggerType($propertyClass->enum->backedType);
-                $property->enum = $propertyClass->enum->valueList;
-            }
-            // 普通类
+            } // 枚举类型
+            elseif ($propertyManager->enum) {
+                $property->type = $this->common->getSwaggerType($propertyManager->enum->backedType);
+                $property->enum = $propertyManager->enum->valueList;
+            } // 普通类
             else {
                 if ($swaggerType == 'array') {
                     $property->type = 'array';
-                    if (! empty($propertyClass->arrClassName)) {
+                    if (! empty($propertyManager->arrClassName)) {
                         $items = new OA\Items();
-                        $items->ref = $this->common->getComponentsName($propertyClass->arrClassName);
+                        $items->ref = $this->common->getComponentsName($propertyManager->arrClassName);
                         $property->items = $items;
-
-                        $this->generateSchemas($propertyClass->arrClassName);
-                    }
-                    if (! empty($propertyClass->arrSimpleType)) {
+                        $this->generateSchemas($propertyManager->arrClassName);
+                        $property->default = Generator::UNDEFINED;
+                    } elseif (! empty($propertyManager->arrSimpleType)) {
                         $items = new OA\Items();
-                        $items->type = $this->common->getSwaggerType($propertyClass->arrSimpleType);
+                        $items->type = $this->common->getSwaggerType($propertyManager->arrSimpleType);
                         $property->items = $items;
                     }
+                } elseif (! empty($propertyManager->className)) {
+                    $property->ref = $this->common->getComponentsName($propertyManager->className);
+                    $this->generateSchemas($propertyManager->className);
                 } else {
-                    $property->ref = $this->common->getComponentsName($propertyClass->className);
-                    $this->generateSchemas($propertyClass->className);
+                    throw new ApiDocsException("field:{$className}-{$fieldName} type resolved not found");
                 }
             }
             $propertyArr[] = $property;
@@ -151,19 +165,5 @@ class SwaggerComponents
         $data['requiredArr'] && $schema->required = $data['requiredArr'];
         self::$schemas[$simpleClassName] = $schema;
         return self::$schemas[$simpleClassName];
-    }
-
-    protected function getProperty($className, $propertyName, $annotationClassName): ?object
-    {
-        $propertyAnnotations = AnnotationCollector::getClassPropertyAnnotation($className, $propertyName);
-        if (! empty($propertyAnnotations)) {
-            foreach ($propertyAnnotations as $key => $propertyAnnotation) {
-                if ($annotationClassName == $key || is_subclass_of($key, $annotationClassName)) {
-                    return $propertyAnnotation;
-                }
-            }
-        }
-
-        return null;
     }
 }

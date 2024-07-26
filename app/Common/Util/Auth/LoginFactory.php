@@ -11,6 +11,7 @@ namespace App\Common\Util\Auth;
 
 use App\Common\Util\Auth\Mode\JwtMode;
 use App\Common\Util\Auth\Mode\TokenMode;
+use function Hyperf\Support\make;
 
 class LoginFactory
 {

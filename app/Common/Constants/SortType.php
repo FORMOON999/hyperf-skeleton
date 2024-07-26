@@ -13,31 +13,24 @@ declare(strict_types=1);
 namespace App\Common\Constants;
 
 use App\Common\Core\Enum\Annotation\EnumMessage;
-use App\Common\Core\Enum\BaseEnum;
+use App\Common\Core\Enum\EnumMessageTrait;
 
 /**
  * 排序方式.
- * @method static SortType UNKNOWN()
- * @method static SortType ASC()
- * @method static SortType DESC()
  */
-class SortType extends BaseEnum
+enum SortType: string
 {
-    /**
-     * @Message("")
-     */
-    #[EnumMessage(message: '')]
-    public const UNKNOWN = '';
+    use EnumMessageTrait;
 
     /**
      * @Message("正序")
      */
     #[EnumMessage(message: '正序')]
-    public const ASC = 'asc';
+    case ASC = 'asc';
 
     /**
      * @Message("倒序")
      */
     #[EnumMessage(message: '倒序')]
-    public const DESC = 'desc';
+    case DESC = 'desc';
 }

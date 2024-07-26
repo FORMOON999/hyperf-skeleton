@@ -16,28 +16,29 @@ declare(strict_types=1);
  */
 namespace App\Common\Util\Upload\Enums;
 
+use App\Common\Core\Enum\EnumMessageTrait;
 
-use App\Common\Core\Enum\BaseEnum;
-
-class UploadType extends BaseEnum
+enum UploadType: string
 {
+    use EnumMessageTrait;
+
     /**
      * @Message("本地")
      */
-    public const LOCAL = 'local';
+    case LOCAL = 'local';
 
     /**
      * @Message("阿里云Oss")
      */
-    public const ALI = 'aliyun';
+    case ALI = 'aliyun';
 
     /**
      * @Message("腾讯云Oss")
      */
-    public const TENCENT = 'tencent';
+    case TENCENT = 'tencent';
 
     /**
      * @Message("七牛云OSss")
      */
-    public const qiniu = 'qiniu';
+    case qiniu = 'qiniu';
 }

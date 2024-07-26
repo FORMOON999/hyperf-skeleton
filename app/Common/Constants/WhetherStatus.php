@@ -13,24 +13,24 @@ declare(strict_types=1);
 namespace App\Common\Constants;
 
 use App\Common\Core\Enum\Annotation\EnumMessage;
-use App\Common\Core\Enum\BaseEnum;
+use App\Common\Core\Enum\EnumMessageTrait;
 
 /**
  * 是否.
- * @method static WhetherStatus YES()
- * @method static WhetherStatus NO()
  */
-class WhetherStatus extends BaseEnum
+enum WhetherStatus: int
 {
+    use EnumMessageTrait;
+
     /**
      * @Message("是")
      */
     #[EnumMessage('是')]
-    public const YES = 1;
+    case YES = 1;
 
     /**
      * @Message("否")
      */
     #[EnumMessage('否')]
-    public const NO = 0;
+    case NO = 0;
 }

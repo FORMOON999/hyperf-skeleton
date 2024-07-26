@@ -14,42 +14,37 @@ namespace App\Common\Core\Enum;
 
 use App\Common\Core\Enum\Annotation\EnumMessage;
 
-/**
- * @method static CommonError SUCCESS()
- * @method static CommonError SERVER_ERROR()
- * @method static CommonError INVALID_PERMISSION()
- * @method static CommonError INVALID_PARAMS()
- * @method static CommonError INVALID_TOKEN()
- */
-class CommonError extends BaseEnum
+enum CommonError: int implements MessageBackedEnum
 {
+    use EnumMessageTrait;
+
     /**
      * @Message("Success")
      */
     #[EnumMessage('Success')]
-    public const SUCCESS = 0;
+    case SUCCESS = 0;
 
     /**
      * @Message("系统错误")
      */
     #[EnumMessage('系统错误')]
-    public const SERVER_ERROR = 500;
+    case SERVER_ERROR = 500;
 
     /**
      * @Message("无效权限")
      */
     #[EnumMessage('无效权限')]
-    public const INVALID_PERMISSION = 403;
+    case INVALID_PERMISSION = 403;
 
     /**
      * @Message("错误的请求参数")
      */
     #[EnumMessage('错误的请求参数')]
-    public const INVALID_PARAMS = 400;
+    case INVALID_PARAMS = 400;
 
     /**
      * @Message("请重新登录")
      */
     #[EnumMessage('请重新登录')]
-    public const INVALID_TOKEN = 401;
+    case INVALID_TOKEN = 401;
 }

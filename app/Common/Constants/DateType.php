@@ -13,56 +13,51 @@ declare(strict_types=1);
 namespace App\Common\Constants;
 
 use App\Common\Core\Enum\Annotation\EnumMessage;
-use App\Common\Core\Enum\BaseEnum;
+use App\Common\Core\Enum\EnumMessageTrait;
 use App\Common\Helpers\DateHelper;
 use DateTime;
 use Exception;
 
-/**
- * @method static DateType DAILY()
- * @method static DateType WEEKLY()
- * @method static DateType MONTHLY()
- * @method static DateType YEARLY()
- * @method static DateType HOURS()
- */
-class DateType extends BaseEnum
+enum DateType: int
 {
+    use EnumMessageTrait;
+
     /**
      * @Message("日")
      */
     #[EnumMessage('日')]
-    public const DAILY = 1;
+    case DAILY = 1;
 
     /**
      * @Message("周")
      */
     #[EnumMessage('周')]
-    public const WEEKLY = 2;
+    case WEEKLY = 2;
 
     /**
      * @Message("月")
      */
     #[EnumMessage('月')]
-    public const MONTHLY = 3;
+    case MONTHLY = 3;
 
     /**
      * @Message("年")
      */
     #[EnumMessage('年')]
-    public const YEARLY = 5;
+    case YEARLY = 5;
 
     /**
      * @Message("小时")
      */
     #[EnumMessage('小时')]
-    public const HOURS = 6;
+    case HOURS = 6;
 
     /**
      * 获取周期开始时间.
      */
     public static function getStartAt(DateType $type, int $time): int
     {
-        switch ($type->getValue()) {
+        switch ($type->value) {
             case DateType::DAILY:
                 return strtotime(date('Ymd 00:00:00', $time));
             case DateType::WEEKLY:
@@ -83,21 +78,20 @@ class DateType extends BaseEnum
      */
     public static function getEntAt(DateType $type, int $startAt): int
     {
-        switch ($type->getValue()) {
-            case DateType::DAILY:
-                return $startAt + DateHelper::DAY;
-            case DateType::WEEKLY:
-                return $startAt + DateHelper::DAY * 7;
-            case DateType::MONTHLY:
+        return match ($type) {
+            self::DAILY => $startAt + DateHelper::DAY,
+            self::WEEKLY => $startAt + DateHelper::DAY * 7,
+            self::MONTHLY => function () use ($startAt) {
                 $datetime = new DateTime(date('Ym01', $startAt));
                 return $datetime->modify('first day of next month')->getTimestamp();
-            case DateType::YEARLY:
+            },
+            self::YEARLY => function () use ($startAt) {
                 $datetime = new DateTime(date('Ym01', $startAt));
                 return $datetime->modify('first day of next year')->getTimestamp();
-            case DateType::HOURS:
-                return time();
-        }
-        return 0;
+            },
+            self::HOURS => time(),
+            default => 0,
+        };
     }
 
     /**
@@ -106,19 +100,19 @@ class DateType extends BaseEnum
      */
     public static function getLastStartAt(DateType $type, int $startAt): int
     {
-        switch ($type->getValue()) {
-            case DateType::DAILY:
-                return $startAt - DateHelper::DAY;
-            case DateType::WEEKLY:
-                return $startAt - DateHelper::DAY * 7;
-            case DateType::MONTHLY:
+        return match ($type) {
+            self::DAILY => $startAt - DateHelper::DAY,
+            self::WEEKLY => $startAt - DateHelper::DAY * 7,
+            self::MONTHLY => function () use ($startAt) {
                 $datetime = new DateTime(date('Ym01', $startAt));
                 return $datetime->modify('first day of last month')->getTimestamp();
-            case DateType::YEARLY:
+            },
+            self::YEARLY => function () use ($startAt) {
                 $datetime = new DateTime(date('Ym01', $startAt));
                 return $datetime->modify('first day of last year')->getTimestamp();
-        }
-        return 0;
+            },
+            default => 0,
+        };
     }
 
     public static function isToday(DateType $type, int $date): bool

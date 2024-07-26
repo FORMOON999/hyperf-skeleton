@@ -51,7 +51,7 @@ class AppExceptionHandler extends ExceptionHandler
             return $this->response->fail(CommonError::SERVER_ERROR, $this->formatException($throwable));
         }
 
-        $systemError = new BusinessException(CommonError::SERVER_ERROR());
+        $systemError = new BusinessException(CommonError::SERVER_ERROR);
         return $this->response->fail($systemError->getCode(), $systemError->getMessage());
     }
 
