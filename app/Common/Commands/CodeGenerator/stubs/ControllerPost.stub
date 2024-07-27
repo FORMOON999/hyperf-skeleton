@@ -85,7 +85,7 @@ class %CLASS% extends BaseController
             %FILED%,
         );
         if (! $result) {
-            throw new BusinessException(%ERROR%::NOT_FOUND());
+            throw new BusinessException(%ERROR%::NOT_FOUND);
         }
         return new %DETAIL_RESPONSE%($result);
     }
