@@ -39,9 +39,9 @@ class %CLASS% implements %INHERITANCE%
         return (int) $this->%MODEL_NAME%->buildQuery($search)->first()?->update($data) ?? 0;
     }
 
-    public function remove(array $search): ?bool
+    public function remove(array $search): int
     {
-        return $this->%MODEL_NAME%->buildQuery($search)->first()?->delete();
+        return $this->%MODEL_NAME%->buildQuery($search)->delete();
     }
 
     public function detail(array $search, array $field = ['*'], array $withs = [], array $sort = []): ?%MODEL_NAME_ENTITY%
