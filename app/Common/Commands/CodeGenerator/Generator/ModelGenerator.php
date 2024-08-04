@@ -17,7 +17,7 @@ use Hyperf\CodeParser\Project;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Database\Commands\ModelOption;
 use Hyperf\Database\ConnectionResolverInterface;
-use Hyperf\Utils\Str;
+use Hyperf\Stringable\Str;
 use PhpParser\ParserFactory;
 use PhpParser\PrettyPrinter\Standard;
 use Psr\Container\ContainerInterface;
@@ -53,9 +53,6 @@ class ModelGenerator extends ModelCommand
         $builder = $this->getSchemaBuilder($option->getPool());
 
         foreach ($tables as $table) {
-            if (str_contains($table, 'migrations')) {
-                continue;
-            }
             $classInfo = $this->getModelInfo($project, $builder, $table, $option, $force, $this->ddd);
 
             $this->createModel($table, $option);
@@ -103,6 +100,12 @@ class ModelGenerator extends ModelCommand
             ->setVisitors($this->getOption('visitors', 'commands.gen:model.visitors', $pool, []))
             ->setPropertyCase($this->getOption('property-case', 'commands.gen:model.property_case', $pool));
         return $option;
+    }
+
+    protected function isIgnoreTable(string $table, ModelOption $option): bool
+    {
+        $table = Str::replaceFirst($option->getPrefix(), '', $table);
+        return parent::isIgnoreTable($table, $option);
     }
 
     protected function getTables(ModelOption $option, ?string $table): array
