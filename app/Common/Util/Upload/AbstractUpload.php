@@ -14,25 +14,38 @@ declare(strict_types=1);
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
+
 namespace App\Common\Util\Upload;
 
-
-use App\Common\Helpers\RegularHelper;
+use App\Common\Util\Upload\Helper\ImageHelper;
+use Hyperf\Di\Annotation\Inject;
+use Hyperf\Support\Filesystem\Filesystem;
 
 abstract class AbstractUpload implements UploadInterface
 {
     protected UploadConfig $config;
 
-    public function loadConfig(UploadConfig $config)
+    #[Inject]
+    public Filesystem $filesystem;
+
+    #[Inject]
+    public ImageHelper $imageHelper;
+
+    public function loadConfig(UploadConfig $config): static
     {
         $this->config = $config;
+        return $this;
     }
 
-    public function makeImagePath(string $key): string
+    public function getConfig(): UploadConfig
     {
-        if (RegularHelper::checkUrl($key)) {
-            return $key;
+        return $this->config;
+    }
+
+    public function mkdir(string $tagDir): void
+    {
+        if (!$this->filesystem->isDirectory($tagDir)) {
+            $this->filesystem->makeDirectory($tagDir, 0755, true);
         }
-        return rtrim($this->config->domain, "\t\n\r\0\x0B/") . '/' . ltrim($key, '/');
     }
 }

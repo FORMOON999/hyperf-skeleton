@@ -9,6 +9,7 @@ declare(strict_types=1);
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
+
 namespace App\Common\Util\Upload\Type;
 
 use AlibabaCloud\Client\AlibabaCloud;
@@ -16,6 +17,7 @@ use App\Common\Helpers\DateHelper;
 use App\Common\Util\Upload\AbstractUpload;
 use EasySwoole\Oss\AliYun\Config;
 use EasySwoole\Oss\AliYun\OssClient;
+use Exception;
 
 class UploadOss extends AbstractUpload
 {
@@ -122,20 +124,19 @@ class UploadOss extends AbstractUpload
         ]);
     }
 
-    public function uploadFile(string $path, string $file)
+    public function uploadFile(string $path, string $file, bool $isEncrypt = false, bool $saveOld = false)
     {
+        $data = [
+            'path' => $path,
+            'result' => true,
+            'message' => '上传成功',
+        ];
         $ossClient = $this->getClient();
         try {
             $ossClient->uploadFile($this->config->public['bucket'], $path, $file);
-            $data = [
-                'file' => $path,
-                'result' => true,
-            ];
-        } catch (\Exception $e) {
-            $data = [
-                'result' => false,
-                'message' => $e->getMessage(),
-            ];
+        } catch (Exception $e) {
+            $data['result'] = false;
+            $data['message'] = $e->getMessage();
         }
         return $data;
     }

@@ -12,47 +12,41 @@ declare(strict_types=1);
 
 namespace App\Common\Util\Upload\Helper;
 
-use App\Common\Util\Upload\Enums\UploadType;
-use App\Common\Util\Upload\UploadFactory;
-use App\Common\Util\Upload\UploadInterface;
-use Hyperf\Di\Annotation\Inject;
+use App\Common\Helpers\FormatHelper;
+use App\Common\Helpers\RegularHelper;
 
-class ImageHelper implements UploadInterface
+class ImageHelper
 {
-    #[Inject]
-    protected UploadFactory $uploadFactory;
-
-    protected UploadInterface $uploader;
-
-    public function __construct()
+    public function makePath(string $key, string $host = ''): string
     {
-        if (! empty($this->uploadFactory)) {
-            $this->uploader = $this->uploadFactory->make(UploadType::ALI());
+        if (empty($key)) {
+            return $key;
         }
+        if (RegularHelper::checkUrl($key)) {
+            return $key;
+        }
+        return rtrim($host, "\t\n\r\0\x0B/") . '/' . ltrim($key, '/');
     }
 
-    public function makeImageUrl(string $path): string
+    public function getOldFile(string $file): string
     {
-        return $path ? $this->uploader->makeImagePath($path) : $path;
+        $info = explode('.', $file);
+        $info[0] .= '-old';
+        return implode('.', $info);
     }
 
-    public function getToken(string $key)
+    public function encrypt(string $file, bool $saveOld = false): bool
     {
-        return $this->uploader->getToken($key);
-    }
-
-    public function uploadFile(string $path, string $file)
-    {
-        return $this->uploader->uploadFile($path, $file);
-    }
-
-    public function remove(string $path): bool
-    {
-        return $this->uploader->remove($path);
-    }
-
-    public function has(string $path): bool
-    {
-        return $this->uploader->has($path);
+        if (! is_file($file)) {
+            return false;
+        }
+        $content = file_get_contents($file);
+        if ($saveOld) {
+            $oldFile = $this->getOldFile($file);
+            @file_put_contents($oldFile, $content);
+        }
+        $content = FormatHelper::randNum(3) . $content;
+        @file_put_contents($file, $content);
+        return true;
     }
 }

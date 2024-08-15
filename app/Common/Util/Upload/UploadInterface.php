@@ -9,13 +9,14 @@ declare(strict_types=1);
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
+
 namespace App\Common\Util\Upload;
 
 interface UploadInterface
 {
     public function getToken(string $key);
 
-    public function uploadFile(string $path, string $file);
+    public function uploadFile(string $path, string $file, bool $isEncrypt = false, bool $saveOld = false);
 
     public function remove(string $path): bool;
 

@@ -14,6 +14,7 @@ declare(strict_types=1);
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
+
 namespace App\Common\Util\Upload;
 
 use App\Common\Util\Upload\Enums\UploadType;
@@ -23,14 +24,14 @@ use App\Common\Util\Upload\Type\UploadOss;
 class UploadFactory
 {
     public const MAP = [
-        UploadType::LOCAL => UploadLocal::class,
-        UploadType::ALI => UploadOss::class,
+        UploadType::Local->value => UploadLocal::class,
+        UploadType::Ali->value => UploadOss::class,
     ];
 
     public function make(UploadType $uploadType, ?array $config = null): UploadInterface
     {
-        $class = \Hyperf\Support\make(self::MAP[$uploadType->getValue()]);
-        $config = $config ?? \Hyperf\Config\config("{$uploadType->getValue()}.oss");
+        $class = \Hyperf\Support\make(self::MAP[$uploadType->value]);
+        $config = $config ?? \Hyperf\Config\config("{$uploadType->value}.oss");
         $config['domain'] = $config['public']['domain'];
         $config['bucket'] = $config['public']['bucket'];
 

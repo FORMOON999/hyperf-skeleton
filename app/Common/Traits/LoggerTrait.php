@@ -17,13 +17,17 @@ use Psr\Log\LoggerInterface;
 
 trait LoggerTrait
 {
-    protected ?LoggerInterface $logger = null;
 
-    public function getLogger(string $name = 'hyperf', string $group = 'default'): LoggerInterface
+    /**
+     * @var LoggerInterface[]
+     */
+    protected array $logger;
+
+    public function getLogger(string $name = 'hyperf', string $group = 'error'): LoggerInterface
     {
-        if ($this->logger === null) {
-            $this->logger = \Hyperf\Support\make(LoggerFactory::class)->get($name, $group);
+        if (empty($this->logger[$name])) {
+            $this->logger[$name] = \Hyperf\Support\make(LoggerFactory::class)->get($name, $group);
         }
-        return $this->logger;
+        return $this->logger[$name];
     }
 }
