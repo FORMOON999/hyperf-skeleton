@@ -20,18 +20,23 @@ namespace App\Common\Util\Upload;
 use App\Common\Util\Upload\Enums\UploadType;
 use App\Common\Util\Upload\Type\UploadLocal;
 use App\Common\Util\Upload\Type\UploadOss;
+use Hyperf\Contract\ConfigInterface;
+use Hyperf\Di\Annotation\Inject;
+use function Hyperf\Support\make;
 
 class UploadFactory
 {
-    public const MAP = [
-        UploadType::Local->value => UploadLocal::class,
-        UploadType::Ali->value => UploadOss::class,
-    ];
+    #[Inject]
+    protected ConfigInterface $config;
 
     public function make(UploadType $uploadType, ?array $config = null): UploadInterface
     {
-        $class = \Hyperf\Support\make(self::MAP[$uploadType->value]);
-        $config = $config ?? \Hyperf\Config\config("{$uploadType->value}.oss");
+        $className = match ($uploadType) {
+            UploadType::Local => UploadLocal::class,
+            UploadType::Ali => UploadOss::class,
+        };
+        $class = make($className);
+        $config = $config ?? $this->config->get("{$uploadType->value}.oss");
         $config['domain'] = $config['public']['domain'];
         $config['bucket'] = $config['public']['bucket'];
 
