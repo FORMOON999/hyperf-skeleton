@@ -81,7 +81,7 @@ class ModelCommand extends BaseModelCommand
         return $classInfo;
     }
 
-    protected function createModel(string $table, ModelOption $option)
+    protected function createModel(string $table, ModelOption $option): void
     {
         $originalTable = $table;
         $builder = $this->getSchemaBuilder($option->getPool());
