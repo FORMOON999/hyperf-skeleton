@@ -65,7 +65,7 @@ trait MySQLModelTrait
         $output = new Output();
         if (! empty($pages)) {
             $page = new Page($pages);
-            $pattern = '/^SELECT(.*)FROM/i';
+            $pattern = "/^SELECT(.*)FROM/i";
             $replace = 'SELECT COUNT(*) AS count FROM';
             $sql = preg_replace($pattern, $replace, $query->toSql());
             //$sql = sprintf('select count(*) as count from (%s) as b', $query->toSql());
