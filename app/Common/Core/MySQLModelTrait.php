@@ -66,7 +66,7 @@ trait MySQLModelTrait
         if (! empty($pages)) {
             $page = new Page($pages);
             $sql = sprintf('select count(*) as count from (%s) as b', $query->toSql());
-            $output->total = Db::selectOne($sql, $query->getBindings())->count;
+            $output->total = Db::selectOne($sql, $query->getBindings())?->count ?? 0;
 
             $query->forPage($page->page, $page->pageSize);
             $output->page = $page->page;
