@@ -25,6 +25,7 @@ use Hyperf\DTO\Scan\MethodParametersManager;
 use Hyperf\HttpMessage\Server\ResponsePlusProxy;
 use Hyperf\HttpMessage\Stream\SwooleStream;
 use Hyperf\HttpServer\CoreMiddleware;
+use Hyperf\ViewEngine\View;
 use InvalidArgumentException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
@@ -109,6 +110,12 @@ class CoreMiddlewareAspect
             return $this->response()
                 ->addHeader('content-type', 'application/json')
                 ->setBody(new SwooleStream((string) $response));
+        }
+
+        if ($response instanceof View) {
+            return $this->response()
+                ->addHeader('content-type', 'text/html')
+                ->setBody(new SwooleStream((string) $response->render()));
         }
 
         // object

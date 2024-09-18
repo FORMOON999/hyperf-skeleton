@@ -14,10 +14,10 @@
     "require": {
         "php": ">=8.1",
         "ext-bcmath": "*",
-        "ext-openssl": "*",
         "ext-json": "*",
-        "ext-zip": "*",
+        "ext-openssl": "*",
         "ext-simplexml": "*",
+        "ext-zip": "*",
         "hashwallet/hyperf-jwt": "3.1.x-dev",
         "hyperf/async-queue": "~3.1.0",
         "hyperf/cache": "~3.1.0",
@@ -37,6 +37,8 @@
         "hyperf/redis": "~3.1.0",
         "hyperf/signal": "~3.1.0",
         "hyperf/snowflake": "~3.1.0",
+        "hyperf/view": "^3.1",
+        "hyperf/view-engine": "^3.1",
         "tangwei/apidocs": "*"
     },
     "require-dev": {

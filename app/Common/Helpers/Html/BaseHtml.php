@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
 
-namespace App\Common\Helpers;
+namespace App\Common\Helpers\Html;
 
 use App\Common\Helpers\Arrays\ArrayHelper;
 use InvalidArgumentException;
@@ -19,7 +19,7 @@ use InvalidArgumentException;
  * Yii  BaseHtml.
  * @see https://www.yiichina.com/doc/guide/2.0/helper-html
  */
-class HtmlHelper
+class BaseHtml
 {
     /**
      * @var string regular expression used for attribute name validation
@@ -862,7 +862,7 @@ class HtmlHelper
         $index = 0;
         foreach ($items as $value => $label) {
             $checked = $selection !== null
-                && (! ArrayHelper::isTraversable($selection) && ! strcmp($value, $selection)
+                && (! ArrayHelper::isTraversable($selection) && ! strcmp((string) $value, $selection)
                     || ArrayHelper::isTraversable($selection) && ArrayHelper::isIn((string) $value, $selection));
             if ($formatter !== null) {
                 $lines[] = call_user_func($formatter, $index, $label, $name, $checked, $value);
@@ -960,7 +960,7 @@ class HtmlHelper
         $index = 0;
         foreach ($items as $value => $label) {
             $checked = $selection !== null
-                && (! ArrayHelper::isTraversable($selection) && ! strcmp($value, $selection)
+                && (! ArrayHelper::isTraversable($selection) && ! strcmp((string) $value, $selection)
                     || ArrayHelper::isTraversable($selection) && ArrayHelper::isIn((string) $value, $selection));
             if ($formatter !== null) {
                 $lines[] = call_user_func($formatter, $index, $label, $name, $checked, $value);
@@ -1124,7 +1124,7 @@ class HtmlHelper
                 $attrs['value'] = (string) $key;
                 if (! array_key_exists('selected', $attrs)) {
                     $attrs['selected'] = $selection !== null
-                        && (! ArrayHelper::isTraversable($selection) && ! strcmp($key, $selection)
+                        && (! ArrayHelper::isTraversable($selection) && ! strcmp((string) $key, $selection)
                             || ArrayHelper::isTraversable($selection) && ArrayHelper::isIn((string) $key, $selection));
                 }
                 $text = $encode ? static::encode($value) : $value;

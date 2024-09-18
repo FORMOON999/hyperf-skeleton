@@ -18,6 +18,7 @@ declare(strict_types=1);
 namespace App\Common\Core;
 
 use Hyperf\HttpServer\Contract\RequestInterface;
+use Hyperf\View\RenderInterface;
 use Psr\Container\ContainerInterface;
 
 abstract class BaseController
@@ -37,10 +38,16 @@ abstract class BaseController
      */
     protected $response;
 
+    /**
+     * @var RenderInterface
+     */
+    protected RenderInterface $view;
+
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
         $this->request = $container->get(RequestInterface::class);
         $this->response = $container->get(Response::class);
+        $this->view = $container->get(RenderInterface::class);
     }
 }

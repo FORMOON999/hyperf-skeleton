@@ -9,6 +9,7 @@ declare(strict_types=1);
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
+
 namespace App\Common\Middleware;
 
 use App\Common\Helpers\IpHelper;
@@ -54,8 +55,9 @@ class DebugLogMiddleware implements MiddlewareInterface
         ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
 
         $response = $handler->handle($request);
-
-        $this->loggerFactory->get('response', $this->logGroup)->info($response->getBody()->getContents());
+        if (! empty($response->getHeaderLine('content-type')) && $response->getHeaderLine('content-type') !== 'text/html') {
+            $this->loggerFactory->get('response', $this->logGroup)->info($response->getBody()->getContents());
+        }
         return $response;
     }
 }
