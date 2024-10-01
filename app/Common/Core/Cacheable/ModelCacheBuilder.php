@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace App\Common\Core\Cacheable;
 
 use App\Common\Helpers\Arrays\ArrayHelper;
+use App\Common\Helpers\DateHelper;
 use Closure;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Database\Model\Builder as ModelBuilder;
@@ -70,13 +71,8 @@ class ModelCacheBuilder extends ModelBuilder
         return $this;
     }
 
-    public function betweenTime(string $field, array &$data): ModelCacheBuilder
+    public function between(string $field, int|string $startTime, int|string $endTime): ModelCacheBuilder
     {
-        $startTime = ArrayHelper::remove($data, 'start_time', '');
-        $endTime = ArrayHelper::remove($data, 'end_time', '');
-        if (!empty($endTime)) {
-            $endTime .= ' 23:59:59';
-        }
         if ($startTime && $endTime) {
             $this->query->whereBetween($field, [$startTime, $endTime]);
             return $this;
@@ -90,6 +86,28 @@ class ModelCacheBuilder extends ModelBuilder
         }
 
         return $this;
+    }
+
+    public function betweenTime(string $field, array &$data): ModelCacheBuilder
+    {
+        $startTime = ArrayHelper::remove($data, 'start_time', '');
+        $startTime = DateHelper::getTimestamp($startTime);
+        $endTime = ArrayHelper::remove($data, 'end_time', '');
+        if (! empty($endTime)) {
+            $endTime .= ' 23:59:59';
+        }
+        $endTime = DateHelper::getTimestamp($endTime);
+        return $this->between($field, $startTime, $endTime);
+    }
+
+    public function betweenDate(string $field, array &$data): ModelCacheBuilder
+    {
+        $startTime = ArrayHelper::remove($data, 'start_time', '');
+        $endTime = ArrayHelper::remove($data, 'end_time', '');
+        if (! empty($endTime)) {
+            $endTime .= ' 23:59:59';
+        }
+        return $this->between($field, $startTime, $endTime);
     }
 
     public function whereLike(string $field, array &$data, string $column = ''): ModelCacheBuilder

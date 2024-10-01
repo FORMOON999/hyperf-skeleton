@@ -31,10 +31,9 @@ class DateHelper
     }
 
     /**
-     * @return string
      * @throws Exception
      */
-    public static function gmt_iso8601($time)
+    public static function gmt_iso8601(int $time): string
     {
         $dtStr = date('c', $time);
         $mydatetime = new DateTime($dtStr);
@@ -42,84 +41,6 @@ class DateHelper
         $pos = strpos($expiration, '+');
         $expiration = substr($expiration, 0, $pos);
         return $expiration . 'Z';
-    }
-
-    /**
-     * 时间格式化.
-     *
-     * @param string /int  $date  时间/时间戳
-     * @param bool $isInt 是否为int
-     *
-     * @return array
-     */
-    public static function formatDay($date, $isInt = true)
-    {
-        return self::formatDays($date, $date, $isInt);
-    }
-
-    /**
-     * 双日期 格式化.
-     *
-     * @param string $date 双日期
-     * @param string $separator 分割符
-     * @param bool $isInt 是否为int
-     *
-     * @return array
-     */
-    public static function formatDoubleDate($date, $separator = ' - ', $isInt = true)
-    {
-        $dates = explode($separator, $date);
-        return self::formatDays($dates[0], $dates[1], $isInt);
-    }
-
-    /**
-     * 时间格式化.
-     *
-     * @param string /int  $start  时间/时间戳
-     * @param string /int  $end  时间/时间戳
-     * @param bool $isInt 是否为int
-     *
-     * @return array
-     */
-    public static function formatDays($start, $end, $isInt = true)
-    {
-        if (is_int($start)) {
-            $start = date('Y-m-d', $start);
-        }
-        if (is_int($end)) {
-            $end = date('Y-m-d', $end);
-        }
-        $start = $start . ' 00:00:00';
-        $end = $end . ' 23:59:59';
-        if ($isInt) {
-            $start = strtotime($start);
-            $end = strtotime($end);
-        }
-        return [$start, $end];
-    }
-
-    /**
-     * 时间格式化.
-     *
-     * @param int $month 月份
-     * @param bool $isInt 是否为int
-     *
-     * @return array
-     */
-    public static function formatMonth($month, $isInt = true)
-    {
-        if (strlen($month) < 3) {
-            $month = date("Y-{$month}-d");
-        }
-        $timestamp = strtotime($month);
-        $startTime = date('Y-m-1 00:00:00', $timestamp);
-        $mdays = date('t', $timestamp);
-        $endTime = date('Y-m-' . $mdays . ' 23:59:59', $timestamp);
-        if ($isInt) {
-            $startTime = strtotime($startTime);
-            $endTime = strtotime($endTime);
-        }
-        return [$startTime, $endTime];
     }
 
     /**
@@ -152,5 +73,46 @@ class DateHelper
             $str = $rtime;
         }
         return $str;
+    }
+
+    // 判断一个变量 是否为日期字符串
+    public static function isDate(DateTime|string $var): bool
+    {
+        if ($var instanceof DateTime) {
+            return true;
+        }
+
+        $d = DateTime::createFromFormat('Y-m-d H:i:s', $var);
+        return $d && $d->format('Y-m-d H:i:s') === $var;
+    }
+
+    // 检查是否是数字，并且是一个有效的 Unix 时间戳范围
+    public static function isTimestamp($var): bool
+    {
+        return is_numeric($var) && (int) $var == $var && (int) $var > 0 && (int) $var <= PHP_INT_MAX;
+    }
+
+    public static function getDate($var, string $format = 'Y-m-d H:i:s'): string
+    {
+        if (self::isDate($var)) {
+            return $var;
+        }
+
+        if (self::isTimestamp($var)) {
+            return date($format, $var);
+        }
+
+        return '';
+    }
+
+    public static function getTimestamp($var): int
+    {
+        if (self::isTimestamp($var)) {
+            return $var;
+        }
+        if (self::isDate($var)) {
+            return strtotime($var);
+        }
+        return 0;
     }
 }
