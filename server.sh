@@ -118,6 +118,10 @@ function start() {
 
 }
 
+function forceKill() {
+  lsof -i :9501 | awk 'NR>1 {print $2}' | xargs kill -9
+}
+
 function help() {
     cat <<- EOF
     Usage:
@@ -128,6 +132,7 @@ function help() {
         restart     Restart server
         status      Check server status
         help        Help document
+        forceKill   stop force
 EOF
 }
 
@@ -144,6 +149,9 @@ case $1 in
   ;;
   'status')
     status
+  ;;
+  'forceKill')
+    forceKill
   ;;
   *)
     help
