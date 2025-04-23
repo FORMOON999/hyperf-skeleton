@@ -124,7 +124,7 @@ class CoreMiddlewareAspect
             $commonResponse->data = $response;
             return $this->response()
                 ->addHeader('content-type', 'application/json')
-                ->setBody(new SwooleStream(Json::encode($commonResponse)));
+                ->setBody(new SwooleStream(Json::encode($commonResponse->toArray())));
         }
 
         if ($this->response()->hasHeader('content-type')) {
@@ -158,7 +158,7 @@ class CoreMiddlewareAspect
             $commonResponse->data = $response;
             return $this->response()
                 ->addHeader('content-type', 'application/json')
-                ->setBody(new SwooleStream(Json::encode($commonResponse)));
+                ->setBody(new SwooleStream(Json::encode($commonResponse->toArray())));
         }
 
         if ($this->response()->hasHeader('content-type')) {

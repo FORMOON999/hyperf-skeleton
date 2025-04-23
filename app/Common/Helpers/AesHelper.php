@@ -14,7 +14,7 @@ namespace App\Common\Helpers;
 
 class AesHelper
 {
-    protected string $key = 'v7LkH3dg4Fvz4ZBVGwdVna9ZoQoKekWv';
+    protected string $key = 'JQkKNw8GTCQ9h34h';
 
     protected string $method = 'AES-128-ECB';
 
