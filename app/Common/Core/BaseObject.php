@@ -41,8 +41,8 @@ class BaseObject implements ArrayableInterface
 
     public function __construct(array|ArrayableInterface $config = [])
     {
-        $config = is_object($config) ? $config->toArray() : $config;
         if (! empty($config)) {
+            $config = is_object($config) ? $config->toArray() : $config;
             $this->configure($this, $config);
         }
         $this->init();
@@ -328,6 +328,8 @@ class BaseObject implements ArrayableInterface
                             ->setHumpName($this->getHumpName());
                     }
                     $value = $value->toArray();
+                } elseif (method_exists($value, '__toString')) {
+                    $value = $value->__toString();
                 }
                 break;
         }
