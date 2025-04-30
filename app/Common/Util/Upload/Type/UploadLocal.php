@@ -28,11 +28,8 @@ class UploadLocal extends AbstractUpload
 
     public function uploadFile(string $path, string $file, bool $isEncrypt = false, bool $saveOld = false)
     {
-        $path = $this->getConfig()->bucket . DIRECTORY_SEPARATOR . $path;
-        if (!str_starts_with($path, DIRECTORY_SEPARATOR)) {
-            $path = DIRECTORY_SEPARATOR . $path;
-        }
-        $tagPath = BASE_PATH . DIRECTORY_SEPARATOR . $path;
+        $path = DIRECTORY_SEPARATOR . $path;
+        $tagPath = BASE_PATH . DIRECTORY_SEPARATOR . $this->getConfig()->bucket . $path;
         $tagDir = $this->filesystem->dirname($tagPath);
         $this->mkdir($tagDir);
 
@@ -48,6 +45,7 @@ class UploadLocal extends AbstractUpload
             sleep(1);
             $this->imageHelper->encrypt($tagPath, $saveOld);
         }
+        $this->filesystem->chmod($tagPath, 0644);
         return [
             'path' => $path,
             'result' => true,
@@ -57,11 +55,14 @@ class UploadLocal extends AbstractUpload
 
     public function remove(string $path): bool
     {
-        // TODO: Implement remove() method.
+        if ($this->has($path)) {
+            return $this->filesystem->delete($path);
+        }
+        return false;
     }
 
     public function has(string $path): bool
     {
-        // TODO: Implement has() method.
+        return $this->filesystem->isFile($path);
     }
 }

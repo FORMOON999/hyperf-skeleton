@@ -17,7 +17,7 @@ class RegularHelper
     /**
      * 正则.
      */
-    public static function checkUrl(string $url): bool
+    public static function checkUrl(string $url): bool|int
     {
         if (StringHelper::isEmpty($url)) {
             return false;
@@ -31,7 +31,7 @@ class RegularHelper
      *
      * @param string $url
      */
-    public static function checkImage($url): bool
+    public static function checkImage(string $url): bool|int
     {
         if (StringHelper::isEmpty($url)) {
             return false;
@@ -43,7 +43,7 @@ class RegularHelper
     /**
      * 密码
      */
-    public static function isInvalidPassword($password): bool
+    public static function isInvalidPassword(string $password): bool|int
     {
         if (StringHelper::isEmpty($password)) {
             return true;

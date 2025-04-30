@@ -191,6 +191,9 @@ class BaseObject implements ArrayableInterface
         }
 
         if (enum_exists($classname)) {
+            if (is_array($value) && isset($value['value'])) {
+                return $classname::from($value['value']);
+            }
             return $classname::from($value);
         }
 
